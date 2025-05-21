@@ -1,0 +1,25 @@
+{
+  "blocks": [
+    {
+      "type": "Import",
+      "name": "import time"
+    },
+    {
+      "type": "Import",
+      "name": "import random"
+    },
+    {
+      "type": "Import",
+      "name": "import math"
+    },
+    {
+      "type": "Statements",
+      "name": "print"
+    },
+    {
+      "type": "Statements",
+      "name": "input",
+      "block": false
+    }
+  ]
+}

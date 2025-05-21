@@ -1,0 +1,36 @@
+import 'package:edublocks_flutter/style.dart';
+import 'package:flutter/material.dart';
+
+class sideBarWidget extends StatefulWidget {
+  const sideBarWidget({super.key});
+
+  @override
+  State<sideBarWidget> createState() => _sideBarWidgetState();
+}
+
+class _sideBarWidgetState extends State<sideBarWidget> {
+
+  bool minimised = true;
+
+  @override
+  Widget build(BuildContext context) {
+
+    // If the sideBar is minimised, it's size should be divided by 2.
+    // If the sideBar is not minimised, it should be shown at full size, therefore it's size is divided by 1.
+    double sizeMofifier = minimised ? 3 : 1;
+
+    return Container(
+      height: MediaQuery.sizeOf(context).height,
+      width: MediaQuery.sizeOf(context).width / (sideBarWidth * sizeMofifier),
+      color: sideBarColour,
+      child: ElevatedButton(
+        onPressed: (){
+          setState(() {
+            minimised = !minimised;
+          });
+        }, 
+        child: Text("Minimise")
+      ),
+    );
+  }
+}
