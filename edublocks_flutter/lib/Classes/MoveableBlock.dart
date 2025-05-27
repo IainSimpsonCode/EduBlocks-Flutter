@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 
-class Block {
+class MoveableBlock {
   final int id;
   Offset position;
   final Color color;
@@ -13,7 +13,7 @@ class Block {
   String? selectedOption;
   String? inputText;
 
-  Block({
+  MoveableBlock({
     required this.id,
     required this.position,
     required this.color,

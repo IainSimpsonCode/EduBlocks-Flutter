@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'blockClasses.dart';
+import '../Classes/MoveableBlock.dart';
 
 class canvasWidget extends StatefulWidget {
   const canvasWidget({super.key});
@@ -10,14 +10,14 @@ class canvasWidget extends StatefulWidget {
 }
 
 class _canvasWidgetState extends State<canvasWidget> {
-  final List<Block> blocks = [
-    Block(
+  final List<MoveableBlock> blocks = [
+    MoveableBlock(
       id: 0,
       position: const Offset(100, 100),
       color: Colors.orange,
       type: 'Start',
     ),
-    Block(
+    MoveableBlock(
       id: 1,
       position: const Offset(250, 150),
       color: Colors.green,
@@ -26,13 +26,13 @@ class _canvasWidgetState extends State<canvasWidget> {
       selectedOption: 'X',
       inputText: '',
     ),
-    Block(
+    MoveableBlock(
       id: 2,
       position: const Offset(180, 400),
       color: Colors.blue,
       type: 'If',
     ),
-    Block(
+    MoveableBlock(
       id: 3,
       position: const Offset(400, 300),
       color: Colors.purple,
@@ -40,7 +40,7 @@ class _canvasWidgetState extends State<canvasWidget> {
     ),
   ];
 
-  List<Block> chainedBlocks = [];
+  List<MoveableBlock> chainedBlocks = [];
 
   final double blockSize = 150;
   final double snapThreshold = 75;
@@ -95,7 +95,7 @@ class _canvasWidgetState extends State<canvasWidget> {
     }
   }
 
-  void onSnapChange(Block block) {
+  void onSnapChange(MoveableBlock block) {
     if (block.snappedTo != null) {
       if (!chainedBlocks.contains(block)) {
         chainedBlocks.add(block);
@@ -109,15 +109,15 @@ class _canvasWidgetState extends State<canvasWidget> {
     debugPrint('Chained Blocks: ${chainedBlocks.map((b) => b.type)}');
   }
 
-  Block getLastInChain(Block start) {
-    Block current = start;
+  MoveableBlock getLastInChain(MoveableBlock start) {
+    MoveableBlock current = start;
     while (current.childId != null) {
       current = blocks.firstWhere((b) => b.id == current.childId);
     }
     return current;
   }
 
-  Widget buildBlock(Block block) {
+  Widget buildBlock(MoveableBlock block) {
     Widget content;
 
     if (block.type == 'Variable') {

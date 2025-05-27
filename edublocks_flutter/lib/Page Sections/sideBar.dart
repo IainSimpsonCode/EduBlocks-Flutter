@@ -1,3 +1,5 @@
+import 'package:edublocks_flutter/Widgets/blockLibraryScroller.dart';
+import 'package:edublocks_flutter/Widgets/categoryScroller.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
 
@@ -23,14 +25,9 @@ class _sideBarWidgetState extends State<sideBarWidget> {
       height: MediaQuery.sizeOf(context).height,
       width: MediaQuery.sizeOf(context).width / (sideBarWidth * sizeMofifier),
       color: sideBarColour,
-      child: ElevatedButton(
-        onPressed: (){
-          setState(() {
-            minimised = !minimised;
-          });
-        }, 
-        child: Text("Minimise")
-      ),
+
+      //child: blockLibraryScroller(),
+      child: categoryScroller(),
     );
   }
 }
