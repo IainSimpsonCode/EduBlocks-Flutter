@@ -16,8 +16,13 @@ void main() async {
         //// PageNotifier handles which page is displayed currently
         //ChangeNotifierProvider(create: (context) => PageNotifier()),
 
-        // BlockLibrary ChangeNotifier handles data relating to the blovk available from the block library fo users to use.
-        ChangeNotifierProvider(create: (context) => BlockLibrary())
+        // BlockLibrary ChangeNotifier handles data relating to the blocks available from the block library fo users to use.
+        ChangeNotifierProvider(create: (context) => BlockLibrary()),
+
+        // CodeTracker tracks the code currently on the screen and the connection between blocks.
+        ChangeNotifierProvider(create: (context) => CodeTracker()),
+
+        ChangeNotifierProvider(create: (context) => BlocksToLoad()),
       ],
       child: const MainApp(),
     ),

@@ -1,5 +1,8 @@
+import 'package:edublocks_flutter/Classes/Block.dart';
+import 'package:edublocks_flutter/Services/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import '../Classes/MoveableBlock.dart';
 
 class canvasWidget extends StatefulWidget {
@@ -10,6 +13,7 @@ class canvasWidget extends StatefulWidget {
 }
 
 class _canvasWidgetState extends State<canvasWidget> {
+
   final double snapThreshold = 100;
   final double snapThresholdNested = 200;
   final Map<int, GlobalKey> blockKeys = {};
@@ -29,6 +33,24 @@ class _canvasWidgetState extends State<canvasWidget> {
   @override
   void initState() {
     super.initState();
+
+    final blocksToLoad = Provider.of<BlocksToLoad>(context, listen: false);
+
+    blocksToLoad.addListener(() {
+      //Load blocks on the screen
+      bool run = true;
+      while (run) {
+        Block? block = Provider.of<BlocksToLoad>(context, listen: false).getBlockToLoad();
+        if (block == null) {
+          run = false;
+        }
+        else {
+          // Load next block in the queue
+          
+        }
+      }
+    });
+
     for (var block in blocks) {
       blockKeys[block.id] = GlobalKey();
       dragPositions[block.id] = block.position;

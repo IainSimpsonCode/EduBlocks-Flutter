@@ -48,6 +48,13 @@
       "imageName": "count=0.png",
       "condition": false,
       "hasChildren": false
+    },
+    {
+      "category": "Loop",
+      "code": "while true",
+      "imageName": "whileTrue.png",
+      "condition": false,
+      "hasChildren": true
     }
   ]
 }

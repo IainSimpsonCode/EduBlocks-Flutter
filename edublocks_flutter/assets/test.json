@@ -18,7 +18,22 @@
           "line": 3,
           "code": "print(count)",
           "nested": []
-        }
+        },
+        {
+          "line": 2,
+          "code": "while true",
+          "nested": [
+            {
+              "line": 3,
+              "code": "print(count)",
+              "nested": [
+                
+              ]
+            },
+            {"line": 4, "code": "pass", "nested": []}
+          ]
+        },
+        {"line": 1, "code": "pass", "nested": []}
       ]
     }
   ]

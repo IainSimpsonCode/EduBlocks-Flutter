@@ -24,7 +24,6 @@ import 'package:flutter/material.dart';
 class BlockLibrary extends ChangeNotifier {
   List<Block> _allBlocks = List.empty();
   List<Category> _allCategories = List.empty();
-  List<Block> _blocksToLoad = List.empty();
 
   // -- Categories --
   List<Category> get categories => _allCategories;
@@ -50,9 +49,17 @@ class BlockLibrary extends ChangeNotifier {
   void addBlock(Block newBlock) {
     _allBlocks.add(newBlock);
     notifyListeners();
+  }  
+}
+
+class BlocksToLoad extends ChangeNotifier {
+  
+  List<Block> _blocksToLoad = List.empty();
+
+  void AddBlockToLoad(Block block) {
+    notifyListeners();
   }
 
-  // -- Loading Blocks --
   Block? getBlockToLoad() {
     if (_blocksToLoad.isNotEmpty) {
       Block blockToLoad = _blocksToLoad[0];
@@ -96,27 +103,6 @@ class CodeTracker extends ChangeNotifier {
   /// Check and update all line numbers in the JSON string.
   /// ### How it works
   /// Start a counter initialised at 0. For each block, and then each nested block within that block, set it's line number to the counter then add 1 to the counter.
-  // void updateLineNumbers() {
-  //   // Parse the JSON
-  //   Map<String, dynamic> data = jsonDecode(codeJSONString);
-  //   List blocks = data["blocks"];
-
-  //   int counter = 0;
-  //   for (var block in blocks) {
-  //     // For each block, assign the correct line number
-  //     block['line'] = counter;
-  //     counter++;
-
-  //     // Check the line numbers for each nested block
-  //     List nestedBlocks = block["nested"];
-  //     for (var block in nestedBlocks) {
-  //       block['line'] = counter;
-  //       counter++;
-  //     }
-  //   }
-
-  //   codeJSONString = jsonEncode(data);    
-  // }
   void updateLineNumbers() {
     // Parse the JSON
     Map<String, dynamic> data = jsonDecode(codeJSONString);
@@ -147,11 +133,16 @@ class CodeTracker extends ChangeNotifier {
     // Parse the JSON
     Map<String, dynamic> data = jsonDecode(codeJSONString);
 
+    List nestedChildren = [];
+    if (block.hasChildren) {
+      nestedChildren = [{"line": line + 1, "code": "pass", "nested": []}];
+    }
+
     // New object to insert
     Map<String, dynamic> newBlock = {
       "line": line,
       "code": block.code,
-      "nested": []
+      "nested": nestedChildren
     };
 
     // Insert the new block at the specified line number.
@@ -189,6 +180,17 @@ class CodeTracker extends ChangeNotifier {
 
     return result;
 
+  }
+
+  void traverseBlocks(List<dynamic> blocks) {
+    for (var block in blocks) {
+      print('Line ${block["line"]}: ${block["code"]}');
+
+      // If the block has nested blocks, traverse them
+      if (block['nested'] != null && block['nested'] is List) {
+        traverseBlocks(block['nested']);
+      }
+    }
   }
 
 }
