@@ -84,25 +84,49 @@ class CodeTracker extends ChangeNotifier {
   /// Check and update all line numbers in the JSON string.
   /// ### How it works
   /// Start a counter initialised at 0. For each block, and then each nested block within that block, set it's line number to the counter then add 1 to the counter.
+  // void updateLineNumbers() {
+  //   // Parse the JSON
+  //   Map<String, dynamic> data = jsonDecode(codeJSONString);
+  //   List blocks = data["blocks"];
+
+  //   int counter = 0;
+  //   for (var block in blocks) {
+  //     // For each block, assign the correct line number
+  //     block['line'] = counter;
+  //     counter++;
+
+  //     // Check the line numbers for each nested block
+  //     List nestedBlocks = block["nested"];
+  //     for (var block in nestedBlocks) {
+  //       block['line'] = counter;
+  //       counter++;
+  //     }
+  //   }
+
+  //   codeJSONString = jsonEncode(data);    
+  // }
   void updateLineNumbers() {
     // Parse the JSON
     Map<String, dynamic> data = jsonDecode(codeJSONString);
     List blocks = data["blocks"];
 
     int counter = 0;
-    for (var block in blocks) {
-      // For each block, assign the correct line number
-      block['line'] = counter;
-      counter++;
 
-      // Check the line numbers for each nested block
-      List nestedBlocks = block["nested"];
-      for (var block in nestedBlocks) {
+    void updateLines(List<dynamic> blocks) {
+      for (var block in blocks) {
         block['line'] = counter;
         counter++;
+
+        // Recursively process nested blocks
+        if (block['nested'] != null && block['nested'] is List) {
+          updateLines(block['nested']);
+        }
       }
     }
-    
+
+    updateLines(blocks);
+
+    codeJSONString = jsonEncode(data);
   }
 
   int insertBlock(Block block, int line) {
@@ -127,9 +151,32 @@ class CodeTracker extends ChangeNotifier {
       blocks.insert(insertIndex + 1, newBlock);
     }
 
+    // Save the results
+    codeJSONString = jsonEncode(data);
     updateLineNumbers();
 
     return 0;
+  }
+
+  List<Text> convertJSONToCodePanelText() {
+
+    List<Text> result = List.empty();
+
+    updateLineNumbers();
+
+    // Parse the JSON
+    Map<String, dynamic> data = jsonDecode(codeJSONString);
+    List blocks = data["blocks"];
+
+    for (var block in blocks) {
+      Text codeLine = Text(
+        "${block["line"]}  ${block["code"]}"
+        
+      );
+    }
+
+    return result;
+
   }
 
 }
