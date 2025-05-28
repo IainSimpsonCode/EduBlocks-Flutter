@@ -6,14 +6,14 @@ import 'package:provider/provider.dart';
 
 class Block {
   final String category;
-  final String name;
+  final String code;
   final String imageName;
   final bool condition;
   final bool hasChildren;
 
   Block({
     required this.category,
-    required this.name,
+    required this.code,
     required this.imageName,
     required this.condition,
     required this.hasChildren,
@@ -22,7 +22,7 @@ class Block {
   factory Block.fromJson(Map<String, dynamic> json) {
     return Block(
       category: json['category'],
-      name: json['name'],
+      code: json['code'],
       imageName: json['imageName'],
       condition: json['condition'],
       hasChildren: json['hasChildren'],

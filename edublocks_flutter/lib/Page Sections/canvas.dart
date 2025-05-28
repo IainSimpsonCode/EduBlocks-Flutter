@@ -10,193 +10,204 @@ class canvasWidget extends StatefulWidget {
 }
 
 class _canvasWidgetState extends State<canvasWidget> {
-  final List<MoveableBlock> blocks = [
-    MoveableBlock(
-      id: 0,
-      position: const Offset(100, 100),
-      color: Colors.orange,
-      type: 'Start',
-    ),
-    MoveableBlock(
-      id: 1,
-      position: const Offset(250, 150),
-      color: Colors.green,
-      type: 'Variable',
-      options: ['X', 'Y', 'Z'],
-      selectedOption: 'X',
-      inputText: '',
-    ),
-    MoveableBlock(
-      id: 2,
-      position: const Offset(180, 400),
-      color: Colors.blue,
-      type: 'If',
-    ),
-    MoveableBlock(
-      id: 3,
-      position: const Offset(400, 300),
-      color: Colors.purple,
-      type: 'End',
-    ),
+  final double snapThreshold = 100;
+  final double snapThresholdNested = 200;
+  final Map<int, GlobalKey> blockKeys = {};
+  final Map<int, Offset> dragPositions = {}; // store latest drag global positions
+
+  List<MoveableBlock> blocks = [
+    MoveableBlock(id: 0, type: 'Start', position: const Offset(100, 0), imagePath: 'block_images/startHere.png', height: 100),
+    MoveableBlock(id: 1, type: 'count=0', position: const Offset(100, 500), imagePath: 'block_images/count=0.png', height : 100),
+    MoveableBlock(id: 2, type: 'count+=1', position: const Offset(500, 900), imagePath: 'block_images/count+=1.png', height : 100),
+    MoveableBlock(id: 3, type: 'printCount', position: const Offset(500, 500), imagePath: 'block_images/print.png', height : 100),
+    MoveableBlock(id: 4, type: 'whileTrue', position: const Offset(100, 800), imagePath: 'block_images/whileTrue.png', height : 450),
+    MoveableBlock(id: 5, type: 'ifCount', position: const Offset(900, 200), imagePath: 'block_images/ifCountLessOr=10.png', height : 300),
   ];
 
-  List<MoveableBlock> chainedBlocks = [];
+  List<MoveableBlock> draggedChain = [];
 
-  final double blockSize = 150;
-  final double snapThreshold = 75;
-
-  void onStartDrag(int id) {
-    final block = blocks.firstWhere((b) => b.id == id);
-
-    // Can't drag if it has a child
-    if (block.childId != null) return;
-
-    // Detach from parent
-    if (block.snappedTo != null) {
-      final parent = blocks.firstWhere((b) => b.id == block.snappedTo);
-      setState(() {
-        parent.childId = null;
-        block.snappedTo = null;
-      });
-      onSnapChange(block);
+  @override
+  void initState() {
+    super.initState();
+    for (var block in blocks) {
+      blockKeys[block.id] = GlobalKey();
+      dragPositions[block.id] = block.position;
     }
   }
 
-  void onUpdateDrag(int id, DragUpdateDetails details) {
-    final block = blocks.firstWhere((b) => b.id == id);
-    if (block.childId != null) return;
+  // Recursively get all children connected below the block
+  List<MoveableBlock> getConnectedChain(MoveableBlock start) {
+    List<MoveableBlock> chain = [start];
+    MoveableBlock? current = start;
+    while (current?.childId != null) {
+      final nextList = blocks.where((b) => b.id == current!.childId).toList();
+      if (nextList.isEmpty) break;
+      current = nextList.first;
+      chain.add(current);
+    }
+    return chain;
+  }
 
+  void onStartDrag(int id) {
+    final dragged = blocks.firstWhere((b) => b.id == id);
+    if (dragged.snappedTo != null) {
+      final parent = blocks.firstWhere((b) => b.id == dragged.snappedTo);
+      parent.childId = null;
+      dragged.snappedTo = null;
+    }
+    draggedChain = getConnectedChain(dragged);
+  }
+
+  void onUpdateDrag(int id, DragUpdateDetails details) {
     setState(() {
-      block.position += details.delta;
+      for (var block in draggedChain) {
+        block.position += details.delta;
+        dragPositions[block.id] = block.position;
+      }
     });
   }
 
   void onEndDrag(int id) {
-    final block = blocks.firstWhere((b) => b.id == id);
-    if (block.childId != null) return;
+  final dragged = blocks.firstWhere((b) => b.id == id);
 
-    for (var target in blocks) {
-      if (target.id == block.id || target.childId != null) continue;
+  final draggedContext = blockKeys[dragged.id]?.currentContext;
+  final draggedBox = draggedContext?.findRenderObject() as RenderBox?;
+  final draggedSize = draggedBox?.size ?? const Size(100, 100);
 
-      final dx = (block.position.dx - target.position.dx).abs();
-      final dy = block.position.dy - (target.position.dy + blockSize);
+  for (var target in blocks) {
+    if (target.id == dragged.id || isLoop(dragged, target)) continue;
 
-      if (dx < 30 && dy.abs() < snapThreshold) {
+    final targetContext = blockKeys[target.id]?.currentContext;
+    if (targetContext == null) continue;
+
+    final targetBox = targetContext.findRenderObject() as RenderBox;
+    final targetSize = targetBox.size;
+
+    final targetCenterX = target.position.dx + targetSize.width / 2;
+    final draggedCenterX = dragged.position.dx + draggedSize.width / 2;
+
+    // Bottom snap position
+    final defaultSnapY = target.position.dy + targetSize.height - 30;
+
+    // Side snap position (right middle side of target)
+    final customSnapX = target.position.dx + targetSize.width + 10; 
+    final customSnapY = target.position.dy + targetSize.height / 2 - draggedSize.height / 2;
+
+    final dxDefault = draggedCenterX - targetCenterX;
+    final dyDefault = dragged.position.dy - defaultSnapY;
+
+    final dxCustom = (dragged.position.dx + draggedSize.width / 2) - customSnapX;
+    final dyCustom = dragged.position.dy - customSnapY;
+
+    bool snapDone = false;
+
+    // Bottom snap: only if target bottom is free (no childId)
+    if (target.childId == null) {
+      if (dxDefault.abs() < snapThreshold && dyDefault.abs() < snapThreshold) {
         setState(() {
-          block.position = Offset(
-            target.position.dx,
-            target.position.dy + blockSize,
-          );
-          block.snappedTo = target.id;
-          target.childId = block.id;
+          dragged.position = Offset(target.position.dx , defaultSnapY + 20);
+          dragged.snappedTo = target.id;
+          target.childId = dragged.id;
         });
-        onSnapChange(block);
+        snapDone = true;
+        
       }
     }
-  }
 
-  void onSnapChange(MoveableBlock block) {
-    if (block.snappedTo != null) {
-      if (!chainedBlocks.contains(block)) {
-        chainedBlocks.add(block);
-        debugPrint(block.selectedOption);
-        debugPrint(block.inputText);
+    // Side snap: only if target block type is in allowed list
+    final sideSnapTargetTypes = ['whileTrue', 'ifCount']; // <-- only these target types allow side snap
+
+    if (!snapDone && sideSnapTargetTypes.contains(target.type)) {
+      if (dxCustom.abs() < snapThresholdNested && dyCustom.abs() < snapThresholdNested) {
+        double x =0;
+        double y =0;
+        if(target.type == 'whileTrue') {
+          switch (dragged.type) {
+            case 'printCount':
+            x = customSnapX - draggedSize.width / 2 - 85;
+            y = customSnapY-90;
+            break;
+
+            case 'count=0':
+            x = customSnapX - draggedSize.width / 2 - 70;
+            y = customSnapY-90;
+            break;
+
+            case 'count+=1':
+            x = customSnapX - draggedSize.width / 2 - 60;
+            y = customSnapY-90;
+            break;
+
+            case 'ifCount':
+            x = customSnapX - draggedSize.width / 2 - 30;
+            y = customSnapY + 10;
+            break;
+
+          }
+          setState(() {
+          dragged.position = Offset(x, y);
+          dragged.snappedTo = target.id;
+        });
+        }
+        else if(target.type == 'ifCount') {
+          switch (dragged.type) {
+            case 'printCount':
+            x = customSnapX - draggedSize.width / 2 - 235;
+            y = customSnapY;
+            break;
+
+            case 'count=0':
+            x = customSnapX - draggedSize.width / 2 - 225;
+            y = customSnapY - 10;
+            break;
+
+            case 'count+=1':
+            x = customSnapX - draggedSize.width / 2 - 220;
+            y = customSnapY- 10;
+            break;
+
+            case 'whileTrue':
+            x = customSnapX - draggedSize.width / 2 - 220;
+            y = customSnapY - 10;
+            break;
+
+          }
+          setState(() {
+          dragged.position = Offset(x, y);
+          dragged.snappedTo = target.id;
+        });
+
+        }
+        
+        snapDone = true;
+        print('side snap done');
       }
-    } else {
-      chainedBlocks.remove(block);
     }
 
-    debugPrint('Chained Blocks: ${chainedBlocks.map((b) => b.type)}');
+    if (snapDone) break;
   }
+}
 
-  MoveableBlock getLastInChain(MoveableBlock start) {
-    MoveableBlock current = start;
-    while (current.childId != null) {
-      current = blocks.firstWhere((b) => b.id == current.childId);
-    }
-    return current;
+
+
+
+
+ 
+  bool isLoop(MoveableBlock child, MoveableBlock target) {
+  MoveableBlock? current = target;
+  while (current != null) {
+    if (current.id == child.id) return true;
+    if (current.childId == null) break;
+
+    final next = blocks.where((b) => b.id == current!.childId).toList();
+    if (next.isEmpty) break;
+
+    current = next.first;
   }
+  return false;
+}
 
   Widget buildBlock(MoveableBlock block) {
-    Widget content;
-
-    if (block.type == 'Variable') {
-      content = SizedBox(
-        height: blockSize - 16, // padding
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                block.type ?? '',
-                style: const TextStyle(fontSize: 18, color: Colors.white),
-              ),
-              const SizedBox(height: 8),
-              DropdownButton<String>(
-                value: block.selectedOption,
-                dropdownColor: block.color,
-                underline: const SizedBox(),
-                style: const TextStyle(color: Colors.white, fontSize: 16),
-                items:
-                    block.options!
-                        .map(
-                          (option) => DropdownMenuItem(
-                            value: option,
-                            child: Text(option),
-                          ),
-                        )
-                        .toList(),
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() {
-                      block.selectedOption = value;
-                    });
-                  }
-                },
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                width: 80,
-                height: 30,
-                child: TextField(
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  style: const TextStyle(color: Colors.white),
-                  decoration: InputDecoration(
-                    hintText: 'Number',
-                    hintStyle: TextStyle(color: Colors.white70),
-                    filled: true,
-                    fillColor: block.color.withOpacity(0.3),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 0,
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(6),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                  onChanged: (text) {
-                    setState(() {
-                      block.inputText = text;
-                    });
-                  },
-                  controller: TextEditingController(text: block.inputText),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    } else {
-      content = Center(
-        child: Text(
-          block.type ?? '',
-          style: const TextStyle(fontSize: 18, color: Colors.white),
-        ),
-      );
-    }
-
     return Positioned(
       left: block.position.dx,
       top: block.position.dy,
@@ -205,21 +216,14 @@ class _canvasWidgetState extends State<canvasWidget> {
         onPanUpdate: (details) => onUpdateDrag(block.id, details),
         onPanEnd: (_) => onEndDrag(block.id),
         child: Container(
-          width: blockSize,
-          height: blockSize,
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: block.color,
-            borderRadius: BorderRadius.circular(10),
-            boxShadow: const [
-              BoxShadow(
-                blurRadius: 4,
-                color: Colors.black26,
-                offset: Offset(2, 2),
-              ),
-            ],
+          key: blockKeys[block.id],
+          child: SizedBox(
+          height: block.height,
+          child: Image.asset(
+            block.imagePath,
+            fit: BoxFit.fitHeight, // width auto-scales to preserve aspect ratio
           ),
-          child: content,
+        ),
         ),
       ),
     );
@@ -228,9 +232,7 @@ class _canvasWidgetState extends State<canvasWidget> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Stack(
-        children: blocks.map(buildBlock).toList()
-      ),
+      child: Stack(children: blocks.map(buildBlock).toList()),
     );
   }
 }

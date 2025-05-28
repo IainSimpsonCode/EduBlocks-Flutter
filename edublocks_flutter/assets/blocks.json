@@ -2,49 +2,49 @@
   "blocks": [
     {
       "category": "Import",
-      "name": "import time",
+      "code": "import time",
       "imageName": "importTime.png",
       "condition": false,
       "hasChildren": false
     },
     {
       "category": "Import",
-      "name": "import random",
+      "code": "import random",
       "imageName": "importRandom.png",
       "condition": false,
       "hasChildren": false
     },
     {
       "category": "Import",
-      "name": "import math",
+      "code": "import math",
       "imageName": "importMath.png",
       "condition": false,
       "hasChildren": false
     },
     {
       "category": "Statements",
-      "name": "print",
+      "code": "print(count)",
       "imageName": "print.png",
       "condition": false,
       "hasChildren": false
     },
     {
       "category": "Statements",
-      "name": "input",
+      "code": "input()",
       "imageName": "input.png",
       "condition": true,
       "hasChildren": false
     },
     {
       "category": "Variable",
-      "name": "count+1",
-      "imageName": "count+1.png",
+      "code": "count += 1",
+      "imageName": "count+=1.png",
       "condition": false,
       "hasChildren": false
     },
     {
       "category": "Variable",
-      "name": "count=0",
+      "code": "count = 0",
       "imageName": "count=0.png",
       "condition": false,
       "hasChildren": false

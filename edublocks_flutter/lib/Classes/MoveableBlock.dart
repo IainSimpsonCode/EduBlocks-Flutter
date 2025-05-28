@@ -1,27 +1,30 @@
 import 'package:flutter/material.dart';
 
-
 class MoveableBlock {
   final int id;
   Offset position;
-  final Color color;
-  int? snappedTo; // parent block
-  int? childId; // child block
-  String? type;
+  final String imagePath;
+  final String type;
+  double? height;
 
-  List<String>? options; // for dropdown options
+  int? snappedTo;
+  int? childId;
+
+  // For Variable type blocks
+  List<String>? options;
   String? selectedOption;
   String? inputText;
 
   MoveableBlock({
     required this.id,
     required this.position,
-    required this.color,
-    this.snappedTo,
-    this.childId,
-    this.type,
+    required this.imagePath,
+    required this.type,
     this.options,
     this.selectedOption,
     this.inputText,
+    this.snappedTo,
+    this.childId,
+    this.height,
   });
 }

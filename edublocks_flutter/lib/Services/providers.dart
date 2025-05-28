@@ -1,6 +1,7 @@
+import 'dart:convert';
+
 import 'package:edublocks_flutter/Classes/Block.dart';
 import 'package:edublocks_flutter/Classes/Category.dart';
-import 'package:edublocks_flutter/Views/loadingScreen.dart';
 import 'package:flutter/material.dart';
 
 /// ChangeNotifier used to store information about blocks currently loaded into the block library
@@ -49,4 +50,86 @@ class BlockLibrary extends ChangeNotifier {
     _allBlocks.add(newBlock);
     notifyListeners();
   }
+}
+
+class CodeTracker extends ChangeNotifier {
+  String codeJSONString = """
+  {
+    "blocks": [
+      {
+        "line": 0,
+        "code": "# Start Here",
+        "nested": []
+      },
+      {
+        "line": 1,
+        "code": "count = 0",
+        "nested": []
+      },
+      {
+        "line": 2,
+        "code": "while true",
+        "nested": [
+          {
+            "line": 3,
+            "code": "print(count)",
+            "nested": []
+          }
+        ]
+      }
+    ]
+  }
+  """;
+
+  /// Check and update all line numbers in the JSON string.
+  /// ### How it works
+  /// Start a counter initialised at 0. For each block, and then each nested block within that block, set it's line number to the counter then add 1 to the counter.
+  void updateLineNumbers() {
+    // Parse the JSON
+    Map<String, dynamic> data = jsonDecode(codeJSONString);
+    List blocks = data["blocks"];
+
+    int counter = 0;
+    for (var block in blocks) {
+      // For each block, assign the correct line number
+      block['line'] = counter;
+      counter++;
+
+      // Check the line numbers for each nested block
+      List nestedBlocks = block["nested"];
+      for (var block in nestedBlocks) {
+        block['line'] = counter;
+        counter++;
+      }
+    }
+    
+  }
+
+  int insertBlock(Block block, int line) {
+    if (line <= 0) {return 1;} //Line number must be positive, and cannot be 0 as this is the start block
+
+    // Parse the JSON
+    Map<String, dynamic> data = jsonDecode(codeJSONString);
+
+    // New object to insert
+    Map<String, dynamic> newBlock = {
+      "line": line,
+      "code": block.code,
+      "nested": []
+    };
+
+    // Insert the new block at the specified line number.
+    // Todo this, find the block, find the block at line number ```line - 1```, then insert after it.
+    List blocks = data['blocks'];
+
+    int insertIndex = blocks.indexWhere((block) => block['line'] == (line - 1));
+    if (insertIndex != -1) {
+      blocks.insert(insertIndex + 1, newBlock);
+    }
+
+    updateLineNumbers();
+
+    return 0;
+  }
+
 }
