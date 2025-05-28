@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 class BlockLibrary extends ChangeNotifier {
   List<Block> _allBlocks = List.empty();
   List<Category> _allCategories = List.empty();
+  List<Block> _blocksToLoad = List.empty();
 
   // -- Categories --
   List<Category> get categories => _allCategories;
@@ -49,6 +50,17 @@ class BlockLibrary extends ChangeNotifier {
   void addBlock(Block newBlock) {
     _allBlocks.add(newBlock);
     notifyListeners();
+  }
+
+  // -- Loading Blocks --
+  Block? getBlockToLoad() {
+    if (_blocksToLoad.isNotEmpty) {
+      Block blockToLoad = _blocksToLoad[0];
+      _blocksToLoad.removeAt(0);
+      return blockToLoad;
+    }
+
+    return null;
   }
 }
 
