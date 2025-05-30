@@ -22,6 +22,7 @@ void main() async {
         // CodeTracker tracks the code currently on the screen and the connection between blocks.
         ChangeNotifierProvider(create: (context) => CodeTracker()),
 
+        // BlocksToLoad manages the queue of blocks being loaded from the block library on the left of the screen.
         ChangeNotifierProvider(create: (context) => BlocksToLoad()),
       ],
       child: const MainApp(),
