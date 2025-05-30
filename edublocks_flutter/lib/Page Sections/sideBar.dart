@@ -1,7 +1,9 @@
+import 'package:edublocks_flutter/Services/providers.dart';
 import 'package:edublocks_flutter/Widgets/blockLibraryScroller.dart';
 import 'package:edublocks_flutter/Widgets/categoryScroller.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class sideBarWidget extends StatefulWidget {
   const sideBarWidget({super.key});
