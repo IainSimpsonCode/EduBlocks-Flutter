@@ -80,7 +80,7 @@ class BlocksToLoad extends ChangeNotifier {
 }
 
 class CodeTracker extends ChangeNotifier {
-  String codeJSONString = """blocks = [{"line": 1, "code": "# Start Here", "hasChildren": false}]""";
+  String codeJSONString = """{"blocks": [{"line": 1, "code": "# Start Here", "hasChildren": false}]}""";
 
   /// Check and update all line numbers in the JSON string.
   /// ### How it works
@@ -162,7 +162,12 @@ class CodeTracker extends ChangeNotifier {
     }
 
     for (var block in blocks) {
-      String line = "${block["line"]}: ${actualIndent()}${block["code"]}";
+
+      // If the line number is less than 10, add a leading 0 to help allign the text correctly in the code panel.
+      String? leadingZero;
+      if (block["line"] < 10) { leadingZero = "0"; }
+
+      String line = "$leadingZero${block["line"]}: ${actualIndent()}${block["code"]}";
       pythonText.add(Text(
         line,
         style: GoogleFonts.firaCode(
