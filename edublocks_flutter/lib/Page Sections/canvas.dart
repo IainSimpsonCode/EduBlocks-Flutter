@@ -72,22 +72,20 @@ class _canvasWidgetState extends State<canvasWidget> {
   void initState() {
     super.initState();
 
-    final blocksToLoad = Provider.of<BlocksToLoad>(context, listen: false);
-
-    blocksToLoad.addListener(() {
-      //Load blocks on the screen
-      bool run = true;
-      while (run) {
-        Block? block = Provider.of<BlocksToLoad>(context, listen: false).getBlockToLoad();
-        if (block == null) {
-          run = false;
-        }
-        else {
-          // Load next block in the queue
-          
-        }
+    Provider.of<BlocksToLoad>(context, listen: false).addListener(() {
+    //Load blocks on the screen
+    bool run = true;
+    while (run) {
+      Block? block = Provider.of<BlocksToLoad>(context, listen: false).getBlockToLoad();
+      if (block == null) {
+        run = false;
       }
-    });
+      else {
+        // Load next block in the queue
+        
+      }
+    }
+  });
 
     for (var block in blocks) {
       blockKeys[block.id] = GlobalKey();

@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:edublocks_flutter/Classes/Block.dart';
 import 'package:edublocks_flutter/Classes/Category.dart';
+import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 /// ChangeNotifier used to store information about blocks currently loaded into the block library
 /// and store information about any filters applied to limit which blocks are displayed.
@@ -131,19 +133,18 @@ class CodeTracker extends ChangeNotifier {
     if (line <= 0) {return 1;} //Line number must be positive, and cannot be 0 as this is the start block
 
     // Parse the JSON
-    Map<String, dynamic> data = jsonDecode(codeJSONString);
-
-    List nestedChildren = [];
-    if (block.hasChildren) {
-      nestedChildren = [{"line": line + 1, "code": "pass", "nested": []}];
-    }
+    Map<String, dynamic> data = jsonDecode(codeJSONString); 
 
     // New object to insert
     Map<String, dynamic> newBlock = {
       "line": line,
       "code": block.code,
-      "nested": nestedChildren
     };
+
+    if (block.hasChildren) {
+      final nested = <String, dynamic>{"nested": {"line": line + 1, "code": "pass", "nested": []}};
+      newBlock["nested"] = nested;
+    }
 
     // Insert the new block at the specified line number.
     // Todo this, find the block, find the block at line number ```line - 1```, then insert after it.
@@ -161,36 +162,49 @@ class CodeTracker extends ChangeNotifier {
     return 0;
   }
 
-  List<Text> convertJSONToCodePanelText() {
-
-    List<Text> result = List.empty();
-
-    updateLineNumbers();
-
+  List<Widget> JSONToPythonCode() {
     // Parse the JSON
     Map<String, dynamic> data = jsonDecode(codeJSONString);
     List blocks = data["blocks"];
 
-    for (var block in blocks) {
-      Text codeLine = Text(
-        "${block["line"]}  ${block["code"]}"
-        
-      );
+    List<Widget> pythonText = List.empty(growable: true);
+
+    const indent = "  ";
+    int numOfIndents = 0;
+    String actualIndent() {
+      String _actualIndent = "";
+      for (int i = 0; i < numOfIndents; i++) {
+        _actualIndent += indent;
+      }
+      return _actualIndent;
     }
+    
+    void traverseBlocks(List<dynamic> blocks) {
+      for (var block in blocks) {
+        String line = "${block["line"]}: ${actualIndent()}${block["code"]}";
+        pythonText.add(Text(
+          line,
+          style: GoogleFonts.firaCode(
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            color: codeBarColour
+          ),
+        ));
 
-    return result;
-
-  }
-
-  void traverseBlocks(List<dynamic> blocks) {
-    for (var block in blocks) {
-      print('Line ${block["line"]}: ${block["code"]}');
-
-      // If the block has nested blocks, traverse them
-      if (block['nested'] != null && block['nested'] is List) {
-        traverseBlocks(block['nested']);
+        // If the block has nested blocks, traverse them
+        if (block['nested'] != null && block['nested'] is List && block['nested'] != List.empty()) {
+          numOfIndents++;
+          traverseBlocks(block['nested']);
+        }
+        // If the block is a pass block, reduce the indent
+        else if (block["code"] == "pass") {
+          numOfIndents--;
+        }
       }
     }
+    traverseBlocks(blocks);
+
+    return pythonText;
   }
 
 }
