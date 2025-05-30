@@ -1,4 +1,6 @@
+import 'package:edublocks_flutter/Services/providers.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class codeTextPanel extends StatefulWidget {
   const codeTextPanel({super.key});
@@ -17,10 +19,13 @@ class _codeTextPanelState extends State<codeTextPanel> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Color(0xFF282c34),
-      child: ListView(
-
+    return Expanded(
+      child: Container(
+        color: Color(0xFF282c34),
+        padding: EdgeInsets.all(8),
+        child: ListView(
+          children: Provider.of<CodeTracker>(context, listen: false).JSONToPythonCode(),
+        ),
       ),
     );
   }

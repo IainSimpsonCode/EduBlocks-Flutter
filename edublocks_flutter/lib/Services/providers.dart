@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:edublocks_flutter/Classes/Block.dart';
 import 'package:edublocks_flutter/Classes/Category.dart';
+import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 /// ChangeNotifier used to store information about blocks currently loaded into the block library
 /// and store information about any filters applied to limit which blocks are displayed.
@@ -24,7 +26,6 @@ import 'package:flutter/material.dart';
 class BlockLibrary extends ChangeNotifier {
   List<Block> _allBlocks = List.empty();
   List<Category> _allCategories = List.empty();
-  List<Block> _blocksToLoad = List.empty();
 
   // -- Categories --
   List<Category> get categories => _allCategories;
@@ -50,9 +51,17 @@ class BlockLibrary extends ChangeNotifier {
   void addBlock(Block newBlock) {
     _allBlocks.add(newBlock);
     notifyListeners();
+  }  
+}
+
+class BlocksToLoad extends ChangeNotifier {
+  
+  List<Block> _blocksToLoad = List.empty();
+
+  void AddBlockToLoad(Block block) {
+    notifyListeners();
   }
 
-  // -- Loading Blocks --
   Block? getBlockToLoad() {
     if (_blocksToLoad.isNotEmpty) {
       Block blockToLoad = _blocksToLoad[0];
@@ -96,27 +105,6 @@ class CodeTracker extends ChangeNotifier {
   /// Check and update all line numbers in the JSON string.
   /// ### How it works
   /// Start a counter initialised at 0. For each block, and then each nested block within that block, set it's line number to the counter then add 1 to the counter.
-  // void updateLineNumbers() {
-  //   // Parse the JSON
-  //   Map<String, dynamic> data = jsonDecode(codeJSONString);
-  //   List blocks = data["blocks"];
-
-  //   int counter = 0;
-  //   for (var block in blocks) {
-  //     // For each block, assign the correct line number
-  //     block['line'] = counter;
-  //     counter++;
-
-  //     // Check the line numbers for each nested block
-  //     List nestedBlocks = block["nested"];
-  //     for (var block in nestedBlocks) {
-  //       block['line'] = counter;
-  //       counter++;
-  //     }
-  //   }
-
-  //   codeJSONString = jsonEncode(data);    
-  // }
   void updateLineNumbers() {
     // Parse the JSON
     Map<String, dynamic> data = jsonDecode(codeJSONString);
@@ -145,14 +133,18 @@ class CodeTracker extends ChangeNotifier {
     if (line <= 0) {return 1;} //Line number must be positive, and cannot be 0 as this is the start block
 
     // Parse the JSON
-    Map<String, dynamic> data = jsonDecode(codeJSONString);
+    Map<String, dynamic> data = jsonDecode(codeJSONString); 
 
     // New object to insert
     Map<String, dynamic> newBlock = {
       "line": line,
       "code": block.code,
-      "nested": []
     };
+
+    if (block.hasChildren) {
+      final nested = <String, dynamic>{"nested": {"line": line + 1, "code": "pass", "nested": []}};
+      newBlock["nested"] = nested;
+    }
 
     // Insert the new block at the specified line number.
     // Todo this, find the block, find the block at line number ```line - 1```, then insert after it.
@@ -170,25 +162,49 @@ class CodeTracker extends ChangeNotifier {
     return 0;
   }
 
-  List<Text> convertJSONToCodePanelText() {
-
-    List<Text> result = List.empty();
-
-    updateLineNumbers();
-
+  List<Widget> JSONToPythonCode() {
     // Parse the JSON
     Map<String, dynamic> data = jsonDecode(codeJSONString);
     List blocks = data["blocks"];
 
-    for (var block in blocks) {
-      Text codeLine = Text(
-        "${block["line"]}  ${block["code"]}"
-        
-      );
+    List<Widget> pythonText = List.empty(growable: true);
+
+    const indent = "  ";
+    int numOfIndents = 0;
+    String actualIndent() {
+      String _actualIndent = "";
+      for (int i = 0; i < numOfIndents; i++) {
+        _actualIndent += indent;
+      }
+      return _actualIndent;
     }
+    
+    void traverseBlocks(List<dynamic> blocks) {
+      for (var block in blocks) {
+        String line = "${block["line"]}: ${actualIndent()}${block["code"]}";
+        pythonText.add(Text(
+          line,
+          style: GoogleFonts.firaCode(
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            color: codeBarColour
+          ),
+        ));
 
-    return result;
+        // If the block has nested blocks, traverse them
+        if (block['nested'] != null && block['nested'] is List && block['nested'] != List.empty()) {
+          numOfIndents++;
+          traverseBlocks(block['nested']);
+        }
+        // If the block is a pass block, reduce the indent
+        else if (block["code"] == "pass") {
+          numOfIndents--;
+        }
+      }
+    }
+    traverseBlocks(blocks);
 
+    return pythonText;
   }
 
 }

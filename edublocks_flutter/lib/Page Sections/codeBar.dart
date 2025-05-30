@@ -1,3 +1,4 @@
+import 'package:edublocks_flutter/Widgets/codeTextPanel.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +17,12 @@ class _codeBarWidgetState extends State<codeBarWidget> {
       height: MediaQuery.sizeOf(context).height,
       width: MediaQuery.sizeOf(context).width / codeBarWidth,
       color: codeBarColour,
+      padding: EdgeInsets.all(16),
+      child: Row(
+        children: [
+          codeTextPanel()
+        ]
+      ),
     );
   }
 }
