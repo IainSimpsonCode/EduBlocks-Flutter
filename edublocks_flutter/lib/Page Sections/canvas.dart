@@ -87,38 +87,56 @@ class _canvasWidgetState extends State<canvasWidget> {
     blocks = [
       MoveableBlock(
         id: 0,
-        type: Provider.of<BlockLibrary>(context, listen: false).getBlockByCode("# Start Here"),
+        type: Provider.of<BlockLibrary>(
+          context,
+          listen: false,
+        ).getBlockByCode("# Start Here"),
         position: const Offset(100, 0),
         height: 100,
       ),
       MoveableBlock(
         id: 1,
-        type: Provider.of<BlockLibrary>(context, listen: false).getBlockByCode("count = 0"),
+        type: Provider.of<BlockLibrary>(
+          context,
+          listen: false,
+        ).getBlockByCode("count = 0"),
         position: const Offset(100, 500),
         height: 100,
       ),
       MoveableBlock(
         id: 2,
-        type: Provider.of<BlockLibrary>(context, listen: false).getBlockByCode("count += 1"),
+        type: Provider.of<BlockLibrary>(
+          context,
+          listen: false,
+        ).getBlockByCode("count += 1"),
         position: const Offset(500, 900),
         height: 100,
       ),
       MoveableBlock(
         id: 3,
-        type: Provider.of<BlockLibrary>(context, listen: false).getBlockByCode("print(count)"),
+        type: Provider.of<BlockLibrary>(
+          context,
+          listen: false,
+        ).getBlockByCode("print(count)"),
         position: const Offset(500, 500),
         height: 100,
       ),
       MoveableBlock(
         id: 4,
-        type: Provider.of<BlockLibrary>(context, listen: false).getBlockByCode("while True:"),
+        type: Provider.of<BlockLibrary>(
+          context,
+          listen: false,
+        ).getBlockByCode("while True:"),
         position: const Offset(100, 800),
         height: 450,
         nestedBlocks: [],
       ),
       MoveableBlock(
         id: 5,
-        type: Provider.of<BlockLibrary>(context, listen: false).getBlockByCode("if (count <= 10):"),
+        type: Provider.of<BlockLibrary>(
+          context,
+          listen: false,
+        ).getBlockByCode("if (count <= 10):"),
         position: const Offset(900, 200),
         height: 300,
       ),
@@ -193,8 +211,10 @@ class _canvasWidgetState extends State<canvasWidget> {
     final draggedSize = draggedBox?.size ?? const Size(100, 100);
 
     bool snapDone = false;
+    bool newSnap = false;
 
     for (var target in blocks) {
+      newSnap = false;
       if (target.id == dragged.id) continue;
 
       final targetContext = blockKeys[target.id]?.currentContext;
@@ -231,6 +251,7 @@ class _canvasWidgetState extends State<canvasWidget> {
           });
 
           snapDone = true;
+          newSnap = true;
 
           final draggedChainChildren = getConnectedChain(
             dragged,
@@ -276,21 +297,31 @@ class _canvasWidgetState extends State<canvasWidget> {
             }
 
             snapDone = true;
+            newSnap = true;
           }
         }
       }
+      if (dragged.childId != null) {
+        onEndDrag(dragged.childId!);
+      }
+      if (newSnap) {
+      printChain();
+    }
     }
 
-    printChain();
+    
   }
 
   void printChain() {
-    final first = blocks.firstWhere((b) => b.id == 1);
+    final first = blocks.firstWhere((b) => b.id == 0);
     List<MoveableBlock> chain = getConnectedChain(first);
 
-    for (var block in chain) {
-      print(block.type.code);
-    }
+    
+      final lastBlock = chain.last;
+      Provider.of<CodeTracker>(context, listen: false).insertBlock(lastBlock.type, -1);
+    
+    
+    
   }
 
   Widget buildBlock(MoveableBlock block) {
