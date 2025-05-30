@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 class MoveableBlock {
@@ -9,6 +10,7 @@ class MoveableBlock {
 
   int? snappedTo;
   int? childId;
+  List<MoveableBlock>? nestedBlocks;
 
   // For Variable type blocks
   List<String>? options;
@@ -26,5 +28,6 @@ class MoveableBlock {
     this.snappedTo,
     this.childId,
     this.height,
+    this.nestedBlocks ,
   });
 }

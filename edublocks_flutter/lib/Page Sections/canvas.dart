@@ -10,21 +10,63 @@ class canvasWidget extends StatefulWidget {
   State<canvasWidget> createState() => _canvasWidgetState();
 }
 
+class GridPainter extends CustomPainter {
+  final double gridSpacing;
+  final TextStyle labelStyle;
+
+  GridPainter({
+    this.gridSpacing = 100,
+    this.labelStyle = const TextStyle(fontSize: 12, color: Colors.grey),
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint =
+        Paint()
+          ..color = Colors.grey.withOpacity(0.3)
+          ..strokeWidth = 1;
+
+    final textPainter = TextPainter(
+      textAlign: TextAlign.left,
+      textDirection: TextDirection.ltr,
+    );
+
+    // Draw vertical lines with labels
+    for (double x = 0; x < size.width; x += gridSpacing) {
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
+      textPainter.text = TextSpan(text: '${x.toInt()}', style: labelStyle);
+      textPainter.layout();
+      textPainter.paint(canvas, Offset(x + 2, 2));
+    }
+
+    // Draw horizontal lines with labels
+    for (double y = 0; y < size.height; y += gridSpacing) {
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
+      textPainter.text = TextSpan(text: '${y.toInt()}', style: labelStyle);
+      textPainter.layout();
+      textPainter.paint(canvas, Offset(2, y + 2));
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
 class _canvasWidgetState extends State<canvasWidget> {
   final double snapThreshold = 100;
-  final double snapThresholdNested = 200;
+  final double snapThresholdNested = 100;
   final Map<int, GlobalKey> blockKeys = {};
   final Map<int, Offset> dragPositions =
       {}; // store latest drag global positions
 
   List<MoveableBlock> blocks = [
-    MoveableBlock(
-      id: 0,
-      type: 'Start',
-      position: const Offset(100, 0),
-      imagePath: 'block_images/startHere.png',
-      height: 100,
-    ),
+    // MoveableBlock(
+    //   id: 0,
+    //   type: 'Start',
+    //   position: const Offset(100, 0),
+    //   imagePath: 'block_images/startHere.png',
+    //   height: 100,
+    // ),
     MoveableBlock(
       id: 1,
       type: 'count=0',
@@ -52,6 +94,7 @@ class _canvasWidgetState extends State<canvasWidget> {
       position: const Offset(100, 800),
       imagePath: 'block_images/whileTrue.png',
       height: 450,
+      nestedBlocks: [],
     ),
     MoveableBlock(
       id: 5,
@@ -106,7 +149,14 @@ class _canvasWidgetState extends State<canvasWidget> {
     final dragged = blocks.firstWhere((b) => b.id == id);
     if (dragged.snappedTo != null) {
       final parent = blocks.firstWhere((b) => b.id == dragged.snappedTo);
-      parent.childId = null;
+      
+      if(parent.nestedBlocks?[0].id == dragged.id) {
+        parent.nestedBlocks = [];
+      }
+      else{
+        parent.childId = null;
+      }
+      
       dragged.snappedTo = null;
     }
     draggedChain = getConnectedChain(dragged);
@@ -128,6 +178,8 @@ class _canvasWidgetState extends State<canvasWidget> {
     final draggedBox = draggedContext?.findRenderObject() as RenderBox?;
     final draggedSize = draggedBox?.size ?? const Size(100, 100);
 
+    bool snapDone = false;
+
     for (var target in blocks) {
       if (target.id == dragged.id || isLoop(dragged, target)) continue;
 
@@ -143,19 +195,16 @@ class _canvasWidgetState extends State<canvasWidget> {
       // Bottom snap position
       final defaultSnapY = target.position.dy + targetSize.height - 30;
 
-      // Side snap position (right middle side of target)
-      final customSnapX = target.position.dx + targetSize.width + 10;
-      final customSnapY =
-          target.position.dy + targetSize.height / 2 - draggedSize.height / 2;
+      //x and y positions of the target block
+      final customSnapX = target.position.dx + targetSize.width / 8 - 6;
+      final customSnapY = target.position.dy + (targetSize.height / 6) + 5;
 
       final dxDefault = draggedCenterX - targetCenterX;
       final dyDefault = dragged.position.dy - defaultSnapY;
 
-      final dxCustom =
-          (dragged.position.dx + draggedSize.width / 2) - customSnapX;
+      //gap between the target and dragged
+      final dxCustom = (dragged.position.dx) - customSnapX;
       final dyCustom = dragged.position.dy - customSnapY;
-
-      bool snapDone = false;
 
       // Bottom snap: only if target bottom is free (no childId)
       if (target.childId == null) {
@@ -166,14 +215,20 @@ class _canvasWidgetState extends State<canvasWidget> {
             dragged.snappedTo = target.id;
             target.childId = dragged.id;
           });
+
+          // if (target.snappedTo == 4 || target.snappedTo == 5) {
+          //   final parent = blocks.firstWhere((b) => b.id == target.snappedTo);
+          //   parent.nestedBlocks?.add(dragged);
+          // }
           snapDone = true;
 
-          final draggedChainChildren = getConnectedChain(
-            dragged,
-          ).skip(1); // Skip the dragged block itself
-          for (var childBlock in draggedChainChildren) {
-            onEndDrag(childBlock.id); // Resnap each nested block
-          }
+          // final draggedChainChildren = getConnectedChain(
+          //   dragged,
+          // ).skip(1); // Skip the dragged block itself
+          // for (var childBlock in draggedChainChildren) {
+          //   print(childBlock.type);
+          //   onEndDrag(childBlock.id); // Resnap each nested block
+          // }
         }
       }
 
@@ -183,72 +238,42 @@ class _canvasWidgetState extends State<canvasWidget> {
         'ifCount',
       ]; // <-- only these target types allow side snap
 
-      if (!snapDone && sideSnapTargetTypes.contains(target.type)) {
+      if (!snapDone &&
+          sideSnapTargetTypes.contains(target.type) &&
+          target.nestedBlocks?.isEmpty == true) {
         if (dxCustom.abs() < snapThresholdNested &&
             dyCustom.abs() < snapThresholdNested) {
-          double x = 0;
-          double y = 0;
+          
           if (target.type == 'whileTrue') {
-            switch (dragged.type) {
-              case 'printCount':
-                x = customSnapX - draggedSize.width / 2 - 85;
-                y = customSnapY - 90;
-                break;
-
-              case 'count=0':
-                x = customSnapX - draggedSize.width / 2 - 70;
-                y = customSnapY - 90;
-                break;
-
-              case 'count+=1':
-                x = customSnapX - draggedSize.width / 2 - 60;
-                y = customSnapY - 90;
-                break;
-
-              case 'ifCount':
-                x = customSnapX - draggedSize.width / 2 - 30;
-                y = customSnapY + 10;
-                break;
-            }
+            
             setState(() {
-              dragged.position = Offset(x, y);
+              dragged.position = Offset(customSnapX, customSnapY);
               dragged.snappedTo = target.id;
             });
+            //add it to the list
+            
+            target.nestedBlocks?.add(dragged);
           } else if (target.type == 'ifCount') {
-            switch (dragged.type) {
-              case 'printCount':
-                x = customSnapX - draggedSize.width / 2 - 235;
-                y = customSnapY;
-                break;
-
-              case 'count=0':
-                x = customSnapX - draggedSize.width / 2 - 225;
-                y = customSnapY - 10;
-                break;
-
-              case 'count+=1':
-                x = customSnapX - draggedSize.width / 2 - 220;
-                y = customSnapY - 10;
-                break;
-
-              case 'whileTrue':
-                x = customSnapX - draggedSize.width / 2 - 220;
-                y = customSnapY - 10;
-                break;
-            }
             setState(() {
-              dragged.position = Offset(x, y);
+              dragged.position = Offset(customSnapX - 20, customSnapY + 40);
               dragged.snappedTo = target.id;
             });
+            target.nestedBlocks?.add(dragged);
           }
-
+          
           snapDone = true;
-          print('side snap done');
         }
       }
-
-      if (snapDone) break;
     }
+
+    // if (snapDone == false) {
+    //   print("dragged.snappedTo");
+    //   print(dragged.type);
+    //   if (dragged.snappedTo == 4 || dragged.snappedTo == 5) {
+    //     final parent = blocks.firstWhere((b) => b.id == dragged.snappedTo);
+    //     parent.nestedBlocks ??= [];
+    //   }
+    // }
   }
 
   bool isLoop(MoveableBlock child, MoveableBlock target) {
@@ -289,10 +314,30 @@ class _canvasWidgetState extends State<canvasWidget> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(child: Stack(children: blocks.map(buildBlock).toList()));
-  }
+ @override
+Widget build(BuildContext context) {
+  return Expanded(
+    child: LayoutBuilder(
+      builder: (context, constraints) {
+        return Stack(
+          children: [
+            // Grid background
+            CustomPaint(
+              size: Size(constraints.maxWidth, constraints.maxHeight),
+              painter: GridPainter(gridSpacing: 100),
+            ),
+            // Render the "whileTrue" block first
+            buildBlock(blocks.firstWhere((b) => b.type == 'whileTrue')),
+            buildBlock(blocks.firstWhere((b) => b.type == 'ifCount')),
+            // Render the remaining blocks
+            ...blocks.where((b) => b.type != 'whileTrue' && b.type != 'ifCount').map(buildBlock).toList(),
+          ],
+        );
+      },
+    ),
+  );
+}
+
 }
 
 // class Block {
