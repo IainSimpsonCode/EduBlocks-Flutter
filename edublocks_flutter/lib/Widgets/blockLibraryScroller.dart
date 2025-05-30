@@ -24,7 +24,7 @@ class _blockLibraryScrollerState extends State<blockLibraryScroller> {
         return Padding(
           padding: const EdgeInsets.all(8.0),
           child: Image.asset(
-            'block_images/${block.imageName}',
+            block.imageName,
             height: 80,
             fit: BoxFit.contain,
             errorBuilder: (context, error, stackTrace) {

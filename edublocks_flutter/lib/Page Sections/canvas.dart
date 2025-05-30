@@ -62,51 +62,7 @@ class _canvasWidgetState extends State<canvasWidget> {
   final Map<int, Offset> dragPositions =
       {}; // store latest drag global positions
 
-  List<MoveableBlock> blocks = [
-    MoveableBlock(
-      id: 0,
-      type: 'Start',
-      position: const Offset(100, 0),
-      imagePath: 'block_images/startHere.png',
-      height: 100,
-    ),
-    MoveableBlock(
-      id: 1,
-      type: 'count=0',
-      position: const Offset(100, 500),
-      imagePath: 'block_images/count=0.png',
-      height: 100,
-    ),
-    MoveableBlock(
-      id: 2,
-      type: 'count+=1',
-      position: const Offset(500, 900),
-      imagePath: 'block_images/count+=1.png',
-      height: 100,
-    ),
-    MoveableBlock(
-      id: 3,
-      type: 'printCount',
-      position: const Offset(500, 500),
-      imagePath: 'block_images/print.png',
-      height: 100,
-    ),
-    MoveableBlock(
-      id: 4,
-      type: 'whileTrue',
-      position: const Offset(100, 800),
-      imagePath: 'block_images/whileTrue.png',
-      height: 450,
-      nestedBlocks: [],
-    ),
-    MoveableBlock(
-      id: 5,
-      type: 'ifCount',
-      position: const Offset(900, 200),
-      imagePath: 'block_images/ifCountLessOr=10.png',
-      height: 300,
-    ),
-  ];
+  List<MoveableBlock> blocks = [];
 
   List<MoveableBlock> draggedChain = [];
 
@@ -127,6 +83,46 @@ class _canvasWidgetState extends State<canvasWidget> {
         }
       }
     });
+
+    blocks = [
+      MoveableBlock(
+        id: 0,
+        type: Provider.of<BlockLibrary>(context, listen: false).getBlockByCode("# Start Here"),
+        position: const Offset(100, 0),
+        height: 100,
+      ),
+      MoveableBlock(
+        id: 1,
+        type: Provider.of<BlockLibrary>(context, listen: false).getBlockByCode("count = 0"),
+        position: const Offset(100, 500),
+        height: 100,
+      ),
+      MoveableBlock(
+        id: 2,
+        type: Provider.of<BlockLibrary>(context, listen: false).getBlockByCode("count += 1"),
+        position: const Offset(500, 900),
+        height: 100,
+      ),
+      MoveableBlock(
+        id: 3,
+        type: Provider.of<BlockLibrary>(context, listen: false).getBlockByCode("print(count)"),
+        position: const Offset(500, 500),
+        height: 100,
+      ),
+      MoveableBlock(
+        id: 4,
+        type: Provider.of<BlockLibrary>(context, listen: false).getBlockByCode("while True:"),
+        position: const Offset(100, 800),
+        height: 450,
+        nestedBlocks: [],
+      ),
+      MoveableBlock(
+        id: 5,
+        type: Provider.of<BlockLibrary>(context, listen: false).getBlockByCode("if (count <= 10):"),
+        position: const Offset(900, 200),
+        height: 300,
+      ),
+    ];
 
     for (var block in blocks) {
       blockKeys[block.id] = GlobalKey();
@@ -310,7 +306,7 @@ class _canvasWidgetState extends State<canvasWidget> {
           child: SizedBox(
             height: block.height,
             child: Image.asset(
-              block.imagePath,
+              block.type.imageName,
               fit:
                   BoxFit
                       .fitHeight, // width auto-scales to preserve aspect ratio
@@ -333,12 +329,14 @@ class _canvasWidgetState extends State<canvasWidget> {
                 size: Size(constraints.maxWidth, constraints.maxHeight),
                 painter: GridPainter(gridSpacing: 100),
               ),
-              // Render the "whileTrue" block first
-              buildBlock(blocks.firstWhere((b) => b.type == 'whileTrue')),
-              buildBlock(blocks.firstWhere((b) => b.type == 'ifCount')),
+              // Render any blocks that have priorityBuild first
+              ...blocks
+                  .where((b) => b.type.priorityBuild == true)
+                  .map(buildBlock)
+                  .toList(),
               // Render the remaining blocks
               ...blocks
-                  .where((b) => b.type != 'whileTrue' && b.type != 'ifCount')
+                  .where((b) => b.type.priorityBuild != true)
                   .map(buildBlock)
                   .toList(),
             ],

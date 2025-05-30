@@ -52,6 +52,10 @@ class BlockLibrary extends ChangeNotifier {
     _allBlocks.add(newBlock);
     notifyListeners();
   }  
+
+  Block getBlockByCode(String code) {
+    return _allBlocks.firstWhere((element) => element.code == code);
+  }
 }
 
 class BlocksToLoad extends ChangeNotifier {

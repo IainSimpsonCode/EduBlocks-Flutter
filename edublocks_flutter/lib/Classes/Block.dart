@@ -10,6 +10,7 @@ class Block {
   final String imageName;
   final bool condition;
   final bool hasChildren;
+  final bool priorityBuild;
 
   Block({
     required this.category,
@@ -17,6 +18,7 @@ class Block {
     required this.imageName,
     required this.condition,
     required this.hasChildren,
+    required this.priorityBuild
   });
 
   factory Block.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,7 @@ class Block {
       imageName: json['imageName'],
       condition: json['condition'],
       hasChildren: json['hasChildren'],
+      priorityBuild: json['priorityBuild'] ?? false
     );
   }
 }

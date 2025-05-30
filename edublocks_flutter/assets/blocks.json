@@ -1,60 +1,76 @@
 {
   "blocks": [
     {
+      "category": "Special",
+      "code": "# Start Here",
+      "imageName": "block_images/startHere.png",
+      "condition": false,
+      "hasChildren": false
+    },
+    {
       "category": "Import",
       "code": "import time",
-      "imageName": "importTime.png",
+      "imageName": "block_images/importTime.png",
       "condition": false,
       "hasChildren": false
     },
     {
       "category": "Import",
       "code": "import random",
-      "imageName": "importRandom.png",
+      "imageName": "block_images/importRandom.png",
       "condition": false,
       "hasChildren": false
     },
     {
       "category": "Import",
       "code": "import math",
-      "imageName": "importMath.png",
+      "imageName": "block_images/importMath.png",
       "condition": false,
       "hasChildren": false
     },
     {
       "category": "Statements",
       "code": "print(count)",
-      "imageName": "print.png",
+      "imageName": "block_images/print.png",
       "condition": false,
       "hasChildren": false
     },
     {
       "category": "Statements",
       "code": "input()",
-      "imageName": "input.png",
+      "imageName": "block_images/input.png",
       "condition": true,
       "hasChildren": false
     },
     {
       "category": "Variable",
       "code": "count += 1",
-      "imageName": "count+=1.png",
+      "imageName": "block_images/count+=1.png",
       "condition": false,
       "hasChildren": false
     },
     {
       "category": "Variable",
       "code": "count = 0",
-      "imageName": "count=0.png",
+      "imageName": "block_images/count=0.png",
       "condition": false,
       "hasChildren": false
     },
     {
       "category": "Loop",
-      "code": "while true",
-      "imageName": "whileTrue.png",
+      "code": "while True:",
+      "imageName": "block_images/whileTrue.png",
       "condition": false,
-      "hasChildren": true
+      "hasChildren": true,
+      "priorityBuild": true
+    },
+    {
+      "category": "Logic",
+      "code": "if (count <= 10):",
+      "imageName": "block_images/ifCountLessOr=10.png",
+      "condition": false,
+      "hasChildren": true,
+      "priorityBuild": true
     }
   ]
 }
