@@ -249,17 +249,17 @@ class _canvasWidgetState extends State<canvasWidget> {
 
       // Side snap: only if target block type is in allowed list
       final sideSnapTargetTypes = [
-        'whileTrue',
-        'ifCount',
+        'while True:',
+        'if (count <= 10):',
       ]; // <-- only these target types allow side snap
 
       if (!snapDone) {
-        if (sideSnapTargetTypes.contains(target.type) &&
+        if (sideSnapTargetTypes.contains(target.type.code) &&
                 target.nestedBlocks?.isEmpty == true ||
             target.nestedBlocks?[0].id == dragged.id) {
           if (dxCustom.abs() < snapThresholdNested &&
               dyCustom.abs() < snapThresholdNested) {
-            if (target.type == 'whileTrue') {
+            if (target.type.code == 'while True:') {
               setState(() {
                 dragged.position = Offset(customSnapX, customSnapY);
                 dragged.snappedTo = target.id;
@@ -267,7 +267,7 @@ class _canvasWidgetState extends State<canvasWidget> {
               //add it to the list
 
               target.nestedBlocks?.add(dragged);
-            } else if (target.type == 'ifCount') {
+            } else if (target.type.code == 'if (count <= 10):') {
               setState(() {
                 dragged.position = Offset(customSnapX - 20, customSnapY + 40);
                 dragged.snappedTo = target.id;
@@ -289,7 +289,7 @@ class _canvasWidgetState extends State<canvasWidget> {
     List<MoveableBlock> chain = getConnectedChain(first);
 
     for (var block in chain) {
-      print(block.type);
+      print(block.type.code);
     }
   }
 
