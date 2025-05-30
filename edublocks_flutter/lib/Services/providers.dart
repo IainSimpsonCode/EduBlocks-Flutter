@@ -60,9 +60,11 @@ class BlockLibrary extends ChangeNotifier {
 
 class BlocksToLoad extends ChangeNotifier {
   
-  List<Block> _blocksToLoad = List.empty();
+  List<Block> _blocksToLoad = [];
 
   void AddBlockToLoad(Block block) {
+    _blocksToLoad.add(block);
+
     notifyListeners();
   }
 
@@ -78,69 +80,11 @@ class BlocksToLoad extends ChangeNotifier {
 }
 
 class CodeTracker extends ChangeNotifier {
-  String codeJSONString = """
-  {
-    "blocks": [
-      {
-        "line": 1,
-        "code": "# Start Here",
-        "hasChildren": false
-      },
-      {
-        "line": 1,
-        "code": "count = 0",
-        "hasChildren": false
-      },
-      {
-        "line": 2,
-        "code": "while true",
-        "hasChildren": true
-      },
-      {
-        "line": 3,
-        "code": "print(count)",
-        "hasChildren": false
-      },
-      {
-        "line": 4,
-        "code": "count++",
-        "hasChildren": false
-      },
-      {
-        "line": 5,
-        "code": "pass",
-        "hasChildren": false
-      }
-    ]
-  }
-  """;
+  String codeJSONString = """blocks = [{"line": 1, "code": "# Start Here", "hasChildren": false}]""";
 
   /// Check and update all line numbers in the JSON string.
   /// ### How it works
   /// Start a counter initialised at 0. For each block, set it's line number to the counter then add 1 to the counter.
-  // void updateLineNumbers() {
-  //   // Parse the JSON
-  //   Map<String, dynamic> data = jsonDecode(codeJSONString);
-  //   List blocks = data["blocks"];
-
-  //   int counter = 0;
-
-  //   void updateLines(List<dynamic> blocks) {
-  //     for (var block in blocks) {
-  //       block['line'] = counter;
-  //       counter++;
-
-  //       // Recursively process nested blocks
-  //       if (block['nested'] != null && block['nested'] is List) {
-  //         updateLines(block['nested']);
-  //       }
-  //     }
-  //   }
-
-  //   updateLines(blocks);
-
-  //   codeJSONString = jsonEncode(data);
-  // }
   void updateLineNumbers() {
     // Parse the JSON
     Map<String, dynamic> data = jsonDecode(codeJSONString);
@@ -158,7 +102,7 @@ class CodeTracker extends ChangeNotifier {
 
   /// Insert a block (using the ```Block``` class) into the code chain at a specific line number
   int insertBlock(Block block, int line) {
-    const passBlock = {"line": 0, "code": "pass", "nested": []};
+    const passBlock = {"line": 0, "code": "pass", "hasChildren": false};
 
     if (line <= 1 && line != -1) {return 1;} // Line number must be positive (except -1), and cannot be 1 as this is the start block. Inserting at -1 will automatically place the block at the end of the chain.
 
