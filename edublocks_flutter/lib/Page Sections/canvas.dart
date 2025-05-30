@@ -56,7 +56,6 @@ class GridPainter extends CustomPainter {
 }
 
 class _canvasWidgetState extends State<canvasWidget> {
-
   final double snapThreshold = 100;
   final double snapThresholdNested = 100;
   final Map<int, GlobalKey> blockKeys = {};
@@ -64,13 +63,13 @@ class _canvasWidgetState extends State<canvasWidget> {
       {}; // store latest drag global positions
 
   List<MoveableBlock> blocks = [
-    // MoveableBlock(
-    //   id: 0,
-    //   type: 'Start',
-    //   position: const Offset(100, 0),
-    //   imagePath: 'block_images/startHere.png',
-    //   height: 100,
-    // ),
+    MoveableBlock(
+      id: 0,
+      type: 'Start',
+      position: const Offset(100, 0),
+      imagePath: 'block_images/startHere.png',
+      height: 100,
+    ),
     MoveableBlock(
       id: 1,
       type: 'count=0',
@@ -116,19 +115,18 @@ class _canvasWidgetState extends State<canvasWidget> {
     super.initState();
 
     Provider.of<BlocksToLoad>(context, listen: false).addListener(() {
-    //Load blocks on the screen
-    bool run = true;
-    while (run) {
-      Block? block = Provider.of<BlocksToLoad>(context, listen: false).getBlockToLoad();
-      if (block == null) {
-        run = false;
+      //Load blocks on the screen
+      bool run = true;
+      while (run) {
+        Block? block =
+            Provider.of<BlocksToLoad>(context, listen: false).getBlockToLoad();
+        if (block == null) {
+          run = false;
+        } else {
+          // Load next block in the queue
+        }
       }
-      else {
-        // Load next block in the queue
-        
-      }
-    }
-  });
+    });
 
     for (var block in blocks) {
       blockKeys[block.id] = GlobalKey();
@@ -162,6 +160,7 @@ class _canvasWidgetState extends State<canvasWidget> {
     }
 
     collect(start);
+
     return chain;
   }
 
@@ -169,14 +168,13 @@ class _canvasWidgetState extends State<canvasWidget> {
     final dragged = blocks.firstWhere((b) => b.id == id);
     if (dragged.snappedTo != null) {
       final parent = blocks.firstWhere((b) => b.id == dragged.snappedTo);
-      
-      if(parent.nestedBlocks?[0].id == dragged.id) {
+
+      if (parent.nestedBlocks?[0].id == dragged.id) {
         parent.nestedBlocks = [];
-      }
-      else{
+      } else {
         parent.childId = null;
       }
-      
+
       dragged.snappedTo = null;
     }
     draggedChain = getConnectedChain(dragged);
@@ -193,15 +191,15 @@ class _canvasWidgetState extends State<canvasWidget> {
 
   void onEndDrag(int id) {
     final dragged = blocks.firstWhere((b) => b.id == id);
-
     final draggedContext = blockKeys[dragged.id]?.currentContext;
     final draggedBox = draggedContext?.findRenderObject() as RenderBox?;
+
     final draggedSize = draggedBox?.size ?? const Size(100, 100);
 
     bool snapDone = false;
 
     for (var target in blocks) {
-      if (target.id == dragged.id || isLoop(dragged, target)) continue;
+      if (target.id == dragged.id) continue;
 
       final targetContext = blockKeys[target.id]?.currentContext;
       if (targetContext == null) continue;
@@ -236,20 +234,21 @@ class _canvasWidgetState extends State<canvasWidget> {
             target.childId = dragged.id;
           });
 
-          // if (target.snappedTo == 4 || target.snappedTo == 5) {
-          //   final parent = blocks.firstWhere((b) => b.id == target.snappedTo);
-          //   parent.nestedBlocks?.add(dragged);
-          // }
           snapDone = true;
 
-          // final draggedChainChildren = getConnectedChain(
-          //   dragged,
-          // ).skip(1); // Skip the dragged block itself
-          // for (var childBlock in draggedChainChildren) {
-          //   print(childBlock.type);
-          //   onEndDrag(childBlock.id); // Resnap each nested block
-          // }
+          final draggedChainChildren = getConnectedChain(
+            dragged,
+          ).skip(1); // Skip the dragged block itself
+          for (var childBlock in draggedChainChildren) {
+            onEndDrag(childBlock.id);
+          }
         }
+      } else if (target.childId == dragged.id) {
+        setState(() {
+          dragged.position = Offset(target.position.dx, defaultSnapY + 20);
+          dragged.snappedTo = target.id;
+        });
+        snapDone = true;
       }
 
       // Side snap: only if target block type is in allowed list
@@ -258,56 +257,44 @@ class _canvasWidgetState extends State<canvasWidget> {
         'ifCount',
       ]; // <-- only these target types allow side snap
 
-      if (!snapDone &&
-          sideSnapTargetTypes.contains(target.type) &&
-          target.nestedBlocks?.isEmpty == true) {
-        if (dxCustom.abs() < snapThresholdNested &&
-            dyCustom.abs() < snapThresholdNested) {
-          
-          if (target.type == 'whileTrue') {
-            
-            setState(() {
-              dragged.position = Offset(customSnapX, customSnapY);
-              dragged.snappedTo = target.id;
-            });
-            //add it to the list
-            
-            target.nestedBlocks?.add(dragged);
-          } else if (target.type == 'ifCount') {
-            setState(() {
-              dragged.position = Offset(customSnapX - 20, customSnapY + 40);
-              dragged.snappedTo = target.id;
-            });
-            target.nestedBlocks?.add(dragged);
+      if (!snapDone) {
+        if (sideSnapTargetTypes.contains(target.type) &&
+                target.nestedBlocks?.isEmpty == true ||
+            target.nestedBlocks?[0].id == dragged.id) {
+          if (dxCustom.abs() < snapThresholdNested &&
+              dyCustom.abs() < snapThresholdNested) {
+            if (target.type == 'whileTrue') {
+              setState(() {
+                dragged.position = Offset(customSnapX, customSnapY);
+                dragged.snappedTo = target.id;
+              });
+              //add it to the list
+
+              target.nestedBlocks?.add(dragged);
+            } else if (target.type == 'ifCount') {
+              setState(() {
+                dragged.position = Offset(customSnapX - 20, customSnapY + 40);
+                dragged.snappedTo = target.id;
+              });
+              target.nestedBlocks?.add(dragged);
+            }
+
+            snapDone = true;
           }
-          
-          snapDone = true;
         }
       }
     }
 
-    // if (snapDone == false) {
-    //   print("dragged.snappedTo");
-    //   print(dragged.type);
-    //   if (dragged.snappedTo == 4 || dragged.snappedTo == 5) {
-    //     final parent = blocks.firstWhere((b) => b.id == dragged.snappedTo);
-    //     parent.nestedBlocks ??= [];
-    //   }
-    // }
+    printChain();
   }
 
-  bool isLoop(MoveableBlock child, MoveableBlock target) {
-    MoveableBlock? current = target;
-    while (current != null) {
-      if (current.id == child.id) return true;
-      if (current.childId == null) break;
+  void printChain() {
+    final first = blocks.firstWhere((b) => b.id == 1);
+    List<MoveableBlock> chain = getConnectedChain(first);
 
-      final next = blocks.where((b) => b.id == current!.childId).toList();
-      if (next.isEmpty) break;
-
-      current = next.first;
+    for (var block in chain) {
+      print(block.type);
     }
-    return false;
   }
 
   Widget buildBlock(MoveableBlock block) {
@@ -334,53 +321,30 @@ class _canvasWidgetState extends State<canvasWidget> {
     );
   }
 
- @override
-Widget build(BuildContext context) {
-  return Expanded(
-    child: LayoutBuilder(
-      builder: (context, constraints) {
-        return Stack(
-          children: [
-            // Grid background
-            CustomPaint(
-              size: Size(constraints.maxWidth, constraints.maxHeight),
-              painter: GridPainter(gridSpacing: 100),
-            ),
-            // Render the "whileTrue" block first
-            buildBlock(blocks.firstWhere((b) => b.type == 'whileTrue')),
-            buildBlock(blocks.firstWhere((b) => b.type == 'ifCount')),
-            // Render the remaining blocks
-            ...blocks.where((b) => b.type != 'whileTrue' && b.type != 'ifCount').map(buildBlock).toList(),
-          ],
-        );
-      },
-    ),
-  );
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return Stack(
+            children: [
+              // Grid background
+              CustomPaint(
+                size: Size(constraints.maxWidth, constraints.maxHeight),
+                painter: GridPainter(gridSpacing: 100),
+              ),
+              // Render the "whileTrue" block first
+              buildBlock(blocks.firstWhere((b) => b.type == 'whileTrue')),
+              buildBlock(blocks.firstWhere((b) => b.type == 'ifCount')),
+              // Render the remaining blocks
+              ...blocks
+                  .where((b) => b.type != 'whileTrue' && b.type != 'ifCount')
+                  .map(buildBlock)
+                  .toList(),
+            ],
+          );
+        },
+      ),
+    );
+  }
 }
-
-}
-
-// class Block {
-//   final int id;
-//   Offset position;
-//   final Color color;
-//   int? snappedTo; // parent block
-//   int? childId; // child block
-//   String? type;
-
-//   List<String>? options; // for dropdown options
-//   String? selectedOption;
-//   String? inputText;
-
-//   Block({
-//     required this.id,
-//     required this.position,
-//     required this.color,
-//     this.snappedTo,
-//     this.childId,
-//     this.type,
-//     this.options,
-//     this.selectedOption,
-//     this.inputText,
-//   });
-// }
