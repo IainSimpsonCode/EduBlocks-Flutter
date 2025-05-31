@@ -8,6 +8,7 @@ class MoveableBlock {
   //final String imagePath;
   final Block type;
   double? height;
+  double? width;
 
   int? snappedTo;
   int? childId;
@@ -29,6 +30,7 @@ class MoveableBlock {
     this.snappedTo,
     this.childId,
     this.height,
+    this.width,
     this.nestedBlocks ,
   });
 }

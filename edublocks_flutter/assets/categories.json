@@ -6,12 +6,12 @@
       "icon": "upload"
     },
     {
-      "category": "Variable",
+      "category": "Variables",
       "color": "#364fd7",
       "icon": "bars"
     },
     {
-      "category": "Statement",
+      "category": "Statements",
       "color": "#f59421",
       "icon": "exclamation"
     },
@@ -31,12 +31,12 @@
       "icon": "arrows"
     },
     {
-      "category": "List",
+      "category": "Lists",
       "color": "#15b9d3",
       "icon": "list"
     },
     {
-      "category": "Loop",
+      "category": "Loops",
       "color": "#644a9e",
       "icon": "rotateright"
     },

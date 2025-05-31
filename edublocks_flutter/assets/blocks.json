@@ -43,21 +43,21 @@
       "hasChildren": false
     },
     {
-      "category": "Variable",
+      "category": "Variables",
       "code": "count += 1",
       "imageName": "block_images/count+=1.png",
       "condition": false,
       "hasChildren": false
     },
     {
-      "category": "Variable",
+      "category": "Variables",
       "code": "count = 0",
       "imageName": "block_images/count=0.png",
       "condition": false,
       "hasChildren": false
     },
     {
-      "category": "Loop",
+      "category": "Loops",
       "code": "while True:",
       "imageName": "block_images/whileTrue.png",
       "condition": false,

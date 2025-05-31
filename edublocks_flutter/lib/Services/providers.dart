@@ -27,8 +27,11 @@ class BlockLibrary extends ChangeNotifier {
   List<Block> _allBlocks = List.empty();
   List<Category> _allCategories = List.empty();
 
+  String? _categorySelected;
+
   // -- Categories --
   List<Category> get categories => _allCategories;
+  String? get categorySelected => _categorySelected;
 
   set categories(List<Category> value) {
     _allCategories = value;
@@ -37,6 +40,19 @@ class BlockLibrary extends ChangeNotifier {
 
   void addCategory(Category newCategory) {
     _allCategories.add(newCategory);
+    notifyListeners();
+  }
+
+  void setCategorySelected(String categorySelected) {
+    // If the user clicks the currently selected category a second time, set the selected category to null
+    if (categorySelected == _categorySelected) {
+      _categorySelected = null;
+    }
+    else {
+      // Otherwise, set the currently selected category to be what the user has selected.
+      _categorySelected = categorySelected;
+    }
+
     notifyListeners();
   }
 
@@ -53,8 +69,19 @@ class BlockLibrary extends ChangeNotifier {
     notifyListeners();
   }  
 
+  /// Returns the first block in the list of all blocks where the code of the block matches the provided code string.
   Block getBlockByCode(String code) {
     return _allBlocks.firstWhere((element) => element.code == code);
+  }
+
+  /// Returns a list of blocks where block.category matches the provided category.
+  List<Block> getBlocksByCategory(String? category) {
+    if (category == null) {
+      return _allBlocks;
+    }
+    else {
+      return _allBlocks.where((element) => element.category == category).toList();
+    }
   }
 }
 
