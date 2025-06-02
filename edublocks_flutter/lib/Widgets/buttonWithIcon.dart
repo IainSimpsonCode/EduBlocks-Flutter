@@ -7,12 +7,12 @@ import 'package:provider/provider.dart';
 class buttonWithIcon extends StatefulWidget {
   const buttonWithIcon({super.key, this.icon, this.svgIconLocation, this.iconColor, required this.backgroundColor, required this.text, required this.onTap});
 
-  final Icons? icon;
+  final IconData? icon;
   final String? svgIconLocation;
   final Color? iconColor;
   final Color backgroundColor;
-  final Text text;
-  final Function(void) onTap;
+  final String text;
+  final Function() onTap;
 
   @override
   State<buttonWithIcon> createState() => _buttonWithIconState();
@@ -54,16 +54,23 @@ class _buttonWithIconState extends State<buttonWithIcon> {
               //   "Run",
               //   style: bodyMedium.copyWith(color: Colors.white),
               // ),
-              // widget.svgIconLocation != null ? SvgPicture.asset(
-              //   widget.svgIconLocation!, 
-              //   color: widget.iconColor ?? Colors.white,
-              //   fit: BoxFit.contain,
-              //   width: 14,
-              //   errorBuilder: (context, error, stackTrace) {
-              //     return const Icon(Icons.broken_image, size: 14);
-              //   },
-              // ) : ,
-              widget.text,
+              widget.svgIconLocation != null ? SvgPicture.asset(
+                widget.svgIconLocation!, 
+                color: widget.iconColor ?? Colors.white,
+                fit: BoxFit.contain,
+                width: 14,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(Icons.broken_image, size: 14);
+                },
+              ) : (widget.icon != null ? Icon(
+                widget.icon,
+                size: 20,
+                color: widget.iconColor ?? Colors.white,
+              ) : const Icon(Icons.broken_image, size: 14)),
+              Text(
+                widget.text,
+                style: bodyMedium.copyWith(color: widget.iconColor ?? Colors.white),
+              ),
             ],
           ),
         ),

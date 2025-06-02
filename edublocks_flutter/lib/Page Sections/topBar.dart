@@ -31,9 +31,23 @@ class _topBarWidgetState extends State<topBarWidget> {
       child: Row(
         spacing: 0,
         children: [
-          //buttonWithIcon(),
+          buttonWithIcon(
+            svgIconLocation: 'category_icons/play.svg', 
+            backgroundColor: runButtonColour,
+            text: "Run",
+            onTap: () {
+              
+            },
+          ),
           Expanded(child: SizedBox()),
-          //buttonWithIcon(),
+          buttonWithIcon(
+            svgIconLocation: 'category_icons/play.svg', 
+            backgroundColor: runButtonColour,
+            text: "Run",
+            onTap: () {
+              
+            },
+          ),
         ],
       ),
     );
