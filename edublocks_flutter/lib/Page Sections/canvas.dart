@@ -191,6 +191,7 @@ class _canvasWidgetState extends State<canvasWidget> {
     }
 
     int line = 1;
+    
 
     int? traverse(MoveableBlock block) {
       // If this is the block we want, return the current line
@@ -350,6 +351,7 @@ class _canvasWidgetState extends State<canvasWidget> {
           dragged.snappedTo = target.id;
         });
         snapDone = true;
+        
       }
 
       // Side snap: only if target block type is in allowed list
@@ -396,28 +398,40 @@ class _canvasWidgetState extends State<canvasWidget> {
       if (dragged.childId != null) {
         onEndDrag(dragged.childId!);
       }
-      if (newSnap) {
+      
+      //if its a new snap and that block is in the main chain
+      if (newSnap && getConnectedChain(widget.blocks.firstWhere((b) => b.id == 0)).contains(dragged)) {
         callInsertBlock(dragged);
       }
+
     }
   }
 
   void callInsertBlock(MoveableBlock block) {
-    final first = widget.blocks.firstWhere((b) => b.id == 0);
-    List<MoveableBlock> chain = getConnectedChain(first);
+    
 
-    final lastBlock = chain.last;
-    Provider.of<CodeTracker>(
-      context,
-      listen: false,
-    ).insertBlock(lastBlock.type, -1);
-
-    if (block.childId != null && block.isNested == false) {
+    if(block.childId == null && block.isNested == false) {
       Provider.of<CodeTracker>(
         context,
         listen: false,
       ).insertBlock(block.type, -1);
     }
+    else {
+      //call getConnectedChain by passing in the first block (start code here)
+      List<MoveableBlock> chain = getConnectedChain(widget.blocks.firstWhere((b) => b.id == block.id));
+      print(chain);
+      
+      for (int i = 0; i < chain.length; i++) {
+        Provider.of<CodeTracker>(
+          context,
+          listen: false,
+        ).insertBlock(chain[i].type, getBlockLineNumber(chain[i].id, widget.blocks.firstWhere((b) => b.id == 0))!);
+      }
+    }
+
+    
+    
+    
   }
 
   Widget buildBlock(MoveableBlock block) {
