@@ -195,9 +195,9 @@ class _canvasWidgetState extends State<canvasWidget> {
         }
       }
 
-      // Add a line if this block has children (visual padding for "end")
+      // Add a line if this block has children (e.g., ifs, loops)
       if (block.type.hasChildren) {
-        line++; // Account for the visual closing line (like 'end if')
+        line++; // Add a line for the pass statement after any nested blocks.
       }
 
       // Traverse next block in the chain
@@ -214,15 +214,21 @@ class _canvasWidgetState extends State<canvasWidget> {
 
 
   void onStartDrag(int id) {
-    print("Line number: ${getBlockLineNumber(id, widget.blocks.firstWhere((b) => b.id == 0))}");
+    int? blockLineNumber = getBlockLineNumber(id, widget.blocks.firstWhere((b) => b.id == 0));
+    print("Line number: $blockLineNumber");
 
     // Get the block being dragged from the blocks list
     final dragged = widget.blocks.firstWhere((b) => b.id == id);
 
+    // If the block is attached to another block
     if (dragged.snappedTo != null) {
-      final parent = blocks.firstWhere((b) => b.id == dragged.snappedTo);
-      if (parent.nestedBlocks!.isNotEmpty) {
-        if(parent.nestedBlocks?[0].id == dragged.id) parent.nestedBlocks = [];
+      // Find the parent block it is snapped to
+      final parent = widget.blocks.firstWhere((b) => b.id == dragged.snappedTo);
+
+      // If the parent has nested blocks
+      if (parent.nestedBlocks != null && parent.nestedBlocks!.isNotEmpty) {
+        // And if the dragged block is the nested block, remove nested blocks from the parent
+        if (parent.nestedBlocks?[0].id == dragged.id) parent.nestedBlocks = [];
       } else {
         // Remove the child block from the parent
         parent.childId = null;
@@ -230,7 +236,11 @@ class _canvasWidgetState extends State<canvasWidget> {
 
       // The dragged block is now not snapped to another block
       dragged.snappedTo = null;
-      Provider.of<CodeTracker>(context, listen: false).removeBlock(-1);
+      
+      // If the block line number was found in the chain using the getBlockLineNumber() function, remove the block from the JSON string at the specified line number
+      if (blockLineNumber != null) {
+        Provider.of<CodeTracker>(context, listen: false).removeBlock(blockLineNumber);
+      }
     }
     draggedChain = getConnectedChain(dragged);
   }
@@ -248,7 +258,7 @@ class _canvasWidgetState extends State<canvasWidget> {
   //Called by the gesture detector when a block is released
   void onEndDrag(int id) {
     // Get the block
-    final dragged = blocks.firstWhere((b) => b.id == id);
+    final dragged = widget.blocks.firstWhere((b) => b.id == id);
     final draggedContext = blockKeys[dragged.id]?.currentContext;
     final draggedBox = draggedContext?.findRenderObject() as RenderBox?;
 
@@ -259,7 +269,7 @@ class _canvasWidgetState extends State<canvasWidget> {
     bool newSnap = false; //Used for calling the insertBlock function in the provider. is made true only if a block is snapped for the first time.
 
     //iterate through all blocks
-    for (var target in blocks) {
+    for (var target in widget.blocks) {
       newSnap = false;
       if (target.id == dragged.id) continue;
 
@@ -370,7 +380,7 @@ class _canvasWidgetState extends State<canvasWidget> {
   }
 
   void callInsertBlock(MoveableBlock block) {
-    final first = blocks.firstWhere((b) => b.id == 0);
+    final first = widget.blocks.firstWhere((b) => b.id == 0);
     List<MoveableBlock> chain = getConnectedChain(first);
 
     final lastBlock = chain.last;

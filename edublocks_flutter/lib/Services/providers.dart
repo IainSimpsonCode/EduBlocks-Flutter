@@ -226,7 +226,7 @@ class CodeTracker extends ChangeNotifier {
         style: GoogleFonts.firaCode(
           fontSize: 14,
           fontWeight: FontWeight.w400,
-          color: codeBarColour
+          color: codeTextColour
         ),
       ));
 

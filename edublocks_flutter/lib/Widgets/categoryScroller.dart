@@ -46,10 +46,7 @@ class _categoryScrollerState extends State<categoryScroller> {
           ),
           title: Text(
             category.category,
-            style: GoogleFonts.roboto(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-            ),
+            style: bodyMedium
           ),
           onTap: () {
             Provider.of<BlockLibrary>(context, listen: false).setCategorySelected(category.category);

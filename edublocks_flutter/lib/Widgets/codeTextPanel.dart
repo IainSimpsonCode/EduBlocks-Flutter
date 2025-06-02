@@ -28,7 +28,10 @@ class _codeTextPanelState extends State<codeTextPanel> {
   Widget build(BuildContext context) {
     return Expanded(
       child: Container(
-        color: codeTextPanelColour,
+        decoration: BoxDecoration(
+          color: codeTextPanelColour,
+          borderRadius: BorderRadius.all(Radius.circular(4))
+        ),
         padding: EdgeInsets.all(8),
         child: ListView(
           children: Provider.of<CodeTracker>(context, listen: false).JSONToPythonCode(),

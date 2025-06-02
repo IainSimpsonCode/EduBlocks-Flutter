@@ -1,3 +1,4 @@
+import 'package:edublocks_flutter/Widgets/codeOutputToggleButtons.dart';
 import 'package:edublocks_flutter/Widgets/codeTextPanel.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
@@ -18,9 +19,11 @@ class _codeBarWidgetState extends State<codeBarWidget> {
       width: MediaQuery.sizeOf(context).width / codeBarWidth,
       color: codeBarColour,
       padding: EdgeInsets.all(16),
-      child: Row(
+      child: Column(
+        spacing: 16,
         children: [
-          codeTextPanel()
+          codeOutputToggleButtons(),
+          codeTextPanel(),
         ]
       ),
     );
