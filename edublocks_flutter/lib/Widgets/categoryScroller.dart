@@ -46,7 +46,7 @@ class _categoryScrollerState extends State<categoryScroller> {
           ),
           title: Text(
             category.category,
-            style: bodyMedium
+            style: bodyMedium.copyWith(color: buttonTextColour),
           ),
           onTap: () {
             Provider.of<BlockLibrary>(context, listen: false).setCategorySelected(category.category);

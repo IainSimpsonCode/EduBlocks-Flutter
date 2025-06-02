@@ -11,7 +11,6 @@ class codeOutputToggleButtons extends StatefulWidget {
 }
 
 class _codeOutputToggleButtonsState extends State<codeOutputToggleButtons> {
-  bool codeSelected = true;
   bool isHovered = false;
 
   @override
@@ -28,6 +27,9 @@ class _codeOutputToggleButtonsState extends State<codeOutputToggleButtons> {
 
   @override
   Widget build(BuildContext context) {
+
+    bool codeSelected = Provider.of<CodeOutputTextPanelNotifier>(context, listen: false).codeSelected;
+
     return Row(
       spacing: 8,
       children: [
@@ -53,12 +55,12 @@ class _codeOutputToggleButtonsState extends State<codeOutputToggleButtons> {
               ),
               child: Text(
                 "Code",
-                style: bodyMedium,
+                style: bodyMedium.copyWith(color: codeSelected ? buttonTextSelectedColour : buttonTextColour),
               ),
             ),
             onTap: () {
               setState(() {
-                codeSelected = true;
+                Provider.of<CodeOutputTextPanelNotifier>(context, listen: false).codeSelected = true;
                 isHovered = false;
               });
             }
@@ -86,12 +88,12 @@ class _codeOutputToggleButtonsState extends State<codeOutputToggleButtons> {
               ),
               child: Text(
                 "Output",
-                style: bodyMedium,
+                style: bodyMedium.copyWith(color: codeSelected ? buttonTextColour : buttonTextSelectedColour),
               ),
             ),
             onTap: () {
               setState(() {
-                codeSelected = false;
+                Provider.of<CodeOutputTextPanelNotifier>(context, listen: false).codeSelected = false;
                 isHovered = false;
               });
             }

@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:edublocks_flutter/Classes/Block.dart';
 import 'package:edublocks_flutter/Classes/Category.dart';
+import 'package:edublocks_flutter/Widgets/codeTextPanel.dart';
+import 'package:edublocks_flutter/Widgets/outputTextPanel.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -242,5 +244,16 @@ class CodeTracker extends ChangeNotifier {
 
     return pythonText;
   }
+}
 
+class CodeOutputTextPanelNotifier extends ChangeNotifier {
+  bool _codeSelected = true; // Is the code panel selected or the output panel
+
+  bool get codeSelected => _codeSelected;
+  set codeSelected (value) {
+    _codeSelected = value;
+    notifyListeners();
+  }
+
+  Widget textPanel() => _codeSelected ? codeTextPanel() : outputTextPanel();
 }
