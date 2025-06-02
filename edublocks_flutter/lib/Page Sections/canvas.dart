@@ -188,10 +188,54 @@ class _canvasWidgetState extends State<canvasWidget> {
     return chain;
   }
 
-  //called by the gesture detector when a block is dragged
-  void onStartDrag(int id) {
-    // Get the block
+  /// Return the line number of a block in a chain the starts at startBlock.
+  /// The line number is relative to startBlock, who's line number will always be 1.
+  int? getBlockLineNumber(int targetId, MoveableBlock startBlock) {
+    // Check if the target block is connected to the chain with the start block.
+    // If it is not, leave the function as it does not have a line number
+    if (!getConnectedChain(startBlock).any((b) => b.id == targetId)) {
+      print("Block not connected");
+      return null;
+    }
 
+    int line = 1;
+
+    int? traverse(MoveableBlock block) {
+      // If this is the block we want, return the current line
+      if (block.id == targetId) return line;
+
+      line++; // Move to next line after current block
+
+      // Traverse nested blocks (e.g., ifs, loops)
+      if (block.nestedBlocks != null) {
+        for (var nestedBlock in block.nestedBlocks!) {
+          int? result = traverse(nestedBlock);
+          if (result != null) return result;
+        }
+      }
+
+      // Add a line if this block has children (visual padding for "end")
+      if (block.type.hasChildren) {
+        line++; // Account for the visual closing line (like 'end if')
+      }
+
+      // Traverse next block in the chain
+      if (block.childId != null && widget.blocks.any((b) => b.id == block.childId)) {
+        MoveableBlock? child = widget.blocks.firstWhere((b) => b.id == block.childId);
+        return traverse(child);
+      }
+
+      return null;
+    }
+
+    return traverse(startBlock);
+  }
+
+
+  void onStartDrag(int id) {
+    print("Line number: ${getBlockLineNumber(id, widget.blocks.firstWhere((b) => b.id == 0))}");
+
+    // Get the block being dragged from the blocks list
     final dragged = widget.blocks.firstWhere((b) => b.id == id);
 
     if (dragged.snappedTo != null) {
@@ -386,6 +430,7 @@ class _canvasWidgetState extends State<canvasWidget> {
         onPanStart: (_) => onStartDrag(block.id),
         onPanUpdate: (details) => onUpdateDrag(block.id, details),
         onPanEnd: (_) => onEndDrag(block.id),
+        onTap: () => print("Line number: ${getBlockLineNumber(block.id, widget.blocks.firstWhere((b) => b.id == 0))}"),
         child: Container(
           key: blockKeys[block.id],
           child: SizedBox(
