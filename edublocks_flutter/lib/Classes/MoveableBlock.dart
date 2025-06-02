@@ -12,6 +12,7 @@ class MoveableBlock {
   int? snappedTo;
   int? childId;
   List<MoveableBlock>? nestedBlocks;
+  bool isNested = false;
 
   // For Variable type blocks
   List<String>? options;
