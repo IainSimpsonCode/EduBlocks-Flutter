@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:edublocks_flutter/Classes/Block.dart';
 import 'package:edublocks_flutter/Classes/Category.dart';
+import 'package:edublocks_flutter/Widgets/codeTextPanel.dart';
+import 'package:edublocks_flutter/Widgets/outputTextPanel.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -153,11 +155,15 @@ class CodeTracker extends ChangeNotifier {
       // Add the new block to the end of the chain.
       blocks.addAll(newBlock);
     }
-    else {
+    else if (blocks.last["line"] <= line) { // If the block is being inserted between blocks
       // Insert the new block at the specified line number.
       // Todo this, find the block, find the block at line number ```line - 1```, then insert after it.
       int insertIndex = blocks.indexWhere((block) => block['line'] == line);
       blocks.insertAll(insertIndex, newBlock);
+    }
+    else {
+      // If the block is being added on a new line
+      blocks.addAll(newBlock);
     }
 
     // Save the results
@@ -242,5 +248,16 @@ class CodeTracker extends ChangeNotifier {
 
     return pythonText;
   }
+}
 
+class CodeOutputTextPanelNotifier extends ChangeNotifier {
+  bool _codeSelected = true; // Is the code panel selected or the output panel
+
+  bool get codeSelected => _codeSelected;
+  set codeSelected (value) {
+    _codeSelected = value;
+    notifyListeners();
+  }
+
+  Widget textPanel() => _codeSelected ? codeTextPanel() : outputTextPanel();
 }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+// Is the code in production or debug mode
+const bool isProduction = true;
+
 // Size of each page section on screen
 // Size calculated as ```MediaQuery.sizeOf(context).width / sideBarWidth;```
 const sideBarWidth = 3;
@@ -17,6 +20,8 @@ const codeOutputColour = Color(0xffffffff);
 const buttonGreyColour = Color(0xFFf3f4f6);
 const buttonTextColour = Color(0xFF6b7290);
 const buttonTextSelectedColour = Color(0xFF374151);
+const runButtonColour = Color(0xFF0ea5e9);
+const topBarColour = Color(0xFFffffff);
 
 // Text Styles
 final bodyMedium = GoogleFonts.roboto(

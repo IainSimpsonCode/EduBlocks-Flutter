@@ -1,5 +1,6 @@
 import 'package:edublocks_flutter/Classes/Block.dart';
 import 'package:edublocks_flutter/Services/providers.dart';
+import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -468,8 +469,10 @@ class _canvasWidgetState extends State<canvasWidget> {
         builder: (context, constraints) {
           return Stack(
             children: [
-              // Grid background
-              CustomPaint(
+              // Paint background
+              isProduction ? CustomPaint(
+                size: Size(constraints.maxWidth, constraints.maxHeight),
+              ) : CustomPaint(
                 size: Size(constraints.maxWidth, constraints.maxHeight),
                 painter: GridPainter(gridSpacing: 100),
               ),

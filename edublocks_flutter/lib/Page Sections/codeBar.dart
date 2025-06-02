@@ -1,7 +1,9 @@
+import 'package:edublocks_flutter/Services/providers.dart';
 import 'package:edublocks_flutter/Widgets/codeOutputToggleButtons.dart';
 import 'package:edublocks_flutter/Widgets/codeTextPanel.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class codeBarWidget extends StatefulWidget {
   const codeBarWidget({super.key});
@@ -11,6 +13,18 @@ class codeBarWidget extends StatefulWidget {
 }
 
 class _codeBarWidgetState extends State<codeBarWidget> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    Provider.of<CodeOutputTextPanelNotifier>(context, listen: false).addListener(() {
+      setState(() {
+        
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +37,7 @@ class _codeBarWidgetState extends State<codeBarWidget> {
         spacing: 16,
         children: [
           codeOutputToggleButtons(),
-          codeTextPanel(),
+          Provider.of<CodeOutputTextPanelNotifier>(context, listen: false).textPanel(),
         ]
       ),
     );
