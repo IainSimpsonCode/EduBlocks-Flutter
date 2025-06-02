@@ -34,7 +34,7 @@ class _codeTextPanelState extends State<codeTextPanel> {
         ),
         padding: EdgeInsets.all(8),
         child: ListView(
-          children: Provider.of<CodeTracker>(context, listen: false).JSONToPythonCode(),
+          children: Provider.of<CodeTracker>(context, listen: false).pythonCodeToTextWidgets(),
         ),
       ),
     );
