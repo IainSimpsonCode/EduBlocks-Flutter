@@ -1,14 +1,18 @@
+
+import 'package:edublocks_flutter/Classes/Block.dart';
 import 'package:flutter/material.dart';
 
 class MoveableBlock {
   final int id;
   Offset position;
-  final String imagePath;
-  final String type;
+  final Block type;
   double? height;
-
+  double? width;
+  
   int? snappedTo;
   int? childId;
+  List<MoveableBlock>? nestedBlocks;
+  bool isNested = false;
 
   // For Variable type blocks
   List<String>? options;
@@ -18,7 +22,6 @@ class MoveableBlock {
   MoveableBlock({
     required this.id,
     required this.position,
-    required this.imagePath,
     required this.type,
     this.options,
     this.selectedOption,
@@ -26,5 +29,7 @@ class MoveableBlock {
     this.snappedTo,
     this.childId,
     this.height,
+    this.width,
+    this.nestedBlocks,
   });
 }
