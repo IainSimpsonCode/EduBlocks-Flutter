@@ -64,7 +64,6 @@ class _canvasWidgetState extends State<canvasWidget> {
   final Map<int, Offset> dragPositions =
       {}; // store latest drag global positions
 
-
   List<MoveableBlock> draggedChain = [];
 
   int getNewID() {
@@ -78,7 +77,7 @@ class _canvasWidgetState extends State<canvasWidget> {
     }
 
     // return an ID number 1 bigger than the current biggest.
-    return currentLargestID++;
+    return currentLargestID + 1;
   }
 
 
@@ -86,6 +85,7 @@ class _canvasWidgetState extends State<canvasWidget> {
   void initState() {
     super.initState();
 
+    // Listen to updates from the queue of blocks to load
     Provider.of<BlocksToLoad>(context, listen: false).addListener(() {
       //Load blocks on the screen
       bool run = true;
@@ -211,18 +211,66 @@ class _canvasWidgetState extends State<canvasWidget> {
     return chain;
   }
 
+//   int? getBlockLineNumber(int targetId, MoveableBlock startBlock) {
+//     int line = 1;
+//     bool found = false;
+
+//     int? traverse(MoveableBlock block) {
+//       // If this is the block we want, return the current line
+//       if (block.id == targetId) return line;
+
+//       line++; // Move to next line after current block
+
+//       // Traverse nested blocks (e.g., ifs, loops)
+//       for (var nestedBlock in block.nestedBlocks!) {
+//         int? result = traverse(nestedBlock);
+//         if (result != null) return result;
+//       }
+
+//       // Add a line if this block has children (visual padding for "end")
+//       if (block.type.hasChildren) {
+//         line++; // Account for the visual closing line (like 'end if')
+//       }
+
+//       // Traverse next block in the chain
+//       if (block.childId != null) {
+//         MoveableBlock? child = widget.blocks.firstWhere(
+//           (b) => b.id == block.childId,
+//           orElse: () => null,
+//         );
+//         if (child != null) {
+//           return traverse(child);
+//         }
+//       }
+
+//       return null;
+//     }
+
+//     return traverse(startBlock);
+// }
+
+
   void onStartDrag(int id) {
+    // Get the block being dragged from the blocks list
     final dragged = widget.blocks.firstWhere((b) => b.id == id);
+
+    // If the block was connected to another block
     if (dragged.snappedTo != null) {
+      // Find the parent block is was snapped to
       final parent = widget.blocks.firstWhere((b) => b.id == dragged.snappedTo);
 
+      // If the block being dragged matches the block nested within the parent (for if and while blocks)
       if (parent.nestedBlocks?[0].id == dragged.id) {
+        // Remove the nested blocks
         parent.nestedBlocks = [];
       } else {
+        // Remove the child block from the parent
         parent.childId = null;
       }
 
+      // The dragged block is now not snapped to another block
       dragged.snappedTo = null;
+      Provider.of<CodeTracker>(context, listen: false).removeBlock(-1);
     }
     draggedChain = getConnectedChain(dragged);
   }

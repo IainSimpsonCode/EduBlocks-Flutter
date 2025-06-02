@@ -5,11 +5,10 @@ import 'package:flutter/material.dart';
 class MoveableBlock {
   final int id;
   Offset position;
-  //final String imagePath;
   final Block type;
   double? height;
   double? width;
-
+  
   int? snappedTo;
   int? childId;
   List<MoveableBlock>? nestedBlocks;
@@ -22,7 +21,6 @@ class MoveableBlock {
   MoveableBlock({
     required this.id,
     required this.position,
-    //required this.imagePath,
     required this.type,
     this.options,
     this.selectedOption,
@@ -31,6 +29,6 @@ class MoveableBlock {
     this.childId,
     this.height,
     this.width,
-    this.nestedBlocks ,
+    this.nestedBlocks,
   });
 }

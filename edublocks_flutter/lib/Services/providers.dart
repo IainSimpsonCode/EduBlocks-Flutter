@@ -169,6 +169,32 @@ class CodeTracker extends ChangeNotifier {
     return 0;
   }
 
+  int removeBlock(int line) {
+
+    if (line <= 1 && line != -1) {return 1;} // Line number must be positive (except -1), and cannot be 1 as this is the start block. Removing at -1 will automatically remove the block at the end of the chain.
+
+    // Parse the JSON
+    Map<String, dynamic> data = jsonDecode(codeJSONString); 
+    List blocks = data['blocks'];
+
+    if (line == -1) {
+      // If line is -1, remove the last item in the chain
+      blocks.removeLast();
+    }
+    else {
+      // If a line number is specified, remove all items below and including that line
+      blocks.removeWhere((element) => element["line"] >= line);
+    }
+
+    // Save the results
+    codeJSONString = jsonEncode({"blocks": blocks});
+    updateLineNumbers();
+
+    notifyListeners();
+
+    return 0;
+  }
+
   List<Widget> JSONToPythonCode() {
     updateLineNumbers();
 
