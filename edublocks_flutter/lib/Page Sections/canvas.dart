@@ -38,7 +38,6 @@ class _canvasWidgetState extends State<canvasWidget> {
     return currentLargestID + 1;
   }
 
-
   @override
   void initState() {
     super.initState();
@@ -49,9 +48,18 @@ class _canvasWidgetState extends State<canvasWidget> {
       bool run = true;
       while (run) {
         // Get the next block from the queue
-        Block? block = Provider.of<BlocksToLoad>(context, listen: false).getBlockToLoad(); 
+        Block? block =
+            Provider.of<BlocksToLoad>(context, listen: false).getBlockToLoad();
 
-        if (block == null) { // If there was no block left in the queue (queue is empty), leave the loop
+        double height = 100;
+        if (block?.code == "while True:") {
+          height = 450;
+        } else if (block?.code == "if (count <= 10):") {
+          height = 300;
+        }
+
+        if (block == null) {
+          // If there was no block left in the queue (queue is empty), leave the loop
           run = false;
           break;
         } else {
@@ -61,12 +69,20 @@ class _canvasWidgetState extends State<canvasWidget> {
               MoveableBlock(
                 id: getNewID(),
                 type: block,
-                position: const Offset(100, 0),
-                height: 100,
-                width: 500,
+                position: const Offset(200, 100),
+                height: height,
+                // width: 500,
+                nestedBlocks: [],
               ),
-            );            
+            );
           });
+          for (var block in widget.blocks) {
+            if (!blockKeys.containsKey(block.id)) {
+              blockKeys[block.id] = GlobalKey();
+            }
+
+            dragPositions[block.id] = block.position;
+          }
         }
       }
     });
@@ -80,7 +96,8 @@ class _canvasWidgetState extends State<canvasWidget> {
         ).getBlockByCode("# Start Here"),
         position: const Offset(100, 0),
         height: 100,
-        width: 300,
+        // width: 300,
+        nestedBlocks: [],
       ),
       // MoveableBlock(
       //   id: 1,
@@ -151,7 +168,9 @@ class _canvasWidgetState extends State<canvasWidget> {
 
       // Get vertically snapped child
       if (block.childId != null) {
-        final child = widget.blocks.firstWhereOrNull((b) => b.id == block.childId);
+        final child = widget.blocks.firstWhereOrNull(
+          (b) => b.id == block.childId,
+        );
         if (child != null) collect(child);
       }
 
@@ -169,16 +188,16 @@ class _canvasWidgetState extends State<canvasWidget> {
     return chain;
   }
 
- 
   //called by the gesture detector when a block is dragged
   void onStartDrag(int id) {
     // Get the block
-    final dragged = blocks.firstWhere((b) => b.id == id);
+
+    final dragged = widget.blocks.firstWhere((b) => b.id == id);
 
     if (dragged.snappedTo != null) {
-      final parent = blocks.firstWhere((b) => b.id == dragged.snappedTo);
+      final parent = widget.blocks.firstWhere((b) => b.id == dragged.snappedTo);
       if (parent.nestedBlocks!.isNotEmpty) {
-        if(parent.nestedBlocks?[0].id == dragged.id) parent.nestedBlocks = [];
+        if (parent.nestedBlocks?[0].id == dragged.id) parent.nestedBlocks = [];
       } else {
         // Remove the child block from the parent
         parent.childId = null;
@@ -186,6 +205,7 @@ class _canvasWidgetState extends State<canvasWidget> {
 
       // The dragged block is now not snapped to another block
       dragged.snappedTo = null;
+
       Provider.of<CodeTracker>(context, listen: false).removeBlock(-1);
     }
     draggedChain = getConnectedChain(dragged);
@@ -204,18 +224,20 @@ class _canvasWidgetState extends State<canvasWidget> {
   //Called by the gesture detector when a block is released
   void onEndDrag(int id) {
     // Get the block
-    final dragged = blocks.firstWhere((b) => b.id == id);
+    final dragged = widget.blocks.firstWhere((b) => b.id == id);
     final draggedContext = blockKeys[dragged.id]?.currentContext;
     final draggedBox = draggedContext?.findRenderObject() as RenderBox?;
 
     final draggedSize = draggedBox?.size ?? const Size(100, 100);
 
-
-    bool snapDone = false; //USed for tracking if a block was snapped as a child, if not snap it as a nested block
-    bool newSnap = false; //Used for calling the insertBlock function in the provider. is made true only if a block is snapped for the first time.
+    bool snapDone =
+        false; //USed for tracking if a block was snapped as a child, if not snap it as a nested block
+    bool newSnap =
+        false; //Used for calling the insertBlock function in the provider. is made true only if a block is snapped for the first time.
 
     //iterate through all blocks
-    for (var target in blocks) {
+
+    for (var target in widget.blocks) {
       newSnap = false;
       if (target.id == dragged.id) continue;
 
@@ -226,7 +248,7 @@ class _canvasWidgetState extends State<canvasWidget> {
       final targetSize = targetBox.size;
 
       //The x coordinates of the target block is the same for chuld and nested snapping
-      //The Y coordinate is different for the 2 (child and nested snapping). 
+      //The Y coordinate is different for the 2 (child and nested snapping).
       //The dragged block snaps based on the distance to the Y target of the child or nested coordinate
 
       //X position of the target block
@@ -238,18 +260,23 @@ class _canvasWidgetState extends State<canvasWidget> {
       final childSnapY = target.position.dy + targetSize.height - 30;
 
       //x and y positions of the target block for nested snapping
-      final nestedSnapXCoordinatesTarget = target.position.dx + targetSize.width / 8 - 6;
-      final nestedSnapYCoordinatesTarget = target.position.dy + (targetSize.height / 6) + 5;
+      final nestedSnapXCoordinatesTarget =
+          target.position.dx + targetSize.width / 8;
+      final nestedSnapYCoordinatesTarget =
+          target.position.dy + (targetSize.height / 6) + 5;
 
       //x and y DISTANCES for child snapping
       final childSnapXDistance = draggedCenterX - targetCenterX;
       final childSnapYDistance = dragged.position.dy - childSnapY;
 
       //x and y DISTANCES for child nested snapping
-      final nestedSnapXDistance = (dragged.position.dx) - nestedSnapXCoordinatesTarget;
-      final nestedSnapYDistance = dragged.position.dy - nestedSnapYCoordinatesTarget;
+      final nestedSnapXDistance =
+          (dragged.position.dx) - nestedSnapXCoordinatesTarget;
+      final nestedSnapYDistance =
+          dragged.position.dy - nestedSnapYCoordinatesTarget;
 
       // Bottom snap: only if target bottom is free (no childId)
+
       if (target.childId == null) {
         if (childSnapXDistance.abs() < snapThreshold &&
             childSnapYDistance.abs() < snapThreshold) {
@@ -262,7 +289,7 @@ class _canvasWidgetState extends State<canvasWidget> {
           snapDone = true;
           newSnap = true;
 
-          if(target.isNested) {
+          if (target.isNested) {
             dragged.isNested = true;
           }
 
@@ -287,15 +314,17 @@ class _canvasWidgetState extends State<canvasWidget> {
         'if (count <= 10):',
       ]; // <-- only these target types allow side snap
 
-      if (!snapDone) {
-        if (sideSnapTargetTypes.contains(target.type.code) &&
-                target.nestedBlocks?.isEmpty == true ||
+      if (!snapDone && sideSnapTargetTypes.contains(target.type.code)) {
+        if (target.nestedBlocks?.isEmpty == true ||
             target.nestedBlocks?[0].id == dragged.id) {
           if (nestedSnapXDistance.abs() < snapThresholdNested &&
               nestedSnapYDistance.abs() < snapThresholdNested) {
             if (target.type.code == 'while True:') {
               setState(() {
-                dragged.position = Offset(nestedSnapXCoordinatesTarget, nestedSnapYCoordinatesTarget);
+                dragged.position = Offset(
+                  nestedSnapXCoordinatesTarget,
+                  nestedSnapYCoordinatesTarget,
+                );
                 dragged.snappedTo = target.id;
                 dragged.isNested = true;
               });
@@ -304,7 +333,10 @@ class _canvasWidgetState extends State<canvasWidget> {
               target.nestedBlocks?.add(dragged);
             } else if (target.type.code == 'if (count <= 10):') {
               setState(() {
-                dragged.position = Offset(nestedSnapXCoordinatesTarget - 20, nestedSnapYCoordinatesTarget + 40);
+                dragged.position = Offset(
+                  nestedSnapXCoordinatesTarget - 20,
+                  nestedSnapYCoordinatesTarget + 40,
+                );
                 dragged.snappedTo = target.id;
                 dragged.isNested = true;
               });
@@ -316,6 +348,7 @@ class _canvasWidgetState extends State<canvasWidget> {
           }
         }
       }
+
       if (dragged.childId != null) {
         onEndDrag(dragged.childId!);
       }
@@ -326,7 +359,7 @@ class _canvasWidgetState extends State<canvasWidget> {
   }
 
   void callInsertBlock(MoveableBlock block) {
-    final first = blocks.firstWhere((b) => b.id == 0);
+    final first = widget.blocks.firstWhere((b) => b.id == 0);
     List<MoveableBlock> chain = getConnectedChain(first);
 
     final lastBlock = chain.last;
@@ -335,13 +368,12 @@ class _canvasWidgetState extends State<canvasWidget> {
       listen: false,
     ).insertBlock(lastBlock.type, -1);
 
-    if(block.childId != null && block.isNested == false) {
-       Provider.of<CodeTracker>(
-      context,
-      listen: false,
-    ).insertBlock(block.type, -1);
+    if (block.childId != null && block.isNested == false) {
+      Provider.of<CodeTracker>(
+        context,
+        listen: false,
+      ).insertBlock(block.type, -1);
     }
-    
   }
 
   Widget buildBlock(MoveableBlock block) {
@@ -413,7 +445,7 @@ class GridPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final paint =
         Paint()
-          ..color = Colors.grey.withOpacity(0.3)
+          ..color = Colors.grey
           ..strokeWidth = 1;
 
     final textPainter = TextPainter(
