@@ -15,48 +15,6 @@ class canvasWidget extends StatefulWidget {
   State<canvasWidget> createState() => _canvasWidgetState();
 }
 
-class GridPainter extends CustomPainter {
-  final double gridSpacing;
-  final TextStyle labelStyle;
-
-  GridPainter({
-    this.gridSpacing = 100,
-    this.labelStyle = const TextStyle(fontSize: 12, color: Colors.grey),
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint =
-        Paint()
-          ..color = Colors.grey.withOpacity(0.3)
-          ..strokeWidth = 1;
-
-    final textPainter = TextPainter(
-      textAlign: TextAlign.left,
-      textDirection: TextDirection.ltr,
-    );
-
-    // Draw vertical lines with labels
-    for (double x = 0; x < size.width; x += gridSpacing) {
-      canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
-      textPainter.text = TextSpan(text: '${x.toInt()}', style: labelStyle);
-      textPainter.layout();
-      textPainter.paint(canvas, Offset(x + 2, 2));
-    }
-
-    // Draw horizontal lines with labels
-    for (double y = 0; y < size.height; y += gridSpacing) {
-      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
-      textPainter.text = TextSpan(text: '${y.toInt()}', style: labelStyle);
-      textPainter.layout();
-      textPainter.paint(canvas, Offset(2, y + 2));
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
 class _canvasWidgetState extends State<canvasWidget> {
   final double snapThreshold = 100;
   final double snapThresholdNested = 100;
@@ -261,15 +219,10 @@ class _canvasWidgetState extends State<canvasWidget> {
     // Get the block being dragged from the blocks list
     final dragged = widget.blocks.firstWhere((b) => b.id == id);
 
-    // If the block was connected to another block
     if (dragged.snappedTo != null) {
-      // Find the parent block is was snapped to
-      final parent = widget.blocks.firstWhere((b) => b.id == dragged.snappedTo);
-
-      // If the block being dragged matches the block nested within the parent (for if and while blocks)
-      if (parent.nestedBlocks?[0].id == dragged.id) {
-        // Remove the nested blocks
-        parent.nestedBlocks = [];
+      final parent = blocks.firstWhere((b) => b.id == dragged.snappedTo);
+      if (parent.nestedBlocks!.isNotEmpty) {
+        if(parent.nestedBlocks?[0].id == dragged.id) parent.nestedBlocks = [];
       } else {
         // Remove the child block from the parent
         parent.childId = null;
@@ -282,6 +235,7 @@ class _canvasWidgetState extends State<canvasWidget> {
     draggedChain = getConnectedChain(dragged);
   }
 
+  //Update positions of dragged and child blocks
   void onUpdateDrag(int id, DragUpdateDetails details) {
     setState(() {
       for (var block in draggedChain) {
@@ -291,17 +245,21 @@ class _canvasWidgetState extends State<canvasWidget> {
     });
   }
 
+  //Called by the gesture detector when a block is released
   void onEndDrag(int id) {
-    final dragged = widget.blocks.firstWhere((b) => b.id == id);
+    // Get the block
+    final dragged = blocks.firstWhere((b) => b.id == id);
     final draggedContext = blockKeys[dragged.id]?.currentContext;
     final draggedBox = draggedContext?.findRenderObject() as RenderBox?;
 
     final draggedSize = draggedBox?.size ?? const Size(100, 100);
 
-    bool snapDone = false;
-    bool newSnap = false;
 
-    for (var target in widget.blocks) {
+    bool snapDone = false; //USed for tracking if a block was snapped as a child, if not snap it as a nested block
+    bool newSnap = false; //Used for calling the insertBlock function in the provider. is made true only if a block is snapped for the first time.
+
+    //iterate through all blocks
+    for (var target in blocks) {
       newSnap = false;
       if (target.id == dragged.id) continue;
 
@@ -311,35 +269,46 @@ class _canvasWidgetState extends State<canvasWidget> {
       final targetBox = targetContext.findRenderObject() as RenderBox;
       final targetSize = targetBox.size;
 
+      //The x coordinates of the target block is the same for chuld and nested snapping
+      //The Y coordinate is different for the 2 (child and nested snapping). 
+      //The dragged block snaps based on the distance to the Y target of the child or nested coordinate
+
+      //X position of the target block
       final targetCenterX = target.position.dx + targetSize.width / 2;
+      //X position of the dragged block
       final draggedCenterX = dragged.position.dx + draggedSize.width / 2;
 
-      // Bottom snap position
-      final defaultSnapY = target.position.dy + targetSize.height - 30;
+      // Bottom snap Y position for target (child)
+      final childSnapY = target.position.dy + targetSize.height - 30;
 
-      //x and y positions of the target block
-      final customSnapX = target.position.dx + targetSize.width / 8 - 6;
-      final customSnapY = target.position.dy + (targetSize.height / 6) + 5;
+      //x and y positions of the target block for nested snapping
+      final nestedSnapXCoordinatesTarget = target.position.dx + targetSize.width / 8 - 6;
+      final nestedSnapYCoordinatesTarget = target.position.dy + (targetSize.height / 6) + 5;
 
-      final dxDefault = draggedCenterX - targetCenterX;
-      final dyDefault = dragged.position.dy - defaultSnapY;
+      //x and y DISTANCES for child snapping
+      final childSnapXDistance = draggedCenterX - targetCenterX;
+      final childSnapYDistance = dragged.position.dy - childSnapY;
 
-      //gap between the target and dragged
-      final dxCustom = (dragged.position.dx) - customSnapX;
-      final dyCustom = dragged.position.dy - customSnapY;
+      //x and y DISTANCES for child nested snapping
+      final nestedSnapXDistance = (dragged.position.dx) - nestedSnapXCoordinatesTarget;
+      final nestedSnapYDistance = dragged.position.dy - nestedSnapYCoordinatesTarget;
 
       // Bottom snap: only if target bottom is free (no childId)
       if (target.childId == null) {
-        if (dxDefault.abs() < snapThreshold &&
-            dyDefault.abs() < snapThreshold) {
+        if (childSnapXDistance.abs() < snapThreshold &&
+            childSnapYDistance.abs() < snapThreshold) {
           setState(() {
-            dragged.position = Offset(target.position.dx, defaultSnapY + 20);
+            dragged.position = Offset(target.position.dx, childSnapY + 20);
             dragged.snappedTo = target.id;
             target.childId = dragged.id;
           });
 
           snapDone = true;
           newSnap = true;
+
+          if(target.isNested) {
+            dragged.isNested = true;
+          }
 
           final draggedChainChildren = getConnectedChain(
             dragged,
@@ -350,7 +319,7 @@ class _canvasWidgetState extends State<canvasWidget> {
         }
       } else if (target.childId == dragged.id) {
         setState(() {
-          dragged.position = Offset(target.position.dx, defaultSnapY + 20);
+          dragged.position = Offset(target.position.dx, childSnapY + 20);
           dragged.snappedTo = target.id;
         });
         snapDone = true;
@@ -366,20 +335,22 @@ class _canvasWidgetState extends State<canvasWidget> {
         if (sideSnapTargetTypes.contains(target.type.code) &&
                 target.nestedBlocks?.isEmpty == true ||
             target.nestedBlocks?[0].id == dragged.id) {
-          if (dxCustom.abs() < snapThresholdNested &&
-              dyCustom.abs() < snapThresholdNested) {
+          if (nestedSnapXDistance.abs() < snapThresholdNested &&
+              nestedSnapYDistance.abs() < snapThresholdNested) {
             if (target.type.code == 'while True:') {
               setState(() {
-                dragged.position = Offset(customSnapX, customSnapY);
+                dragged.position = Offset(nestedSnapXCoordinatesTarget, nestedSnapYCoordinatesTarget);
                 dragged.snappedTo = target.id;
+                dragged.isNested = true;
               });
               //add it to the list
 
               target.nestedBlocks?.add(dragged);
             } else if (target.type.code == 'if (count <= 10):') {
               setState(() {
-                dragged.position = Offset(customSnapX - 20, customSnapY + 40);
+                dragged.position = Offset(nestedSnapXCoordinatesTarget - 20, nestedSnapYCoordinatesTarget + 40);
                 dragged.snappedTo = target.id;
+                dragged.isNested = true;
               });
               target.nestedBlocks?.add(dragged);
             }
@@ -393,22 +364,27 @@ class _canvasWidgetState extends State<canvasWidget> {
         onEndDrag(dragged.childId!);
       }
       if (newSnap) {
-      printChain();
+        callInsertBlock(dragged);
+      }
     }
-    }
-
-    
   }
 
-  void printChain() {
-    final first = widget.blocks.firstWhere((b) => b.id == 0);
+  void callInsertBlock(MoveableBlock block) {
+    final first = blocks.firstWhere((b) => b.id == 0);
     List<MoveableBlock> chain = getConnectedChain(first);
 
-    
-      final lastBlock = chain.last;
-      Provider.of<CodeTracker>(context, listen: false).insertBlock(lastBlock.type, -1);
-    
-    
+    final lastBlock = chain.last;
+    Provider.of<CodeTracker>(
+      context,
+      listen: false,
+    ).insertBlock(lastBlock.type, -1);
+
+    if(block.childId != null && block.isNested == false) {
+       Provider.of<CodeTracker>(
+      context,
+      listen: false,
+    ).insertBlock(block.type, -1);
+    }
     
   }
 
@@ -467,4 +443,46 @@ class _canvasWidgetState extends State<canvasWidget> {
       ),
     );
   }
+}
+
+class GridPainter extends CustomPainter {
+  final double gridSpacing;
+  final TextStyle labelStyle;
+
+  GridPainter({
+    this.gridSpacing = 100,
+    this.labelStyle = const TextStyle(fontSize: 12, color: Colors.grey),
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint =
+        Paint()
+          ..color = Colors.grey.withOpacity(0.3)
+          ..strokeWidth = 1;
+
+    final textPainter = TextPainter(
+      textAlign: TextAlign.left,
+      textDirection: TextDirection.ltr,
+    );
+
+    // Draw vertical lines with labels
+    for (double x = 0; x < size.width; x += gridSpacing) {
+      canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
+      textPainter.text = TextSpan(text: '${x.toInt()}', style: labelStyle);
+      textPainter.layout();
+      textPainter.paint(canvas, Offset(x + 2, 2));
+    }
+
+    // Draw horizontal lines with labels
+    for (double y = 0; y < size.height; y += gridSpacing) {
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
+      textPainter.text = TextSpan(text: '${y.toInt()}', style: labelStyle);
+      textPainter.layout();
+      textPainter.paint(canvas, Offset(2, y + 2));
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
