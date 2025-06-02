@@ -89,7 +89,6 @@ class _canvasWidgetState extends State<canvasWidget> {
         ).getBlockByCode("# Start Here"),
         position: const Offset(100, 0),
         height: 100,
-        // width: 300,
         nestedBlocks: [],
       ),
       // MoveableBlock(
@@ -192,7 +191,6 @@ class _canvasWidgetState extends State<canvasWidget> {
     }
 
     int line = 1;
-    
 
     int? traverse(MoveableBlock block) {
       // If this is the block we want, return the current line
@@ -214,8 +212,11 @@ class _canvasWidgetState extends State<canvasWidget> {
       }
 
       // Traverse next block in the chain
-      if (block.childId != null && widget.blocks.any((b) => b.id == block.childId)) {
-        MoveableBlock? child = widget.blocks.firstWhere((b) => b.id == block.childId);
+      if (block.childId != null &&
+          widget.blocks.any((b) => b.id == block.childId)) {
+        MoveableBlock? child = widget.blocks.firstWhere(
+          (b) => b.id == block.childId,
+        );
         return traverse(child);
       }
 
@@ -225,9 +226,11 @@ class _canvasWidgetState extends State<canvasWidget> {
     return traverse(startBlock);
   }
 
-
   void onStartDrag(int id) {
-    int? blockLineNumber = getBlockLineNumber(id, widget.blocks.firstWhere((b) => b.id == 0));
+    int? blockLineNumber = getBlockLineNumber(
+      id,
+      widget.blocks.firstWhere((b) => b.id == 0),
+    );
     print("Line number: $blockLineNumber");
 
     // Get the block being dragged from the blocks list
@@ -241,7 +244,7 @@ class _canvasWidgetState extends State<canvasWidget> {
       // If the parent has nested blocks
       if (parent.nestedBlocks != null && parent.nestedBlocks!.isNotEmpty) {
         // And if the dragged block is the nested block, remove nested blocks from the parent
-        if  (parent.nestedBlocks?[0].id == dragged.id) parent.nestedBlocks = [];
+        if (parent.nestedBlocks?[0].id == dragged.id) parent.nestedBlocks = [];
       } else {
         // Remove the child block from the parent
         parent.childId = null;
@@ -249,10 +252,13 @@ class _canvasWidgetState extends State<canvasWidget> {
 
       // The dragged block is now not snapped to another block
       dragged.snappedTo = null;
-      
+
       // If the block line number was found in the chain using the getBlockLineNumber() function, remove the block from the JSON string at the specified line number
       if (blockLineNumber != null) {
-        Provider.of<CodeTracker>(context, listen: false).removeBlock(blockLineNumber);
+        Provider.of<CodeTracker>(
+          context,
+          listen: false,
+        ).removeBlock(blockLineNumber);
       }
     }
     draggedChain = getConnectedChain(dragged);
@@ -322,7 +328,6 @@ class _canvasWidgetState extends State<canvasWidget> {
           dragged.position.dy - nestedSnapYCoordinatesTarget;
 
       // Bottom snap: only if target bottom is free (no childId)
-
       if (target.childId == null) {
         if (childSnapXDistance.abs() < snapThreshold &&
             childSnapYDistance.abs() < snapThreshold) {
@@ -346,26 +351,28 @@ class _canvasWidgetState extends State<canvasWidget> {
             onEndDrag(childBlock.id);
           }
         }
-      } else if (target.childId == dragged.id) {
+      } // Child snap - this is for re-snapping
+      else if (target.childId == dragged.id) {
         setState(() {
           dragged.position = Offset(target.position.dx, childSnapY + 20);
           dragged.snappedTo = target.id;
         });
         snapDone = true;
-        
       }
 
       // Side snap: only if target block type is in allowed list
-      final sideSnapTargetTypes = [
-        'while True:',
-        'if (count <= 10):',
-      ]; // <-- only these target types allow side snap
+      final sideSnapTargetTypes = ['while True:', 'if (count <= 10):'];
 
+      //This part handles nested snapping
+      //1 - check if the target block is in the list of allowed nested snapping types and snapDone is false
       if (!snapDone && sideSnapTargetTypes.contains(target.type.code)) {
-        if (target.nestedBlocks?.isEmpty == true ||
-            target.nestedBlocks?[0].id == dragged.id) {
+        //2.1 - if the target block has no nested blocks
+        //this means its a new snap
+        if (target.nestedBlocks?.isEmpty == true) {
+          //3 check distances
           if (nestedSnapXDistance.abs() < snapThresholdNested &&
               nestedSnapYDistance.abs() < snapThresholdNested) {
+            //4.1 snap for while true
             if (target.type.code == 'while True:') {
               setState(() {
                 dragged.position = Offset(
@@ -375,10 +382,12 @@ class _canvasWidgetState extends State<canvasWidget> {
                 dragged.snappedTo = target.id;
                 dragged.isNested = true;
               });
-              //add it to the list
 
+              //add it to the list
               target.nestedBlocks?.add(dragged);
-            } else if (target.type.code == 'if (count <= 10):') {
+            }
+            //4.2 snap for if
+            else if (target.type.code == 'if (count <= 10):') {
               setState(() {
                 dragged.position = Offset(
                   nestedSnapXCoordinatesTarget - 20,
@@ -387,52 +396,92 @@ class _canvasWidgetState extends State<canvasWidget> {
                 dragged.snappedTo = target.id;
                 dragged.isNested = true;
               });
+
               target.nestedBlocks?.add(dragged);
             }
 
-            snapDone = true;
-            newSnap = true;
+            snapDone = true; //snap is set as done
+            newSnap = true; //this is a new snap
           }
+        }
+        //2.2 - if the first nested block is the dragged block
+        //this means its re-snapping the block after being dragged
+        else if (target.nestedBlocks?[0].id == dragged.id) {
+          //3.1
+          if (target.type.code == 'while True:') {
+            setState(() {
+              dragged.position = Offset(
+                nestedSnapXCoordinatesTarget,
+                nestedSnapYCoordinatesTarget,
+              );
+              dragged.snappedTo = target.id;
+              dragged.isNested = true;
+            });
+
+            target.nestedBlocks?.add(dragged);
+
+          } //3.2
+          else if (target.type.code == 'if (count <= 10):') {
+            setState(() {
+              dragged.position = Offset(
+                nestedSnapXCoordinatesTarget - 20,
+                nestedSnapYCoordinatesTarget + 40,
+              );
+              dragged.snappedTo = target.id;
+              dragged.isNested = true;
+            });
+            target.nestedBlocks?.add(dragged);
+          }
+
+          snapDone = true; //snap is done but its not a new snap
         }
       }
 
+      //if the dragged block has a child, snap that as well.
       if (dragged.childId != null) {
         onEndDrag(dragged.childId!);
       }
-      
+
       //if its a new snap and that block is in the main chain
-      if (newSnap && getConnectedChain(widget.blocks.firstWhere((b) => b.id == 0)).contains(dragged)) {
+      if (newSnap &&
+          getConnectedChain(
+            widget.blocks.firstWhere((b) => b.id == 0),
+          ).contains(dragged)) {
         callInsertBlock(dragged);
       }
-
     }
   }
 
   void callInsertBlock(MoveableBlock block) {
-    
-
-    if(block.childId == null && block.isNested == false) {
+    // 1.1 snapping ONE block to the end of the main chain with no children
+    // simply append it to the json
+    if (block.childId == null &&
+        block.isNested == false &&
+        block.nestedBlocks == null) {
       Provider.of<CodeTracker>(
         context,
         listen: false,
       ).insertBlock(block.type, -1);
-    }
+    } 
+    //1.2 this is called everyother time
     else {
-      //call getConnectedChain by passing in the first block (start code here)
-      List<MoveableBlock> chain = getConnectedChain(widget.blocks.firstWhere((b) => b.id == block.id));
-      print(chain);
-      
+      //call getConnectedChain by passing in the first block of the connected chain
+      List<MoveableBlock> chain = getConnectedChain(
+        widget.blocks.firstWhere((b) => b.id == block.id),
+      );
+
+      //iterate through and all of the blocks
+      //nested blocks are handled in getBlockLineNumber
       for (int i = 0; i < chain.length; i++) {
-        Provider.of<CodeTracker>(
-          context,
-          listen: false,
-        ).insertBlock(chain[i].type, getBlockLineNumber(chain[i].id, widget.blocks.firstWhere((b) => b.id == 0))!);
+        Provider.of<CodeTracker>(context, listen: false).insertBlock(
+          chain[i].type,
+          getBlockLineNumber(
+            chain[i].id,
+            widget.blocks.firstWhere((b) => b.id == 0),
+          )!,
+        );
       }
     }
-
-    
-    
-    
   }
 
   Widget buildBlock(MoveableBlock block) {
@@ -445,7 +494,10 @@ class _canvasWidgetState extends State<canvasWidget> {
         onPanStart: (_) => onStartDrag(block.id),
         onPanUpdate: (details) => onUpdateDrag(block.id, details),
         onPanEnd: (_) => onEndDrag(block.id),
-        onTap: () => print("Line number: ${getBlockLineNumber(block.id, widget.blocks.firstWhere((b) => b.id == 0))}"),
+        onTap:
+            () => print(
+              "Line number: ${getBlockLineNumber(block.id, widget.blocks.firstWhere((b) => b.id == 0))}",
+            ),
         child: Container(
           key: blockKeys[block.id],
           child: SizedBox(
@@ -470,12 +522,14 @@ class _canvasWidgetState extends State<canvasWidget> {
           return Stack(
             children: [
               // Paint background
-              isProduction ? CustomPaint(
-                size: Size(constraints.maxWidth, constraints.maxHeight),
-              ) : CustomPaint(
-                size: Size(constraints.maxWidth, constraints.maxHeight),
-                painter: GridPainter(gridSpacing: 100),
-              ),
+              isProduction
+                  ? CustomPaint(
+                    size: Size(constraints.maxWidth, constraints.maxHeight),
+                  )
+                  : CustomPaint(
+                    size: Size(constraints.maxWidth, constraints.maxHeight),
+                    painter: GridPainter(gridSpacing: 100),
+                  ),
               // Render any blocks that have priorityBuild first
               ...widget.blocks
                   .where((b) => b.type.priorityBuild == true)
