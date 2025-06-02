@@ -7,7 +7,9 @@ import '../Classes/MoveableBlock.dart';
 import 'package:collection/collection.dart';
 
 class canvasWidget extends StatefulWidget {
-  const canvasWidget({super.key});
+  canvasWidget({super.key});
+
+  List<MoveableBlock> blocks = [];
 
   @override
   State<canvasWidget> createState() => _canvasWidgetState();
@@ -20,29 +22,56 @@ class _canvasWidgetState extends State<canvasWidget> {
   final Map<int, Offset> dragPositions =
       {}; // store latest drag global positions
 
-  List<MoveableBlock> blocks = [];
-
   List<MoveableBlock> draggedChain = [];
+
+  int getNewID() {
+    int currentLargestID = 0; // the largest id number currently in use
+
+    // check the list of blocks to find the current largest ID
+    for (var block in widget.blocks) {
+      if (block.id > currentLargestID) {
+        currentLargestID = block.id;
+      }
+    }
+
+    // return an ID number 1 bigger than the current biggest.
+    return currentLargestID + 1;
+  }
+
 
   @override
   void initState() {
     super.initState();
 
+    // Listen to updates from the queue of blocks to load
     Provider.of<BlocksToLoad>(context, listen: false).addListener(() {
       //Load blocks on the screen
       bool run = true;
       while (run) {
-        Block? block =
-            Provider.of<BlocksToLoad>(context, listen: false).getBlockToLoad();
-        if (block == null) {
+        // Get the next block from the queue
+        Block? block = Provider.of<BlocksToLoad>(context, listen: false).getBlockToLoad(); 
+
+        if (block == null) { // If there was no block left in the queue (queue is empty), leave the loop
           run = false;
+          break;
         } else {
-          // Load next block in the queue
+          setState(() {
+            // Load next block in the queue
+            widget.blocks.add(
+              MoveableBlock(
+                id: getNewID(),
+                type: block,
+                position: const Offset(100, 0),
+                height: 100,
+                width: 500,
+              ),
+            );            
+          });
         }
       }
     });
 
-    blocks = [
+    widget.blocks = [
       MoveableBlock(
         id: 0,
         type: Provider.of<BlockLibrary>(
@@ -51,57 +80,61 @@ class _canvasWidgetState extends State<canvasWidget> {
         ).getBlockByCode("# Start Here"),
         position: const Offset(100, 0),
         height: 100,
+        width: 300,
       ),
-      MoveableBlock(
-        id: 1,
-        type: Provider.of<BlockLibrary>(
-          context,
-          listen: false,
-        ).getBlockByCode("count = 0"),
-        position: const Offset(100, 500),
-        height: 100,
-      ),
-      MoveableBlock(
-        id: 2,
-        type: Provider.of<BlockLibrary>(
-          context,
-          listen: false,
-        ).getBlockByCode("count += 1"),
-        position: const Offset(500, 900),
-        height: 100,
-      ),
-      MoveableBlock(
-        id: 3,
-        type: Provider.of<BlockLibrary>(
-          context,
-          listen: false,
-        ).getBlockByCode("print(count)"),
-        position: const Offset(500, 500),
-        height: 100,
-      ),
-      MoveableBlock(
-        id: 4,
-        type: Provider.of<BlockLibrary>(
-          context,
-          listen: false,
-        ).getBlockByCode("while True:"),
-        position: const Offset(100, 800),
-        height: 450,
-        nestedBlocks: [],
-      ),
-      MoveableBlock(
-        id: 5,
-        type: Provider.of<BlockLibrary>(
-          context,
-          listen: false,
-        ).getBlockByCode("if (count <= 10):"),
-        position: const Offset(900, 200),
-        height: 300,
-      ),
+      // MoveableBlock(
+      //   id: 1,
+      //   type: Provider.of<BlockLibrary>(
+      //     context,
+      //     listen: false,
+      //   ).getBlockByCode("count = 0"),
+      //   position: const Offset(100, 500),
+      //   height: 100,
+      // ),
+      // MoveableBlock(
+      //   id: 2,
+      //   type: Provider.of<BlockLibrary>(
+      //     context,
+      //     listen: false,
+      //   ).getBlockByCode("count += 1"),
+      //   position: const Offset(500, 900),
+      //   height: 100,
+      // ),
+      // MoveableBlock(
+      //   id: 3,
+      //   type: Provider.of<BlockLibrary>(
+      //     context,
+      //     listen: false,
+      //   ).getBlockByCode("print(count)"),
+      //   position: const Offset(500, 500),
+      //   height: 100,
+      // ),
+      // MoveableBlock(
+      //   id: 4,
+      //   type: Provider.of<BlockLibrary>(
+      //     context,
+      //     listen: false,
+      //   ).getBlockByCode("while True:"),
+      //   position: const Offset(100, 800),
+      //   height: 450,
+      //   nestedBlocks: [],
+      // ),
+      // MoveableBlock(
+      //   id: 5,
+      //   type: Provider.of<BlockLibrary>(
+      //     context,
+      //     listen: false,
+      //   ).getBlockByCode("if (count <= 10):"),
+      //   position: const Offset(900, 200),
+      //   height: 300,
+      // ),
     ];
 
-    for (var block in blocks) {
-      blockKeys[block.id] = GlobalKey();
+    for (var block in widget.blocks) {
+      if (!blockKeys.containsKey(block.id)) {
+        blockKeys[block.id] = GlobalKey();
+      }
+
       dragPositions[block.id] = block.position;
     }
   }
@@ -118,12 +151,12 @@ class _canvasWidgetState extends State<canvasWidget> {
 
       // Get vertically snapped child
       if (block.childId != null) {
-        final child = blocks.firstWhereOrNull((b) => b.id == block.childId);
+        final child = widget.blocks.firstWhereOrNull((b) => b.id == block.childId);
         if (child != null) collect(child);
       }
 
       // Get side-snapped (nested) blocks
-      final nested = blocks.where(
+      final nested = widget.blocks.where(
         (b) => b.snappedTo == block.id && block.childId != b.id,
       );
       for (var b in nested) {
@@ -147,10 +180,13 @@ class _canvasWidgetState extends State<canvasWidget> {
       if (parent.nestedBlocks!.isNotEmpty) {
         if(parent.nestedBlocks?[0].id == dragged.id) parent.nestedBlocks = [];
       } else {
+        // Remove the child block from the parent
         parent.childId = null;
       }
 
+      // The dragged block is now not snapped to another block
       dragged.snappedTo = null;
+      Provider.of<CodeTracker>(context, listen: false).removeBlock(-1);
     }
     draggedChain = getConnectedChain(dragged);
   }
@@ -312,6 +348,8 @@ class _canvasWidgetState extends State<canvasWidget> {
     return Positioned(
       left: block.position.dx,
       top: block.position.dy,
+      height: block.height,
+      width: block.width,
       child: GestureDetector(
         onPanStart: (_) => onStartDrag(block.id),
         onPanUpdate: (details) => onUpdateDrag(block.id, details),
@@ -345,12 +383,12 @@ class _canvasWidgetState extends State<canvasWidget> {
                 painter: GridPainter(gridSpacing: 100),
               ),
               // Render any blocks that have priorityBuild first
-              ...blocks
+              ...widget.blocks
                   .where((b) => b.type.priorityBuild == true)
                   .map(buildBlock)
                   .toList(),
               // Render the remaining blocks
-              ...blocks
+              ...widget.blocks
                   .where((b) => b.type.priorityBuild != true)
                   .map(buildBlock)
                   .toList(),

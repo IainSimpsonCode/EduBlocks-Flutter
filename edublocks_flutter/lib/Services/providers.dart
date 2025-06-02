@@ -27,8 +27,11 @@ class BlockLibrary extends ChangeNotifier {
   List<Block> _allBlocks = List.empty();
   List<Category> _allCategories = List.empty();
 
+  String? _categorySelected;
+
   // -- Categories --
   List<Category> get categories => _allCategories;
+  String? get categorySelected => _categorySelected;
 
   set categories(List<Category> value) {
     _allCategories = value;
@@ -37,6 +40,19 @@ class BlockLibrary extends ChangeNotifier {
 
   void addCategory(Category newCategory) {
     _allCategories.add(newCategory);
+    notifyListeners();
+  }
+
+  void setCategorySelected(String categorySelected) {
+    // If the user clicks the currently selected category a second time, set the selected category to null
+    if (categorySelected == _categorySelected) {
+      _categorySelected = null;
+    }
+    else {
+      // Otherwise, set the currently selected category to be what the user has selected.
+      _categorySelected = categorySelected;
+    }
+
     notifyListeners();
   }
 
@@ -53,16 +69,29 @@ class BlockLibrary extends ChangeNotifier {
     notifyListeners();
   }  
 
+  /// Returns the first block in the list of all blocks where the code of the block matches the provided code string.
   Block getBlockByCode(String code) {
     return _allBlocks.firstWhere((element) => element.code == code);
+  }
+
+  /// Returns a list of blocks where block.category matches the provided category.
+  List<Block> getBlocksByCategory(String? category) {
+    if (category == null) {
+      return _allBlocks;
+    }
+    else {
+      return _allBlocks.where((element) => element.category == category).toList();
+    }
   }
 }
 
 class BlocksToLoad extends ChangeNotifier {
   
-  List<Block> _blocksToLoad = List.empty();
+  List<Block> _blocksToLoad = [];
 
   void AddBlockToLoad(Block block) {
+    _blocksToLoad.add(block);
+
     notifyListeners();
   }
 
@@ -78,69 +107,11 @@ class BlocksToLoad extends ChangeNotifier {
 }
 
 class CodeTracker extends ChangeNotifier {
-  String codeJSONString = """
-  {
-    "blocks": [
-      {
-        "line": 1,
-        "code": "# Start Here",
-        "hasChildren": false
-      },
-      {
-        "line": 1,
-        "code": "count = 0",
-        "hasChildren": false
-      },
-      {
-        "line": 2,
-        "code": "while true",
-        "hasChildren": true
-      },
-      {
-        "line": 3,
-        "code": "print(count)",
-        "hasChildren": false
-      },
-      {
-        "line": 4,
-        "code": "count++",
-        "hasChildren": false
-      },
-      {
-        "line": 5,
-        "code": "pass",
-        "hasChildren": false
-      }
-    ]
-  }
-  """;
+  String codeJSONString = """{"blocks": [{"line": 1, "code": "# Start Here", "hasChildren": false}]}""";
 
   /// Check and update all line numbers in the JSON string.
   /// ### How it works
   /// Start a counter initialised at 0. For each block, set it's line number to the counter then add 1 to the counter.
-  // void updateLineNumbers() {
-  //   // Parse the JSON
-  //   Map<String, dynamic> data = jsonDecode(codeJSONString);
-  //   List blocks = data["blocks"];
-
-  //   int counter = 0;
-
-  //   void updateLines(List<dynamic> blocks) {
-  //     for (var block in blocks) {
-  //       block['line'] = counter;
-  //       counter++;
-
-  //       // Recursively process nested blocks
-  //       if (block['nested'] != null && block['nested'] is List) {
-  //         updateLines(block['nested']);
-  //       }
-  //     }
-  //   }
-
-  //   updateLines(blocks);
-
-  //   codeJSONString = jsonEncode(data);
-  // }
   void updateLineNumbers() {
     // Parse the JSON
     Map<String, dynamic> data = jsonDecode(codeJSONString);
@@ -158,7 +129,7 @@ class CodeTracker extends ChangeNotifier {
 
   /// Insert a block (using the ```Block``` class) into the code chain at a specific line number
   int insertBlock(Block block, int line) {
-    const passBlock = {"line": 0, "code": "pass", "nested": []};
+    const passBlock = {"line": 0, "code": "pass", "hasChildren": false};
 
     if (line <= 1 && line != -1) {return 1;} // Line number must be positive (except -1), and cannot be 1 as this is the start block. Inserting at -1 will automatically place the block at the end of the chain.
 
@@ -198,6 +169,32 @@ class CodeTracker extends ChangeNotifier {
     return 0;
   }
 
+  int removeBlock(int line) {
+
+    if (line <= 1 && line != -1) {return 1;} // Line number must be positive (except -1), and cannot be 1 as this is the start block. Removing at -1 will automatically remove the block at the end of the chain.
+
+    // Parse the JSON
+    Map<String, dynamic> data = jsonDecode(codeJSONString); 
+    List blocks = data['blocks'];
+
+    if (line == -1) {
+      // If line is -1, remove the last item in the chain
+      blocks.removeLast();
+    }
+    else {
+      // If a line number is specified, remove all items below and including that line
+      blocks.removeWhere((element) => element["line"] >= line);
+    }
+
+    // Save the results
+    codeJSONString = jsonEncode({"blocks": blocks});
+    updateLineNumbers();
+
+    notifyListeners();
+
+    return 0;
+  }
+
   List<Widget> JSONToPythonCode() {
     updateLineNumbers();
 
@@ -218,7 +215,12 @@ class CodeTracker extends ChangeNotifier {
     }
 
     for (var block in blocks) {
-      String line = "${block["line"]}: ${actualIndent()}${block["code"]}";
+
+      // If the line number is less than 10, add a leading 0 to help allign the text correctly in the code panel.
+      String? leadingZero;
+      if (block["line"] < 10) { leadingZero = "0"; }
+
+      String line = "$leadingZero${block["line"]}: ${actualIndent()}${block["code"]}";
       pythonText.add(Text(
         line,
         style: GoogleFonts.firaCode(
