@@ -62,7 +62,8 @@
       "imageName": "block_images/whileTrue.png",
       "condition": false,
       "hasChildren": true,
-      "priorityBuild": true
+      "priorityBuild": true,
+      "height": 450
     },
     {
       "category": "Logic",
@@ -70,7 +71,8 @@
       "imageName": "block_images/ifCountLessOr=10.png",
       "condition": false,
       "hasChildren": true,
-      "priorityBuild": true
+      "priorityBuild": true,
+      "height": 350
     }
   ]
 }

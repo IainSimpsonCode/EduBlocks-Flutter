@@ -51,13 +51,6 @@ class _canvasWidgetState extends State<canvasWidget> {
         Block? block =
             Provider.of<BlocksToLoad>(context, listen: false).getBlockToLoad();
 
-        double height = 100;
-        if (block?.code == "while True:") {
-          height = 450;
-        } else if (block?.code == "if (count <= 10):") {
-          height = 300;
-        }
-
         if (block == null) {
           // If there was no block left in the queue (queue is empty), leave the loop
           run = false;
@@ -70,8 +63,7 @@ class _canvasWidgetState extends State<canvasWidget> {
                 id: getNewID(),
                 type: block,
                 position: const Offset(200, 100),
-                height: height,
-                // width: 500,
+                height: block.height,
                 nestedBlocks: [],
               ),
             );
