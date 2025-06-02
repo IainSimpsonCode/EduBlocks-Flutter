@@ -20,6 +20,8 @@ const codeOutputColour = Color(0xffffffff);
 const buttonGreyColour = Color(0xFFf3f4f6);
 const buttonTextColour = Color(0xFF6b7290);
 const buttonTextSelectedColour = Color(0xFF374151);
+const runButtonColour = Color(0xFF0ea5e9);
+const topBarColour = Color(0xFFffffff);
 
 // Text Styles
 final bodyMedium = GoogleFonts.roboto(
