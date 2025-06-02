@@ -211,46 +211,53 @@ class _canvasWidgetState extends State<canvasWidget> {
     return chain;
   }
 
-//   int? getBlockLineNumber(int targetId, MoveableBlock startBlock) {
-//     int line = 1;
-//     bool found = false;
+  /// Return the line number of a block in a chain the starts at startBlock.
+  /// The line number is relative to startBlock, who's line number will always be 1.
+  int? getBlockLineNumber(int targetId, MoveableBlock startBlock) {
+    // Check if the target block is connected to the chain with the start block.
+    // If it is not, leave the function as it does not have a line number
+    if (!getConnectedChain(startBlock).any((b) => b.id == targetId)) {
+      print("Block not connected");
+      return null;
+    }
 
-//     int? traverse(MoveableBlock block) {
-//       // If this is the block we want, return the current line
-//       if (block.id == targetId) return line;
+    int line = 1;
 
-//       line++; // Move to next line after current block
+    int? traverse(MoveableBlock block) {
+      // If this is the block we want, return the current line
+      if (block.id == targetId) return line;
 
-//       // Traverse nested blocks (e.g., ifs, loops)
-//       for (var nestedBlock in block.nestedBlocks!) {
-//         int? result = traverse(nestedBlock);
-//         if (result != null) return result;
-//       }
+      line++; // Move to next line after current block
 
-//       // Add a line if this block has children (visual padding for "end")
-//       if (block.type.hasChildren) {
-//         line++; // Account for the visual closing line (like 'end if')
-//       }
+      // Traverse nested blocks (e.g., ifs, loops)
+      if (block.nestedBlocks != null) {
+        for (var nestedBlock in block.nestedBlocks!) {
+          int? result = traverse(nestedBlock);
+          if (result != null) return result;
+        }
+      }
 
-//       // Traverse next block in the chain
-//       if (block.childId != null) {
-//         MoveableBlock? child = widget.blocks.firstWhere(
-//           (b) => b.id == block.childId,
-//           orElse: () => null,
-//         );
-//         if (child != null) {
-//           return traverse(child);
-//         }
-//       }
+      // Add a line if this block has children (visual padding for "end")
+      if (block.type.hasChildren) {
+        line++; // Account for the visual closing line (like 'end if')
+      }
 
-//       return null;
-//     }
+      // Traverse next block in the chain
+      if (block.childId != null && widget.blocks.any((b) => b.id == block.childId)) {
+        MoveableBlock? child = widget.blocks.firstWhere((b) => b.id == block.childId);
+        return traverse(child);
+      }
 
-//     return traverse(startBlock);
-// }
+      return null;
+    }
+
+    return traverse(startBlock);
+  }
 
 
   void onStartDrag(int id) {
+    print("Line number: ${getBlockLineNumber(id, widget.blocks.firstWhere((b) => b.id == 0))}");
+
     // Get the block being dragged from the blocks list
     final dragged = widget.blocks.firstWhere((b) => b.id == id);
 
@@ -415,6 +422,7 @@ class _canvasWidgetState extends State<canvasWidget> {
         onPanStart: (_) => onStartDrag(block.id),
         onPanUpdate: (details) => onUpdateDrag(block.id, details),
         onPanEnd: (_) => onEndDrag(block.id),
+        onTap: () => print("Line number: ${getBlockLineNumber(block.id, widget.blocks.firstWhere((b) => b.id == 0))}"),
         child: Container(
           key: blockKeys[block.id],
           child: SizedBox(
