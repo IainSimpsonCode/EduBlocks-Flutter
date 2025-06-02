@@ -155,7 +155,7 @@ class CodeTracker extends ChangeNotifier {
       // Add the new block to the end of the chain.
       blocks.addAll(newBlock);
     }
-    else if (blocks.last["line"] <= line) { // If the block is being inserted between blocks
+    else if (blocks.last["line"] >= line) { // If the block is being inserted between blocks
       // Insert the new block at the specified line number.
       // Todo this, find the block, find the block at line number ```line - 1```, then insert after it.
       int insertIndex = blocks.indexWhere((block) => block['line'] == line);
