@@ -25,6 +25,9 @@ class _canvasWidgetState extends State<canvasWidget> {
 
   List<MoveableBlock> draggedChain = [];
 
+  MoveableBlock? selectedBlock;
+  FocusNode _focusNode = FocusNode();
+
   int getNewID() {
     int currentLargestID = 0; // the largest id number currently in use
 
@@ -42,6 +45,8 @@ class _canvasWidgetState extends State<canvasWidget> {
   @override
   void initState() {
     super.initState();
+
+    _focusNode.requestFocus();
 
     // Listen to updates from the queue of blocks to load
     Provider.of<BlocksToLoad>(context, listen: false).addListener(() {
@@ -491,24 +496,61 @@ class _canvasWidgetState extends State<canvasWidget> {
         onPanStart: (_) => onStartDrag(block.id),
         onPanUpdate: (details) => onUpdateDrag(block.id, details),
         onPanEnd: (_) => onEndDrag(block.id),
-        onTap:
-            () => print(
-              "Line number: ${getBlockLineNumber(block.id, widget.blocks.firstWhere((b) => b.id == 0))}",
-            ),
+        onTap: () {
+          print("Line number: ${getBlockLineNumber(block.id, widget.blocks.firstWhere((b) => b.id == 0))}");
+          selectedBlock = block;
+        },
         child: Container(
           key: blockKeys[block.id],
           child: SizedBox(
             height: block.height,
-            child: Image.asset(
-              block.type.imageName,
-              fit:
-                  BoxFit
-                      .fitHeight, // width auto-scales to preserve aspect ratio
+            child: ColorFiltered(
+              colorFilter: getBlockLineNumber(block.id, widget.blocks.firstWhere((b) => b.id == 0)) == null // If the block is not connected, apply greyscale filter. If connected, show no filter
+                  ? const ColorFilter.matrix(<double>[
+                      0.2126, 0.7152, 0.0722, 0, 0,
+                      0.2126, 0.7152, 0.0722, 0, 0,
+                      0.2126, 0.7152, 0.0722, 0, 0,
+                      0,      0,      0,      1, 0,
+                    ])
+                  : const ColorFilter.mode(Colors.transparent, BlendMode.multiply),
+              child: Image.asset(
+                block.type.imageName,
+                fit: BoxFit.fitHeight,
+              ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  void _handleKeyEvent(KeyEvent event) {
+    // If the delete key is pressed
+    if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.delete) {
+      // Check if a block was selected
+      if (selectedBlock != null) {
+        // Delete the block
+
+        // Assert that the selectedBlock is not null, and does exist
+        final block = selectedBlock!;
+
+        // Find the block
+        int? blockLineNumber = getBlockLineNumber(
+          block.id,
+          widget.blocks.firstWhere((b) => b.id == 0),
+        );
+        // Get the block from the blocks list
+        final dragged = widget.blocks.firstWhere((element) => element.id == block.id);
+
+        // If the block is attached to another block
+        if (dragged.snappedTo != null) {
+          // Find the parent block it is snapped to
+          final parent = widget.blocks.firstWhere((b) => b.id == dragged.snappedTo);
+
+
+        }
+      }
+    }
   }
 
   @override
@@ -541,6 +583,7 @@ class _canvasWidgetState extends State<canvasWidget> {
           );
         },
       ),
+      
     );
   }
 }
