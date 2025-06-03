@@ -244,11 +244,10 @@ class _canvasWidgetState extends State<canvasWidget> {
       // If the parent has nested blocks
       if (parent.nestedBlocks != null && parent.nestedBlocks!.isNotEmpty) {
         // And if the dragged block is the nested block, remove nested blocks from the parent
-        if (parent.nestedBlocks?[0].id == dragged.id) parent.nestedBlocks = [];
-      } else {
-        // Remove the child block from the parent
-        parent.childId = null;
-      }
+        if (parent.nestedBlocks?[0].id == dragged.id) {parent.nestedBlocks = [];}
+      } 
+      // Remove the child block from the parent
+      if(parent.childId == dragged.id) {parent.childId = null;}
 
       // The dragged block is now not snapped to another block
       dragged.snappedTo = null;
