@@ -187,13 +187,25 @@ class CodeTracker extends ChangeNotifier {
       blocks.removeLast();
     }
     else {
-      // If a line number is specified, remove all items below and including that line
-      //blocks.removeWhere((element) => element["line"] >= line);
+      // If a line number is specified, remove all blocks at and below that line.
 
+      // Iterate through all the blocks at and below the specified line to remove
+      // Create a list of blocks to remove after iterating through the list. Removing blocks inside the for loop will cause an error as you are changing the list you are iterating through
       List<int> blocksToRemove = [];
+      // When passing an if or while loop, increase skip pass. You should skip as many pass blocks as you pass if and while blocks. Eg, if you pass 2 while blocks, you should skip the next 2 pass blocks.
+      int skipPass = 0;
       for (var block in blocks.where((element) => element["line"] >= line)) {
-        if (block["code"] == "pass") {
+        if (block["code"] == "pass" && skipPass == 0) {
+          // If you hit a pass block, and skipPass is 0, stop removing blocks as you have reached the end of the nested stack you are removing
           break;
+        }
+        else if (block["code"] == "pass" && skipPass > 0) {
+          // If you hit a pass block, and skipPass if greater than 0, remove the pass block and continue as you have removed a whole if/while block
+          skipPass--;
+        }
+        else if (block["hasChildren"] == true) {
+          // If you hit a while or if block, increase skipPass as you will need to skip the next pass block and delete the whole if/while block
+          skipPass++;
         }
 
         blocksToRemove.add(block["line"]);
