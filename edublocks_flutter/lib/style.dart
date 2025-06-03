@@ -6,9 +6,9 @@ const bool isProduction = true;
 
 // Size of each page section on screen
 // Size calculated as ```MediaQuery.sizeOf(context).width / sideBarWidth;```
-const sideBarWidth = 3;
+const sideBarWidth = 3.75; //was 3
 const canvasWidth = 1;
-const codeBarWidth = 3;
+const codeBarWidth = 3.25; //was 3
 
 // Colour of page sections
 const sideBarColour = Color(0xffffffff);

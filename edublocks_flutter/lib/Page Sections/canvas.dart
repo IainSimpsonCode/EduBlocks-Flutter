@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../Classes/MoveableBlock.dart';
 import 'package:collection/collection.dart';
+import 'package:just_audio/just_audio.dart';
 
 class canvasWidget extends StatefulWidget {
   canvasWidget({super.key});
@@ -18,11 +19,12 @@ class canvasWidget extends StatefulWidget {
 }
 
 class _canvasWidgetState extends State<canvasWidget> {
-  final double snapThreshold = 25;
-  final double snapThresholdNested = 25;
+  final double snapThreshold = 100;
+  final double snapThresholdNested = 75;
   final Map<int, GlobalKey> blockKeys = {};
   final Map<int, Offset> dragPositions =
       {}; // store latest drag global positions
+  final player = AudioPlayer();
 
   List<MoveableBlock> draggedChain = [];
 
@@ -69,7 +71,7 @@ class _canvasWidgetState extends State<canvasWidget> {
               MoveableBlock(
                 id: getNewID(),
                 type: block,
-                position: const Offset(200, 100),
+                position: const Offset(350, 100),
                 height: block.height,
                 nestedBlocks: [],
               ),
@@ -93,8 +95,8 @@ class _canvasWidgetState extends State<canvasWidget> {
           context,
           listen: false,
         ).getBlockByCode("# Start Here"),
-        position: const Offset(100, 0),
-        height: 100,
+        position: const Offset(50, 50),
+        height: 80,
         nestedBlocks: [],
       ),
       // MoveableBlock(
@@ -233,7 +235,7 @@ class _canvasWidgetState extends State<canvasWidget> {
     return traverse(startBlock);
   }
 
-  void onStartDrag(int id) {
+  Future<void> onStartDrag(int id) async {
     int? blockLineNumber = getBlockLineNumber(
       id,
       widget.blocks.firstWhere((b) => b.id == 0),
@@ -253,7 +255,12 @@ class _canvasWidgetState extends State<canvasWidget> {
         if (parent.nestedBlocks?[0].id == dragged.id) {parent.nestedBlocks = [];}
       } 
       // Remove the child block from the parent
-      if(parent.childId == dragged.id) {parent.childId = null;}
+      if(parent.childId == dragged.id) {
+        parent.childId = null;
+
+        await player.setAsset('sounds/disconnect.wav');
+        await player.play();
+        }
 
       // The dragged block is now not snapped to another block
       dragged.snappedTo = null;
@@ -281,7 +288,7 @@ class _canvasWidgetState extends State<canvasWidget> {
   }
 
   //Called by the gesture detector when a block is released
-  void onEndDrag(int id) {
+  Future<void> onEndDrag(int id) async {
     // Get the block
     final dragged = widget.blocks.firstWhere((b) => b.id == id);
     final draggedContext = blockKeys[dragged.id]?.currentContext;
@@ -338,7 +345,7 @@ class _canvasWidgetState extends State<canvasWidget> {
         if (childSnapXDistance.abs() < snapThreshold &&
             childSnapYDistance.abs() < snapThreshold) {
           setState(() {
-            dragged.position = Offset(target.position.dx, childSnapY + 20);
+            dragged.position = Offset(target.position.dx , childSnapY + 20);
             dragged.snappedTo = target.id;
             target.childId = dragged.id;
           });
@@ -356,6 +363,9 @@ class _canvasWidgetState extends State<canvasWidget> {
           for (var childBlock in draggedChainChildren) {
             onEndDrag(childBlock.id);
           }
+          
+          await player.setAsset('sounds/click.mp3');
+          await player.play();
         }
       } // Child snap - this is for re-snapping
       else if (target.childId == dragged.id) {

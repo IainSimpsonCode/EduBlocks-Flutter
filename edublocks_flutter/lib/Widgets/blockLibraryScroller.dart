@@ -28,7 +28,7 @@ class _blockLibraryScrollerState extends State<blockLibraryScroller> {
           child: GestureDetector(
             child: Image.asset(
               block.imageName,
-              height: 80,
+              height: block.height,
               fit: BoxFit.contain,
               errorBuilder: (context, error, stackTrace) {
                 return const Icon(Icons.broken_image, size: 80);

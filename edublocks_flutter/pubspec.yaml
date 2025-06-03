@@ -13,6 +13,7 @@ dependencies:
   google_fonts: ^6.2.1
   provider: ^6.1.5
   collection: ^1.18.0
+  just_audio: ^0.9.36
 
 dev_dependencies:
   flutter_test:

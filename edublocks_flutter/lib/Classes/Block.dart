@@ -31,7 +31,7 @@ class Block {
       condition: json['condition'],
       hasChildren: json['hasChildren'],
       priorityBuild: json['priorityBuild'] ?? false,
-      height: json['height'] ?? 100
+      height: json['height'] ?? 80
     );
   }
 }
