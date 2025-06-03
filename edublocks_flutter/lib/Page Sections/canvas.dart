@@ -2,6 +2,7 @@ import 'package:edublocks_flutter/Classes/Block.dart';
 import 'package:edublocks_flutter/Services/providers.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../Classes/MoveableBlock.dart';
@@ -255,6 +256,7 @@ class _canvasWidgetState extends State<canvasWidget> {
       // The dragged block is now not snapped to another block
       dragged.snappedTo = null;
 
+
       // If the block line number was found in the chain using the getBlockLineNumber() function, remove the block from the JSON string at the specified line number
       if (blockLineNumber != null) {
         Provider.of<CodeTracker>(
@@ -498,12 +500,35 @@ class _canvasWidgetState extends State<canvasWidget> {
         onPanEnd: (_) => onEndDrag(block.id),
         onTap: () {
           print("Line number: ${getBlockLineNumber(block.id, widget.blocks.firstWhere((b) => b.id == 0))}");
-          selectedBlock = block;
+
+          // When a block is clicked, set the block as the selected block as long as the block is not the start block
+          if (block.id != 0) {
+            setState(() {
+              // If the block is already selected, deselect it
+              if (selectedBlock?.id == block.id) {
+                selectedBlock = null;
+              }
+              else {
+                selectedBlock = block;
+              }
+
+            });
+            print("Block selected: ${block.type.code}");
+          }
         },
         child: Container(
           key: blockKeys[block.id],
-          child: SizedBox(
+          child: Container(
             height: block.height,
+            decoration: selectedBlock?.id == block.id ? BoxDecoration(
+              border: Border(
+                left: BorderSide(
+                  color: blockHighlightColour,
+                  width: 5,
+                ),
+              ),
+              borderRadius: BorderRadius.circular(8),
+            ) : null,
             child: ColorFiltered(
               colorFilter: getBlockLineNumber(block.id, widget.blocks.firstWhere((b) => b.id == 0)) == null // If the block is not connected, apply greyscale filter. If connected, show no filter
                   ? const ColorFilter.matrix(<double>[
@@ -525,6 +550,92 @@ class _canvasWidgetState extends State<canvasWidget> {
   }
 
   void _handleKeyEvent(KeyEvent event) {
+
+    void detatch(MoveableBlock block, bool? removeDecendants) {
+      if (removeDecendants == true) {
+        int? blockLineNumber = getBlockLineNumber(
+          block.id,
+          widget.blocks.firstWhere((b) => b.id == 0),
+        );
+
+        // If the block is attached to another block
+        if (block.snappedTo != null) {
+          // Find the parent block it is snapped to
+          final parent = widget.blocks.firstWhere((b) => b.id == block.snappedTo);
+
+          // If the parent has nested blocks
+          if (parent.nestedBlocks != null && parent.nestedBlocks!.isNotEmpty) {
+            // And if the block is the nested block, remove nested blocks from the parent
+            if (parent.nestedBlocks?[0].id == block.id) {parent.nestedBlocks = [];}
+          } 
+          // Remove the child block from the parent
+          if(parent.childId == block.id) {parent.childId = null;}
+
+          // The block is now not snapped to another block
+          block.snappedTo = null;
+
+
+          // If the block line number was found in the chain using the getBlockLineNumber() function, remove the block from the JSON string at the specified line number
+          if (blockLineNumber != null) {
+            Provider.of<CodeTracker>(
+              context,
+              listen: false,
+            ).removeBlock(blockLineNumber);
+          }
+        }
+      }
+      else if (removeDecendants == false) {
+        int? blockLineNumber = getBlockLineNumber(
+          block.id,
+          widget.blocks.firstWhere((b) => b.id == 0),
+        );
+
+        // If the block is attached to another block
+        if (block.snappedTo != null) {
+          // Find the parent block it is snapped to
+          final parent = widget.blocks.firstWhere((b) => b.id == block.snappedTo);
+
+          // If the parent has nested blocks
+          if (parent.nestedBlocks != null && parent.nestedBlocks!.isNotEmpty) {
+            // And if the block is the nested block, remove nested blocks from the parent
+            if (parent.nestedBlocks?[0].id == block.id) {parent.nestedBlocks = [];}
+          } 
+          // Remove the child block from the parent
+          if(parent.childId == block.id) {parent.childId = null;}
+
+          // The block is now not snapped to another block
+          block.snappedTo = null;
+
+
+          // If the block line number was found in the chain using the getBlockLineNumber() function, remove the block from the JSON string at the specified line number
+          if (blockLineNumber != null) {
+            Provider.of<CodeTracker>(
+              context,
+              listen: false,
+            ).removeSingleBlock(blockLineNumber);
+          }
+        }
+      }
+      else if (removeDecendants == null) {
+        // If the block is attached to another block
+        if (block.snappedTo != null) {
+          // Find the parent block it is snapped to
+          final parent = widget.blocks.firstWhere((b) => b.id == block.snappedTo);
+
+          // If the parent has nested blocks
+          if (parent.nestedBlocks != null && parent.nestedBlocks!.isNotEmpty) {
+            // And if the block is the nested block, remove nested blocks from the parent
+            if (parent.nestedBlocks?[0].id == block.id) {parent.nestedBlocks = [];}
+          } 
+          // Remove the child block from the parent
+          if(parent.childId == block.id) {parent.childId = null;}
+
+          // The block is now not snapped to another block
+          block.snappedTo = null;
+        }
+      }
+    }
+
     // If the delete key is pressed
     if (event is KeyDownEvent && event.logicalKey == LogicalKeyboardKey.delete) {
       // Check if a block was selected
@@ -534,21 +645,18 @@ class _canvasWidgetState extends State<canvasWidget> {
         // Assert that the selectedBlock is not null, and does exist
         final block = selectedBlock!;
 
-        // Find the block
-        int? blockLineNumber = getBlockLineNumber(
-          block.id,
-          widget.blocks.firstWhere((b) => b.id == 0),
-        );
-        // Get the block from the blocks list
-        final dragged = widget.blocks.firstWhere((element) => element.id == block.id);
-
-        // If the block is attached to another block
-        if (dragged.snappedTo != null) {
-          // Find the parent block it is snapped to
-          final parent = widget.blocks.firstWhere((b) => b.id == dragged.snappedTo);
-
-
+        // If the block had any children, detatch them
+        if (block.childId != null) {
+          detatch(widget.blocks.firstWhere((element) => element.id == block.childId), true);
         }
+
+        // Then detach the block being removed
+        detatch(block, true);
+
+        // Then remove the block from blocks to prevent it being redrawn
+        setState(() {
+          widget.blocks.removeWhere((element) => element.id == block.id);
+        });
       }
     }
   }
@@ -556,32 +664,37 @@ class _canvasWidgetState extends State<canvasWidget> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          return Stack(
-            children: [
-              // Paint background
-              isProduction
-                  ? CustomPaint(
-                    size: Size(constraints.maxWidth, constraints.maxHeight),
-                  )
-                  : CustomPaint(
-                    size: Size(constraints.maxWidth, constraints.maxHeight),
-                    painter: GridPainter(gridSpacing: 100),
-                  ),
-              // Render any blocks that have priorityBuild first
-              ...widget.blocks
-                  .where((b) => b.type.priorityBuild == true)
-                  .map(buildBlock)
-                  .toList(),
-              // Render the remaining blocks
-              ...widget.blocks
-                  .where((b) => b.type.priorityBuild != true)
-                  .map(buildBlock)
-                  .toList(),
-            ],
-          );
-        },
+      child: KeyboardListener(
+        focusNode: _focusNode,
+        autofocus: true,
+        onKeyEvent: _handleKeyEvent,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Stack(
+              children: [
+                // Paint background
+                isProduction
+                    ? CustomPaint(
+                      size: Size(constraints.maxWidth, constraints.maxHeight),
+                    )
+                    : CustomPaint(
+                      size: Size(constraints.maxWidth, constraints.maxHeight),
+                      painter: GridPainter(gridSpacing: 100),
+                    ),
+                // Render any blocks that have priorityBuild first
+                ...widget.blocks
+                    .where((b) => b.type.priorityBuild == true)
+                    .map(buildBlock)
+                    .toList(),
+                // Render the remaining blocks
+                ...widget.blocks
+                    .where((b) => b.type.priorityBuild != true)
+                    .map(buildBlock)
+                    .toList(),
+              ],
+            );
+          },
+        ),
       ),
       
     );
