@@ -176,7 +176,6 @@ class CodeTracker extends ChangeNotifier {
   }
 
   int removeBlock(int line) {
-
     if (line <= 1 && line != -1) {return 1;} // Line number must be positive (except -1), and cannot be 1 as this is the start block. Removing at -1 will automatically remove the block at the end of the chain.
 
     // Parse the JSON
@@ -191,14 +190,17 @@ class CodeTracker extends ChangeNotifier {
       // If a line number is specified, remove all items below and including that line
       //blocks.removeWhere((element) => element["line"] >= line);
 
-      final iterableList = blocks.where((element) => element["line"] >= line);
-      for (var block in iterableList) {
+      List<int> blocksToRemove = [];
+      for (var block in blocks.where((element) => element["line"] >= line)) {
         if (block["code"] == "pass") {
           break;
         }
 
-        blocks.removeWhere((element) => element["line"] == block["line"]);
+        blocksToRemove.add(block["line"]);
       }
+
+
+      blocks.removeWhere((element) => blocksToRemove.contains(element["line"]));
     }
 
     // Save the results
