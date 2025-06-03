@@ -22,6 +22,7 @@ const buttonTextColour = Color(0xFF6b7290);
 const buttonTextSelectedColour = Color(0xFF374151);
 const runButtonColour = Color(0xFF0ea5e9);
 const topBarColour = Color(0xFFffffff);
+const blockHighlightColour = Colors.amber;
 
 // Text Styles
 final bodyMedium = GoogleFonts.roboto(

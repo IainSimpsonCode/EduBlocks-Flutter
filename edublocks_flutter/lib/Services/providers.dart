@@ -224,6 +224,60 @@ class CodeTracker extends ChangeNotifier {
     return 0;
   }
 
+  int removeSingleBlock(int line) {
+    if (line <= 1 && line != -1) {return 1;} // Line number must be positive (except -1), and cannot be 1 as this is the start block. Removing at -1 will automatically remove the block at the end of the chain.
+
+    // Parse the JSON
+    Map<String, dynamic> data = jsonDecode(codeJSONString); 
+    List blocks = data['blocks'];
+
+    if (line == -1) {
+      // If line is -1, remove the last item in the chain
+      blocks.removeLast();
+    }
+    else {
+      // If a line number is specified, remove the specified block. 
+      // If the block has children, remove the nested blocks too. When removing nested blocks, use the same code as in ```removeBlock()```, but initialise skipPass as -1
+      if (blocks.firstWhere((element) => element["line"] == line)["hasChildren"] == true) {
+        // Iterate through all the blocks at and below the specified line to remove
+        // Create a list of blocks to remove after iterating through the list. Removing blocks inside the for loop will cause an error as you are changing the list you are iterating through
+        List<int> blocksToRemove = [];
+        // When passing an if or while loop, increase skip pass. You should skip as many pass blocks as you pass if and while blocks. Eg, if you pass 2 while blocks, you should skip the next 2 pass blocks.
+        int skipPass = -1;
+        for (var block in blocks.where((element) => element["line"] >= line)) {
+          if (block["code"] == "pass" && skipPass <= 0) {
+            // If you hit a pass block, and skipPass is 0, stop removing blocks as you have reached the end of the nested stack you are removing
+            break;
+          }
+          else if (block["code"] == "pass" && skipPass > 0) {
+            // If you hit a pass block, and skipPass if greater than 0, remove the pass block and continue as you have removed a whole if/while block
+            skipPass--;
+          }
+          else if (block["hasChildren"] == true) {
+            // If you hit a while or if block, increase skipPass as you will need to skip the next pass block and delete the whole if/while block
+            skipPass++;
+          }
+
+          blocksToRemove.add(block["line"]);        
+        }
+
+        blocks.removeWhere((element) => blocksToRemove.contains(element["line"]));
+      }
+      else {
+        // If the specified block did not have children or nested blocks, remove the block
+        blocks.removeWhere((element) => element["line"] == line);
+      }
+    }
+
+    // Save the results
+    codeJSONString = jsonEncode({"blocks": blocks});
+    updateLineNumbers();
+
+    notifyListeners();
+
+    return 0;
+  }
+
   List<String> JSONToPythonCode() {
     updateLineNumbers();
 
