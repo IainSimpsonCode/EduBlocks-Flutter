@@ -237,9 +237,9 @@ class CodeTracker extends ChangeNotifier {
   }
 
   List<Widget> pythonCodeToTextWidgets() {
-    pythonCode = JSONToPythonCode();
+    final pythonCode = JSONToPythonCode();
 
-    List<Widget> textWidgets = List.empty(growable: true);
+    List<Widget> textWidgets = [];
 
     int line = 1;
 
@@ -258,14 +258,15 @@ class CodeTracker extends ChangeNotifier {
       ));
 
       line++;
-
-      return textWidgets;
     }
 
+    return textWidgets;
   }
 
-  Future<List<Widget>> run() {
-
+  /// Will send the code currently stored in the CodeTracker notifier to a python compiler server. Returns the output as a list of text widgets to be shown on the output pane.
+  Future<List<Widget>> run() async {
+    List<Widget> outputTextWidgets = [];
+    return outputTextWidgets;
   }
 }
 
