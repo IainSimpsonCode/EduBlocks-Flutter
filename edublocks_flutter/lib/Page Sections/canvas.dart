@@ -17,8 +17,8 @@ class canvasWidget extends StatefulWidget {
 }
 
 class _canvasWidgetState extends State<canvasWidget> {
-  final double snapThreshold = 100;
-  final double snapThresholdNested = 100;
+  final double snapThreshold = 25;
+  final double snapThresholdNested = 25;
   final Map<int, GlobalKey> blockKeys = {};
   final Map<int, Offset> dragPositions =
       {}; // store latest drag global positions
@@ -158,6 +158,14 @@ class _canvasWidgetState extends State<canvasWidget> {
       visited.add(block.id);
       chain.add(block);
 
+      // Get side-snapped (nested) blocks
+      final nested = widget.blocks.where(
+        (b) => b.snappedTo == block.id && block.childId != b.id,
+      );
+      for (var b in nested) {
+        collect(b);
+      }
+      
       // Get vertically snapped child
       if (block.childId != null) {
         final child = widget.blocks.firstWhereOrNull(
@@ -166,13 +174,7 @@ class _canvasWidgetState extends State<canvasWidget> {
         if (child != null) collect(child);
       }
 
-      // Get side-snapped (nested) blocks
-      final nested = widget.blocks.where(
-        (b) => b.snappedTo == block.id && block.childId != b.id,
-      );
-      for (var b in nested) {
-        collect(b);
-      }
+      
     }
 
     collect(start);
@@ -350,6 +352,7 @@ class _canvasWidgetState extends State<canvasWidget> {
         }
       } // Child snap - this is for re-snapping
       else if (target.childId == dragged.id) {
+        
         setState(() {
           dragged.position = Offset(target.position.dx, childSnapY + 20);
           dragged.snappedTo = target.id;
@@ -397,6 +400,9 @@ class _canvasWidgetState extends State<canvasWidget> {
               target.nestedBlocks?.add(dragged);
             }
 
+            if(dragged.nestedBlocks!.isNotEmpty) {
+              onEndDrag(dragged.nestedBlocks![0].id);
+            }
             snapDone = true; //snap is set as done
             newSnap = true; //this is a new snap
           }
@@ -434,17 +440,20 @@ class _canvasWidgetState extends State<canvasWidget> {
         }
       }
 
-      //if the dragged block has a child, snap that as well.
-      if (dragged.childId != null) {
-        onEndDrag(dragged.childId!);
-      }
+      
 
       //if its a new snap and that block is in the main chain
       if (newSnap &&
           getConnectedChain(
             widget.blocks.firstWhere((b) => b.id == 0),
           ).contains(dragged)) {
+            
         callInsertBlock(dragged);
+      }
+
+      //if the dragged block has a child, snap that as well.
+      if (dragged.childId != null) {
+        onEndDrag(dragged.childId!);
       }
     }
   }
@@ -452,9 +461,10 @@ class _canvasWidgetState extends State<canvasWidget> {
   void callInsertBlock(MoveableBlock block) {
     // 1.1 snapping ONE block to the end of the main chain with no children
     // simply append it to the json
+   
     if (block.childId == null &&
         block.isNested == false &&
-        block.nestedBlocks == null) {
+        block.nestedBlocks!.isEmpty) {
       Provider.of<CodeTracker>(
         context,
         listen: false,
@@ -470,6 +480,11 @@ class _canvasWidgetState extends State<canvasWidget> {
       //iterate through and all of the blocks
       //nested blocks are handled in getBlockLineNumber
       for (int i = 0; i < chain.length; i++) {
+        print(chain[i].type.code);
+        print(getBlockLineNumber(
+            chain[i].id,
+            widget.blocks.firstWhere((b) => b.id == 0),
+          )!);
         Provider.of<CodeTracker>(context, listen: false).insertBlock(
           chain[i].type,
           getBlockLineNumber(
