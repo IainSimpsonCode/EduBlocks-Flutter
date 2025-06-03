@@ -186,7 +186,6 @@ class _canvasWidgetState extends State<canvasWidget> {
     // Check if the target block is connected to the chain with the start block.
     // If it is not, leave the function as it does not have a line number
     if (!getConnectedChain(startBlock).any((b) => b.id == targetId)) {
-      print("Block not connected");
       return null;
     }
 
@@ -231,7 +230,6 @@ class _canvasWidgetState extends State<canvasWidget> {
       id,
       widget.blocks.firstWhere((b) => b.id == 0),
     );
-    print("Line number: $blockLineNumber");
 
     // Get the block being dragged from the blocks list
     final dragged = widget.blocks.firstWhere((b) => b.id == id);

@@ -189,7 +189,16 @@ class CodeTracker extends ChangeNotifier {
     }
     else {
       // If a line number is specified, remove all items below and including that line
-      blocks.removeWhere((element) => element["line"] >= line);
+      //blocks.removeWhere((element) => element["line"] >= line);
+
+      final iterableList = blocks.where((element) => element["line"] >= line);
+      for (var block in iterableList) {
+        if (block["code"] == "pass") {
+          break;
+        }
+
+        blocks.removeWhere((element) => element["line"] == block["line"]);
+      }
     }
 
     // Save the results
