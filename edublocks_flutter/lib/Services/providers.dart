@@ -201,14 +201,14 @@ class CodeTracker extends ChangeNotifier {
     return 0;
   }
 
-  List<Widget> JSONToPythonCode() {
+  List<String> JSONToPythonCode() {
     updateLineNumbers();
 
     // Parse the JSON
     Map<String, dynamic> data = jsonDecode(codeJSONString);
     List blocks = data["blocks"];
 
-    List<Widget> pythonText = List.empty(growable: true);
+    List<String> pythonText = List.empty(growable: true);
 
     const indent = "  ";
     int numOfIndents = 0;
@@ -221,20 +221,7 @@ class CodeTracker extends ChangeNotifier {
     }
 
     for (var block in blocks) {
-
-      // If the line number is less than 10, add a leading 0 to help allign the text correctly in the code panel.
-      String? leadingZero;
-      if (block["line"] < 10) { leadingZero = "0"; }
-
-      String line = "$leadingZero${block["line"]}: ${actualIndent()}${block["code"]}";
-      pythonText.add(Text(
-        line,
-        style: GoogleFonts.firaCode(
-          fontSize: 14,
-          fontWeight: FontWeight.w400,
-          color: codeTextColour
-        ),
-      ));
+      pythonText.add("${actualIndent()}${block["code"]}");
 
       // If the block has nested blocks (Eg while loops and if statements), increase the indent
       if (block["hasChildren"] == true) {
@@ -247,6 +234,38 @@ class CodeTracker extends ChangeNotifier {
     }
 
     return pythonText;
+  }
+
+  List<Widget> pythonCodeToTextWidgets() {
+    pythonCode = JSONToPythonCode();
+
+    List<Widget> textWidgets = List.empty(growable: true);
+
+    int line = 1;
+
+    for (String code in pythonCode) {
+      // If the line number is less than 10, add a leading 0 to help allign the text correctly in the code panel.
+      String? leadingZero;
+      if (line < 10) { leadingZero = "0"; }
+
+      textWidgets.add(Text(
+        "$leadingZero$line: $code",
+        style: GoogleFonts.firaCode(
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+          color: codeTextColour
+        ),
+      ));
+
+      line++;
+
+      return textWidgets;
+    }
+
+  }
+
+  Future<List<Widget>> run() {
+
   }
 }
 
