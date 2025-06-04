@@ -8,6 +8,7 @@ class Block {
   final String category;
   final String code;
   final String imageName;
+  final String displayImageName;
   final bool condition;
   final bool hasChildren;
   final bool priorityBuild;
@@ -17,6 +18,7 @@ class Block {
     required this.category,
     required this.code,
     required this.imageName,
+    required this.displayImageName,
     required this.condition,
     required this.hasChildren,
     required this.priorityBuild,
@@ -25,11 +27,12 @@ class Block {
 
   factory Block.fromJson(Map<String, dynamic> json) {
     return Block(
-      category: json['category'],
-      code: json['code'],
-      imageName: json['imageName'],
-      condition: json['condition'],
-      hasChildren: json['hasChildren'],
+      category: json['category'] ?? "Undefined",
+      code: json['code'] ?? "# Code not added",
+      imageName: json['imageName'] ?? "Undefined",
+      displayImageName: json['displayImageName'] ?? json['imageName'] ?? "Undefined",
+      condition: json['condition'] ?? false,
+      hasChildren: json['hasChildren'] ?? false,
       priorityBuild: json['priorityBuild'] ?? false,
       height: json['height'] ?? 80
     );

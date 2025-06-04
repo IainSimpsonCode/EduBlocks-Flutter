@@ -27,7 +27,7 @@ class _blockLibraryScrollerState extends State<blockLibraryScroller> {
           padding: const EdgeInsets.all(8.0),
           child: GestureDetector(
             child: Image.asset(
-              block.imageName,
+              block.displayImageName,
               height: block.height,
               fit: BoxFit.contain,
               errorBuilder: (context, error, stackTrace) {
