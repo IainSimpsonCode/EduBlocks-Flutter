@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 // Is the code in production or debug mode
-const bool isProduction = true;
+const bool isProduction = false;
 
 // Size of each page section on screen
 // Size calculated as ```MediaQuery.sizeOf(context).width / sideBarWidth;```

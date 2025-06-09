@@ -64,7 +64,7 @@
       "condition": false,
       "hasChildren": true,
       "priorityBuild": true,
-      "height": 450,
+      "height": 380,
       "displayImageHeight": 150
     },
     {
@@ -75,7 +75,7 @@
       "condition": false,
       "hasChildren": true,
       "priorityBuild": true,
-      "height": 300,
+      "height": 255,
       "displayImageHeight": 150
     }
   ]
