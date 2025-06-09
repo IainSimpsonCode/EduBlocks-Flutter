@@ -13,6 +13,7 @@ class Block {
   final bool hasChildren;
   final bool priorityBuild;
   final double height;
+  final double displayImageHeight;
 
   Block({
     required this.category,
@@ -22,7 +23,8 @@ class Block {
     required this.condition,
     required this.hasChildren,
     required this.priorityBuild,
-    required this.height
+    required this.height,
+    required this.displayImageHeight,
   });
 
   factory Block.fromJson(Map<String, dynamic> json) {
@@ -34,7 +36,8 @@ class Block {
       condition: json['condition'] ?? false,
       hasChildren: json['hasChildren'] ?? false,
       priorityBuild: json['priorityBuild'] ?? false,
-      height: json['height'] ?? 80
+      height: json['height'] ?? 80,
+      displayImageHeight: json['displayImageHeight'] ?? json['height'] ?? 80,
     );
   }
 }
