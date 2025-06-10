@@ -223,6 +223,7 @@ class _canvasWidgetState extends State<canvasWidget> {
 
       // The dragged block is now not snapped to another block
       dragged.snappedTo = null;
+      dragged.isNested = false;
 
       // If the block line number was found in the chain using the getBlockLineNumber() function, remove the block from the JSON string at the specified line number
       if (blockLineNumber != null) {
@@ -284,9 +285,9 @@ class _canvasWidgetState extends State<canvasWidget> {
           dragged.position.dy - nestedSnapYCoordinatesTarget + 10;
 
       if (childSnapXDistance.abs() < snapThreshold &&
-            childSnapYDistance.abs() < snapThreshold) {
-              print(target.type.code);
-            }
+          childSnapYDistance.abs() < snapThreshold) {
+        // print(target.type.code);
+      }
     }
   }
 
@@ -356,6 +357,11 @@ class _canvasWidgetState extends State<canvasWidget> {
 
           if (target.isNested) {
             dragged.isNested = true;
+
+            final targetSnappedTo = widget.blocks.firstWhere(
+              (b) => b.id == target.snappedTo,
+            );
+            targetSnappedTo.nestedBlocks?.add(dragged);
           }
 
           final draggedChainChildren = getConnectedChain(
@@ -375,6 +381,21 @@ class _canvasWidgetState extends State<canvasWidget> {
           dragged.snappedTo = target.id;
         });
         snapDone = true;
+        if (target.isNested) {
+          dragged.isNested = true;
+
+          final targetSnappedTo = widget.blocks.firstWhere(
+            (b) => b.id == target.snappedTo,
+          );
+          targetSnappedTo.nestedBlocks?.add(dragged);
+        }
+
+        final draggedChainChildren = getConnectedChain(
+          dragged,
+        ).skip(1); // Skip the dragged block itself
+        for (var childBlock in draggedChainChildren) {
+          onEndDrag(childBlock.id, snap: false);
+        }
       }
 
       // Side snap: only if target block type is in allowed list
@@ -407,8 +428,8 @@ class _canvasWidgetState extends State<canvasWidget> {
             else if (target.type.code == 'if (count <= 10):') {
               setState(() {
                 dragged.position = Offset(
-                  nestedSnapXCoordinatesTarget - 40,
-                  nestedSnapYCoordinatesTarget - 5,
+                  nestedSnapXCoordinatesTarget - 38,
+                  nestedSnapYCoordinatesTarget,
                 );
                 dragged.snappedTo = target.id;
                 dragged.isNested = true;
@@ -419,6 +440,10 @@ class _canvasWidgetState extends State<canvasWidget> {
 
             if (dragged.nestedBlocks!.isNotEmpty) {
               onEndDrag(dragged.nestedBlocks![0].id, snap: false);
+            }
+
+            if (dragged.childId != null) {
+              onEndDrag(dragged.childId!, snap: false);
             }
             snapDone = true; //snap is set as done
             newSnap = true; //this is a new snap
@@ -438,19 +463,24 @@ class _canvasWidgetState extends State<canvasWidget> {
               dragged.snappedTo = target.id;
               dragged.isNested = true;
             });
-
-            target.nestedBlocks?.add(dragged);
           } //3.2
           else if (target.type.code == 'if (count <= 10):') {
             setState(() {
               dragged.position = Offset(
-                nestedSnapXCoordinatesTarget - 40,
-                nestedSnapYCoordinatesTarget - 5,
+                nestedSnapXCoordinatesTarget - 38,
+                nestedSnapYCoordinatesTarget,
               );
               dragged.snappedTo = target.id;
               dragged.isNested = true;
             });
-            target.nestedBlocks?.add(dragged);
+          }
+
+          if (dragged.nestedBlocks!.isNotEmpty) {
+            onEndDrag(dragged.nestedBlocks![0].id, snap: false);
+          }
+
+          if (dragged.childId != null) {
+            onEndDrag(dragged.childId!, snap: false);
           }
 
           snapDone = true; //snap is done but its not a new snap
@@ -473,7 +503,9 @@ class _canvasWidgetState extends State<canvasWidget> {
     }
   }
 
-  void callInsertBlock(MoveableBlock block) {
+  void callInsertBlock(MoveableBlock block) async {
+    await Future.delayed(Duration(milliseconds: 500)); // 0.25 second delay
+
     // 1.1 snapping ONE block to the end of the main chain with no children
     // simply append it to the json
     if (block.childId == null &&
@@ -484,8 +516,8 @@ class _canvasWidgetState extends State<canvasWidget> {
         listen: false,
       ).insertBlock(block.type, -1);
     }
-    //1.2 this is called everyother time
-    else if (block.childId == null) {
+    //1.2 this is called when the block is nested but without children
+    else if (block.childId == null && block.nestedBlocks!.isEmpty) {
       Provider.of<CodeTracker>(context, listen: false).insertBlock(
         block.type,
         getBlockLineNumber(
@@ -493,7 +525,9 @@ class _canvasWidgetState extends State<canvasWidget> {
           widget.blocks.firstWhere((b) => b.id == 0),
         )!,
       );
-    } else {
+    }
+    // 1.3 every other time
+    else {
       //call getConnectedChain by passing in the first block of the connected chain
       List<MoveableBlock> chain = getConnectedChain(
         widget.blocks.firstWhere((b) => b.id == block.id),
@@ -528,10 +562,9 @@ class _canvasWidgetState extends State<canvasWidget> {
             "Line number: ${getBlockLineNumber(block.id, widget.blocks.firstWhere((b) => b.id == 0))}",
           );
 
-          // When a block is clicked, set the block as the selected block as long as the block is not the start block
+          // When a block is clicked, set it as selected (unless it's the start block)
           if (block.id != 0) {
             setState(() {
-              // If the block is already selected, deselect it
               if (selectedBlock?.id == block.id) {
                 selectedBlock = null;
               } else {
@@ -543,52 +576,70 @@ class _canvasWidgetState extends State<canvasWidget> {
         },
         child: Container(
           key: blockKeys[block.id],
-          child: Container(
-            height: block.height,
-            decoration:
-                selectedBlock?.id == block.id
-                    ? BoxDecoration(
-                      border: Border(
-                        left: BorderSide(color: blockHighlightColour, width: 5),
+          child: Stack(
+            clipBehavior: Clip.none, // Allows overflow for the outside border
+            children: [
+              // Yellow highlight positioned outside the block
+              if (selectedBlock?.id == block.id)
+                Positioned(
+                  left: -5, // Negative value to render outside
+                  top: 0,
+                  bottom: 0,
+                  child: Container(
+                    width: 5,
+                    decoration: BoxDecoration(
+                      color: blockHighlightColour,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(8),
+                        bottomLeft: Radius.circular(8),
                       ),
-                      borderRadius: BorderRadius.circular(8),
-                    )
-                    : null,
-            child: ColorFiltered(
-              colorFilter:
-                  getBlockLineNumber(
-                            block.id,
-                            widget.blocks.firstWhere((b) => b.id == 0),
-                          ) ==
-                          null // If the block is not connected, apply greyscale filter. If connected, show no filter
-                      ? const ColorFilter.matrix(<double>[
-                        0.2126,
-                        0.7152,
-                        0.0722,
-                        0,
-                        0,
-                        0.2126,
-                        0.7152,
-                        0.0722,
-                        0,
-                        0,
-                        0.2126,
-                        0.7152,
-                        0.0722,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        1,
-                        0,
-                      ])
-                      : const ColorFilter.mode(
-                        Colors.transparent,
-                        BlendMode.multiply,
-                      ),
-              child: Image.asset(block.type.imageName, fit: BoxFit.fitHeight),
-            ),
+                    ),
+                  ),
+                ),
+
+              // The main block content
+              Container(
+                height: block.height,
+                child: ColorFiltered(
+                  colorFilter:
+                      getBlockLineNumber(
+                                block.id,
+                                widget.blocks.firstWhere((b) => b.id == 0),
+                              ) ==
+                              null
+                          ? const ColorFilter.matrix([
+                            0.2126,
+                            0.7152,
+                            0.0722,
+                            0,
+                            0,
+                            0.2126,
+                            0.7152,
+                            0.0722,
+                            0,
+                            0,
+                            0.2126,
+                            0.7152,
+                            0.0722,
+                            0,
+                            0,
+                            0,
+                            0,
+                            0,
+                            1,
+                            0,
+                          ])
+                          : const ColorFilter.mode(
+                            Colors.transparent,
+                            BlendMode.multiply,
+                          ),
+                  child: Image.asset(
+                    block.type.imageName,
+                    fit: BoxFit.fitHeight,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
