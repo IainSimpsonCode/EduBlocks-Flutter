@@ -3,11 +3,11 @@ import 'package:google_fonts/google_fonts.dart';
 
 // Is the code in production or debug mode
 const bool isProduction = true;
-const bool altColours = true;
+const bool altColours = false;
 
 // Size of each page section on screen
 // Size calculated as ```MediaQuery.sizeOf(context).width / sideBarWidth;```
-const sideBarWidth = 3.75; //was 3
+const sideBarWidth = 3; //was 3
 const canvasWidth = 1;
 const codeBarWidth = 3.25; //was 3
 

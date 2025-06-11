@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "427429554352",
+    "project_id": "edublocks-research-tool",
+    "storage_bucket": "edublocks-research-tool.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:427429554352:android:e0c7605c96bde6f9ec3375",
+        "android_client_info": {
+          "package_name": "com.example.edublocks_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpl7RO9YWTnMWF369mbNWd-MAMHk0xbtY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
