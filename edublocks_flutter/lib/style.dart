@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 // Is the code in production or debug mode
 const bool isProduction = true;
+const bool altColours = true;
 
 // Size of each page section on screen
 // Size calculated as ```MediaQuery.sizeOf(context).width / sideBarWidth;```
@@ -28,4 +29,10 @@ const blockHighlightColour = Colors.amber;
 final bodyMedium = GoogleFonts.roboto(
   fontSize: 14,
   fontWeight: FontWeight.w500,
+);
+
+final codeTextStyle = GoogleFonts.firaCode(
+  fontSize: 14,
+  fontWeight: FontWeight.w400,
+  color: codeTextColour
 );

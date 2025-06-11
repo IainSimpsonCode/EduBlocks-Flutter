@@ -7,7 +7,25 @@ Future<List<int>> loadAllResources(BuildContext context) async {
   return await Future.wait([
     loadCategories(context),
     loadBlocks(context)
-  ]);
+  ]).then((successCodes) async {
+
+    List<int> additionalSuccessCodes = [];
+
+    // Ensure the widget is still in the widget tree before accessing context to prevent using a BuildContext after an async gap.
+    // If the widget is not mounted, leave unsucessfully.
+    if (!context.mounted) {
+      additionalSuccessCodes.add(1);
+    }
+    else {
+      additionalSuccessCodes.addAll(await Future.wait([
+        assignAlternateColours(context)
+      ]));      
+    }
+
+
+    successCodes.addAll(additionalSuccessCodes);
+    return successCodes;
+  });
 }
 
 /// Loads all resources and primes the app, read for use by a user in research.

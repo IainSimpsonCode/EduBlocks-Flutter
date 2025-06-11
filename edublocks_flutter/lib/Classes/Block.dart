@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:collection/collection.dart';
 import 'package:edublocks_flutter/Services/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'Category.dart';
 
 class Block {
   final String category;
@@ -14,6 +16,9 @@ class Block {
   final bool priorityBuild;
   final double height;
 
+  final int standardCodeColour;
+  int? alternateCodeColour;
+
   Block({
     required this.category,
     required this.code,
@@ -22,7 +27,8 @@ class Block {
     required this.condition,
     required this.hasChildren,
     required this.priorityBuild,
-    required this.height
+    required this.height,
+    required this.standardCodeColour,
   });
 
   factory Block.fromJson(Map<String, dynamic> json) {
@@ -34,7 +40,8 @@ class Block {
       condition: json['condition'] ?? false,
       hasChildren: json['hasChildren'] ?? false,
       priorityBuild: json['priorityBuild'] ?? false,
-      height: json['height'] ?? 80
+      height: json['height'] ?? 80,
+      standardCodeColour: int.parse(json["standardCodeColour"] ?? "0xFF7d8799"),
     );
   }
 }
@@ -49,6 +56,21 @@ Future<int> loadBlocks(BuildContext context) async {
   if (!context.mounted) return 1;
 
   Provider.of<BlockLibrary>(context, listen: false).blocks = blockList;
+
+  return 0;
+}
+
+Future<int> assignAlternateColours(BuildContext context) async {
+  // Ensure the widget is still in the widget tree before accessing context to prevent using a BuildContext after an async gap.
+  // If the widget is not mounted, leave unsucessfully.
+  if (!context.mounted) return 1;
+
+  List<Block> blocks = Provider.of<BlockLibrary>(context, listen: false).blocks;
+  List<Category> categories = Provider.of<BlockLibrary>(context, listen: false).categories;
+
+  for (Block block in blocks) {
+    block.alternateCodeColour = (categories.firstWhereOrNull((element) => element.category == block.category) ?? Category(category: "Blank category", color: Colors.white, iconName: "broken_image")).color.toARGB32();
+  }
 
   return 0;
 }
