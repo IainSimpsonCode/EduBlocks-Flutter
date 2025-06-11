@@ -15,7 +15,7 @@ class Block {
   final bool hasChildren;
   final bool priorityBuild;
   final double height;
-
+  final double displayImageHeight;
   final int standardCodeColour;
   int? alternateCodeColour;
 
@@ -29,6 +29,7 @@ class Block {
     required this.priorityBuild,
     required this.height,
     required this.standardCodeColour,
+    required this.displayImageHeight,
   });
 
   factory Block.fromJson(Map<String, dynamic> json) {
@@ -42,6 +43,7 @@ class Block {
       priorityBuild: json['priorityBuild'] ?? false,
       height: json['height'] ?? 80,
       standardCodeColour: int.parse(json["standardCodeColour"] ?? "0xFF7d8799"),
+      displayImageHeight: json['displayImageHeight'] ?? json['height'] ?? 80,
     );
   }
 }

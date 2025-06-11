@@ -62,19 +62,23 @@
       "category": "Loops",
       "code": "while True:",
       "imageName": "block_images/whileTrue.png",
+      "displayImageName": "block_images/whileTrueSmallV1.png",
       "condition": false,
       "hasChildren": true,
       "priorityBuild": true,
-      "height": 450
+      "height": 380,
+      "displayImageHeight": 150
     },
     {
       "category": "Logic",
       "code": "if (count <= 10):",
       "imageName": "block_images/ifCountLessOr=10.png",
+      "displayImageName": "block_images/ifCountLessOr=10SmallV1.png",
       "condition": false,
       "hasChildren": true,
       "priorityBuild": true,
-      "height": 350
+      "height": 270,
+      "displayImageHeight": 150
     }
   ]
 }
