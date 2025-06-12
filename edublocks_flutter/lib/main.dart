@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:edublocks_flutter/Classes/Category.dart';
+import 'package:edublocks_flutter/Classes/Participant.dart';
 import 'package:edublocks_flutter/Services/providers.dart';
 import 'package:edublocks_flutter/Views/codeScreen.dart';
 import 'package:edublocks_flutter/Views/loadingScreen.dart';
@@ -7,8 +8,15 @@ import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'Services/firebase_options.dart';
 
 void main() async {
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   runApp(
     // Declare all event handlers

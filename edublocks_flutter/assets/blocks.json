@@ -33,7 +33,9 @@
       "code": "print(count)",
       "imageName": "block_images/print.png",
       "condition": false,
-      "hasChildren": false
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "alternateCodeColour": "0xFFf59421"
     },
     {
       "category": "Statements",

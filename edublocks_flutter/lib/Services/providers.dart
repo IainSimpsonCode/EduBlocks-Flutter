@@ -2,11 +2,27 @@ import 'dart:convert';
 
 import 'package:edublocks_flutter/Classes/Block.dart';
 import 'package:edublocks_flutter/Classes/Category.dart';
+import 'package:edublocks_flutter/Classes/Participant.dart';
+import 'package:edublocks_flutter/Services/TextFormatter.dart';
 import 'package:edublocks_flutter/Widgets/codeTextPanel.dart';
 import 'package:edublocks_flutter/Widgets/outputTextPanel.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+class ParticipantInformation extends ChangeNotifier {
+  Participant? currentParticipant;
+
+  void login(Participant participant) {
+    currentParticipant ??= participant;
+    notifyListeners();
+  }
+
+  void logout() {
+    currentParticipant = null;
+    notifyListeners();
+  }
+}
 
 /// ChangeNotifier used to store information about blocks currently loaded into the block library
 /// and store information about any filters applied to limit which blocks are displayed.
@@ -131,8 +147,6 @@ class CodeTracker extends ChangeNotifier {
 
   /// Insert a block (using the ```Block``` class) into the code chain at a specific line number
   int insertBlock(Block block, int line) {
-    const passBlock = {"line": 0, "code": "pass", "hasChildren": false};
-
     if (line <= 1 && line != -1) {return 1;} // Line number must be positive (except -1), and cannot be 1 as this is the start block. Inserting at -1 will automatically place the block at the end of the chain.
 
     // Parse the JSON
@@ -143,8 +157,12 @@ class CodeTracker extends ChangeNotifier {
     List<Map<String, dynamic>> newBlock = [{
       "line": line,
       "code": block.code,
-      "hasChildren": block.hasChildren
+      "hasChildren": block.hasChildren,
+      "standardCodeColour": block.standardCodeColour,
+      "alternateCodeColour": block.alternateCodeColour
     }];
+
+    final passBlock = {"line": 0, "code": "pass", "hasChildren": false, "standardCodeColour": block.standardCodeColour, "alternateCodeColour": block.alternateCodeColour};
 
     // If the block can have children nested (eg, while loops and if statements) then add a "pass" block to the chain
     if (block.hasChildren) {
@@ -278,6 +296,8 @@ class CodeTracker extends ChangeNotifier {
     return 0;
   }
 
+  /// Returns a list of strings, with just python code.
+  /// This list of strings can either be used to create a list of text widgets to be used on the UI, or used to create a string to be sent to the compiler.
   List<String> JSONToPythonCode() {
     updateLineNumbers();
 
@@ -313,6 +333,8 @@ class CodeTracker extends ChangeNotifier {
     return pythonText;
   }
 
+  /// Creates a list of unformatted text widgets to be shown on the UI.
+  /// Displays the code from the blocks placed on screen, unformatted
   List<Widget> pythonCodeToTextWidgets() {
     final pythonCode = JSONToPythonCode();
 
@@ -338,6 +360,42 @@ class CodeTracker extends ChangeNotifier {
     }
 
     return textWidgets;
+  }
+
+  List<Widget> JSONToFormattedTextWidgets() {
+    updateLineNumbers();
+
+    // Parse the JSON
+    Map<String, dynamic> data = jsonDecode(codeJSONString);
+    List blocks = data["blocks"];
+
+    List<Widget> returnWidgets = [];
+
+    // Function to create proper indents on lines
+    const indent = "  ";
+    int numOfIndents = 0;
+    String actualIndent() {
+      String _actualIndent = "";
+      for (int i = 0; i < numOfIndents; i++) {
+        _actualIndent += indent;
+      }
+      return _actualIndent;
+    }
+
+    for (var block in blocks) {
+      returnWidgets.add(TextFormatter.formatCodeLine("${actualIndent()}${block["code"]}", Color((altColours ? block["alternateCodeColour"] : block["standardCodeColour"]) ?? 0xFFffffff)));
+
+      // If the block has nested blocks (Eg while loops and if statements), increase the indent
+      if (block["hasChildren"] == true) {
+        numOfIndents++;
+      }
+      // If the block is a pass block, reduce the indent
+      else if (block["code"] == "pass") {
+        numOfIndents--;
+      }
+    }
+
+    return returnWidgets;
   }
 
   /// Will send the code currently stored in the CodeTracker notifier to a python compiler server. Returns the output as a list of text widgets to be shown on the output pane.
