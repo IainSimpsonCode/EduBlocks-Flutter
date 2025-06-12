@@ -59,17 +59,18 @@ class TextFormatter {
     /// Numbers = amber
     final mainCommand = getCentralCommand(line);
 
-    final boolColour = Colors.orange;
-    final grammarColour = Colors.white;
-    final keywordColour = Colors.red;
+    final boolColour = Color(0xFFd19a66);
+    final operandsColor = Color(0xFF56b6c2);
+    final syntaxColor = Colors.white;
+    final keywordColour = Color(0xFFe06c75);
     final stringColour = Colors.green;
-    final numberColour = Colors.amber;
+    final numberColour = Color(0xFFe5c07b);
 
     final keywordsAndVariables = ["time", "random", "math", "sleep", "count"];
 
     final String keywordPattern = keywordsAndVariables.map(RegExp.escape).join('|');
 
-    final RegExp regex = RegExp(r'''(?<space>\s+|^\s+)|(?<keyword>\b(?:''' + keywordPattern + r''')\b)|(?<mainCommand>\b''' + mainCommand + r'''\b)|(?<string>["'](?:\\.|[^\\])*?["'])|(?<comment>#.*$)|(?<bool>\bTrue\b|\bFalse\b)|(?<number>\b\d+(?:\.\d+)?\b)|(?<syntax>[+=<>\-()\[\]:,\.])|(?<word>\b\w+\b)
+    final RegExp regex = RegExp(r'''(?<space>\s+|^\s+)|(?<keyword>\b(?:''' + keywordPattern + r''')\b)|(?<mainCommand>\b''' + mainCommand + r'''\b)|(?<string>["'](?:\\.|[^\\])*?["'])|(?<comment>#.*$)|(?<bool>\bTrue\b|\bFalse\b)|(?<number>\b\d+(?:\.\d+)?\b)|(?<syntax>[()\[\]:,\.])|(?<operands>[+=<>\-])|(?<word>\b\w+\b)
     ''', multiLine: true, caseSensitive: false, dotAll: true);
 
     final matches = regex.allMatches(line);
@@ -91,7 +92,9 @@ class TextFormatter {
       } else if (match.namedGroup('number') != null) {
         style = codeTextStyle.copyWith(color: numberColour);
       } else if (match.namedGroup('syntax') != null) {
-        style = codeTextStyle.copyWith(color: grammarColour);
+        style = codeTextStyle.copyWith(color: syntaxColor);
+      } else if (match.namedGroup('operands') != null) {
+        style = codeTextStyle.copyWith(color: operandsColor);
       } else if (match.namedGroup('word') != null) {
         style = codeTextStyle.copyWith(color: keywordColour);
       }

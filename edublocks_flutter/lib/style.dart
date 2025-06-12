@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-// Is the code in production or debug mode
-const bool isProduction = true;
-const bool altColours = false;
+// Addiional Features
+const bool isProduction = true;     // Is the code in production or debug mode
+const bool altColours = true;      // Should the codeTextPanel use standard colours, or match colours with the blocks
+const bool requireLogin = false;     // Should the app load a login screen on start, or go straight to the codeScreen
 
 // Size of each page section on screen
 // Size calculated as ```MediaQuery.sizeOf(context).width / sideBarWidth;```
@@ -24,6 +25,7 @@ const buttonTextSelectedColour = Color(0xFF374151);
 const runButtonColour = Color(0xFF0ea5e9);
 const topBarColour = Color(0xFFffffff);
 const blockHighlightColour = Colors.amber;
+final loginPageColour = Colors.grey[300];
 
 // Text Styles
 final bodyMedium = GoogleFonts.roboto(

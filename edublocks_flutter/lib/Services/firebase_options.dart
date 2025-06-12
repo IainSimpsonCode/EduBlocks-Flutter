@@ -83,11 +83,4 @@ class DefaultFirebaseOptions {
     authDomain: 'edublocks-research-tool.firebaseapp.com',
     storageBucket: 'edublocks-research-tool.firebasestorage.app',
   );
-
-  static Future<int> initializeFirebase() async {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    return 0;
-  }
 }

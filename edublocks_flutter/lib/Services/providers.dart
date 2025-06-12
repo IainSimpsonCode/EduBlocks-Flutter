@@ -2,12 +2,27 @@ import 'dart:convert';
 
 import 'package:edublocks_flutter/Classes/Block.dart';
 import 'package:edublocks_flutter/Classes/Category.dart';
+import 'package:edublocks_flutter/Classes/Participant.dart';
 import 'package:edublocks_flutter/Services/TextFormatter.dart';
 import 'package:edublocks_flutter/Widgets/codeTextPanel.dart';
 import 'package:edublocks_flutter/Widgets/outputTextPanel.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+class ParticipantInformation extends ChangeNotifier {
+  Participant? currentParticipant;
+
+  void login(Participant participant) {
+    currentParticipant ??= participant;
+    notifyListeners();
+  }
+
+  void logout() {
+    currentParticipant = null;
+    notifyListeners();
+  }
+}
 
 /// ChangeNotifier used to store information about blocks currently loaded into the block library
 /// and store information about any filters applied to limit which blocks are displayed.

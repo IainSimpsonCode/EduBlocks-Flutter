@@ -1,15 +1,19 @@
 import 'package:edublocks_flutter/Classes/Block.dart';
 import 'package:edublocks_flutter/Classes/Category.dart';
 import 'package:edublocks_flutter/Views/codeScreen.dart';
-import 'package:edublocks_flutter/Services/firebase_options.dart';
+import 'package:edublocks_flutter/Views/loginPage.dart';
+import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
+
+import 'package:edublocks_flutter/Services/firestore.dart';
 
 Future<List<int>> loadAllResources(BuildContext context) async {
   return await Future.wait([
-    DefaultFirebaseOptions.initializeFirebase(),
     loadCategories(context),
     loadBlocks(context)
   ]).then((successCodes) async {
+
+    getData();
 
     List<int> additionalSuccessCodes = [];
 
@@ -70,7 +74,7 @@ class loadingScreen extends StatelessWidget {
           // ignore: avoid_print
           print(results);
 
-          return const CodeScreen();
+          return requireLogin ? loginPage() : CodeScreen();
 
         } else {
           return const Scaffold(
