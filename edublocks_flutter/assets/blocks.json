@@ -59,23 +59,23 @@
     {
       "category": "Loops",
       "code": "while True:",
-      "imageName": "block_images/whileTrue.png",
-      "displayImageName": "block_images/whileTrueSmallV1.png",
+      "imageName": "block_images/whileTrue/whileTrueSmallV2.png",
+      "displayImageName": "block_images/whileTrue/whileTrueSmallV2.png",
       "condition": false,
       "hasChildren": true,
       "priorityBuild": true,
-      "height": 380,
+      "height": 190,
       "displayImageHeight": 150
     },
     {
       "category": "Logic",
       "code": "if (count <= 10):",
-      "imageName": "block_images/ifCountLessOr=10.png",
-      "displayImageName": "block_images/ifCountLessOr=10SmallV1.png",
+      "imageName": "block_images/ifCount/ifCountLessOr=10SmallV2.png",
+      "displayImageName": "block_images/ifCount/ifCountLessOr=10SmallV2.png",
       "condition": false,
       "hasChildren": true,
       "priorityBuild": true,
-      "height": 270,
+      "height": 190,
       "displayImageHeight": 150
     }
   ]

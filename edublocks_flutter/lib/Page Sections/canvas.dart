@@ -216,6 +216,15 @@ class _canvasWidgetState extends State<canvasWidget> {
       if (parent.childId == dragged.id) {
         parent.childId = null;
         playSound(0);
+
+        if (parent.isNested) {
+          MoveableBlock parentParent = getParent(parent);
+          parentParent.nestedBlocks?.remove(dragged);
+        }
+      }
+
+      if (dragged.isNested) {
+        reSizeBlock(dragged);
       }
 
       //PLay disconnect sound
@@ -358,9 +367,7 @@ class _canvasWidgetState extends State<canvasWidget> {
           if (target.isNested) {
             dragged.isNested = true;
 
-            final targetSnappedTo = widget.blocks.firstWhere(
-              (b) => b.id == target.snappedTo,
-            );
+            final targetSnappedTo = getParent(dragged);
             targetSnappedTo.nestedBlocks?.add(dragged);
           }
 
@@ -487,6 +494,10 @@ class _canvasWidgetState extends State<canvasWidget> {
         }
       }
 
+      if (newSnap && dragged.isNested) {
+        reSizeBlock(widget.blocks.firstWhere((b) => b.id == dragged.id));
+      }
+
       //if the dragged block has a child, snap that as well.
       if (dragged.childId != null) {
         onEndDrag(dragged.childId!, snap: false);
@@ -545,6 +556,74 @@ class _canvasWidgetState extends State<canvasWidget> {
         );
       }
     }
+  }
+
+  void reSizeBlock(MoveableBlock block) {
+    MoveableBlock parent = getParent(block);
+
+    int parentNestedBlocks = getNumberOfNestedBlocks(parent);
+
+    if (parent.type.code == 'while True:') {
+      switch (parentNestedBlocks) {
+        case 0:
+          parent.type.imageName = "block_images/whileTrue/whileTrueSmallV2.png";
+          parent.height = 190.0;
+          break;
+        case 1:
+          parent.type.imageName = "block_images/whileTrue/whileTrueSmallV2.png";
+          parent.height = 190.0;
+          break;
+        case 2:
+          parent.type.imageName = "block_images/whileTrue/whileTrue2Blocks.png";
+          parent.height = 190.0 + (70 * (parentNestedBlocks - 1));
+          break;
+        case 3:
+          parent.type.imageName = "block_images/whileTrue/whileTrue3Blocks.png";
+          parent.height = 190.0 + (70 * (parentNestedBlocks - 1));
+          break;
+      }
+    } else {}
+
+    print(block.type.imageName);
+
+    buildBlock(parent);
+  }
+
+  MoveableBlock getParent(MoveableBlock block) {
+    bool breakLoop = false;
+    while (true) {
+      MoveableBlock snappedTo = widget.blocks.firstWhere(
+        (b) => b.id == block.snappedTo,
+      );
+
+      if ((snappedTo.type.code == 'while True:' ||
+              snappedTo.type.code == 'if (count <= 10):') &&
+          snappedTo.id != block.id) {
+        return snappedTo;
+      }
+
+      block = snappedTo;
+    }
+  }
+
+  int getNumberOfNestedBlocks(MoveableBlock block) {
+    int blockUnits = 0;
+    for (int i = 0; i < block.nestedBlocks!.length; i++) {
+      MoveableBlock currentBlock = block.nestedBlocks![i];
+      if (currentBlock.type.code == "if (count <= 10):" ||
+          currentBlock.type.code == "while True:") {
+        if (currentBlock.nestedBlocksCount > 0) {
+          blockUnits += currentBlock.nestedBlocksCount;
+        } else {
+          blockUnits += 3;
+        }
+      } else {
+        blockUnits++;
+      }
+    }
+
+    block.nestedBlocksCount = blockUnits;
+    return blockUnits;
   }
 
   Widget buildBlock(MoveableBlock block) {
