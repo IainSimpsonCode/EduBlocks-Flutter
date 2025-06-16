@@ -395,6 +395,7 @@ class _canvasWidgetState extends State<canvasWidget> {
             (b) => b.id == target.snappedTo,
           );
           targetSnappedTo.nestedBlocks?.add(dragged);
+          reSizeBlock(dragged);
         }
 
         final draggedChainChildren = getConnectedChain(
@@ -514,8 +515,8 @@ class _canvasWidgetState extends State<canvasWidget> {
     }
   }
 
-  void callInsertBlock(MoveableBlock block) async {
-    await Future.delayed(Duration(milliseconds: 500)); // 0.25 second delay
+  void callInsertBlock(MoveableBlock block) {
+// 0.25 second delay
 
     // 1.1 snapping ONE block to the end of the main chain with no children
     // simply append it to the json
@@ -581,12 +582,39 @@ class _canvasWidgetState extends State<canvasWidget> {
           parent.type.imageName = "block_images/whileTrue/whileTrue3Blocks.png";
           parent.height = 190.0 + (70 * (parentNestedBlocks - 1));
           break;
+        case 4:
+          parent.type.imageName = "block_images/whileTrue/whileTrue4Blocks.png";
+          parent.height = 190.0 + (70 * (parentNestedBlocks - 1));
+          break;
       }
-    } else {}
-
-    print(block.type.imageName);
+    } else {
+      switch (parentNestedBlocks) {
+        case 0:
+          parent.type.imageName = "block_images/ifCount/ifCountLessOr=10SmallV2.png";
+          parent.height = 200.0;
+          break;
+        case 1:
+          parent.type.imageName = "block_images/ifCount/ifCountLessOr=10SmallV2.png";
+          parent.height = 200.0;
+          break;
+        case 2:
+          parent.type.imageName = "block_images/ifCount/ifCountLessOr=102Blocks.png";
+          parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
+          break;
+        case 3:
+          parent.type.imageName = "block_images/ifCount/ifCountLessOr=103Blocks.png";
+          parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
+          break;
+        
+      }
+    }
 
     buildBlock(parent);
+
+    if(parent.isNested) {
+      
+      reSizeBlock(parent);
+    }
   }
 
   MoveableBlock getParent(MoveableBlock block) {
@@ -610,11 +638,16 @@ class _canvasWidgetState extends State<canvasWidget> {
     int blockUnits = 0;
     for (int i = 0; i < block.nestedBlocks!.length; i++) {
       MoveableBlock currentBlock = block.nestedBlocks![i];
+      
       if (currentBlock.type.code == "if (count <= 10):" ||
           currentBlock.type.code == "while True:") {
         if (currentBlock.nestedBlocksCount > 0) {
-          blockUnits += currentBlock.nestedBlocksCount;
-        } else {
+          blockUnits += currentBlock.nestedBlocksCount + 2;
+        } 
+        else if(currentBlock.isNested) {
+          blockUnits += 3 + currentBlock.nestedBlocksCount;
+        }
+        else {
           blockUnits += 3;
         }
       } else {
