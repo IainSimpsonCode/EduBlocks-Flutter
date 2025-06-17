@@ -13,6 +13,7 @@ class MoveableBlock {
   int? childId;
   List<MoveableBlock>? nestedBlocks;
   bool isNested = false;
+  int nestedBlocksCount = 0;
 
   // For Variable type blocks
   List<String>? options;

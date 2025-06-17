@@ -9,12 +9,12 @@ import 'Category.dart';
 class Block {
   final String category;
   final String code;
-  final String imageName;
+  String imageName;
   final String displayImageName;
   final bool condition;
   final bool hasChildren;
   final bool priorityBuild;
-  final double height;
+  double height;
   final double displayImageHeight;
   final int standardCodeColour;
   int? alternateCodeColour;
