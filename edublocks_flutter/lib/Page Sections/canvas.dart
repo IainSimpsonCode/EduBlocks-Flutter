@@ -399,44 +399,29 @@ class _canvasWidgetState extends State<canvasWidget> {
       }
 
       // Side snap: only if target block type is in allowed list
-      final sideSnapTargetTypes = ['while True:', 'if (count <= 10):'];
+      //final sideSnapTargetTypes = ['while True:', 'if (count <= 10):']; // REPLACED: now uses the hasChildren property of blocks to determine if a block allows sideSnapping
 
       //This part handles nested snapping
       //1 - check if the target block is in the list of allowed nested snapping types and snapDone is false
-      if (!snapDone && sideSnapTargetTypes.contains(target.type.code)) {
+      if (!snapDone && target.type.hasChildren) {
         //2.1 - if the target block has no nested blocks
         //this means its a new snap
         if (target.nestedBlocks?.isEmpty == true) {
           //3 check distances
           if (nestedSnapXDistance.abs() < snapThresholdNested &&
               nestedSnapYDistance.abs() < snapThresholdNested) {
-            //4.1 snap for while true
-            if (target.type.code == 'while True:') {
-              setState(() {
-                dragged.position = Offset(
-                  nestedSnapXCoordinatesTarget - 38,
-                  nestedSnapYCoordinatesTarget - 12,
-                );
-                dragged.snappedTo = target.id;
-                dragged.isNested = true;
-              });
+            //4.1 snap blocks with the required offset per block
+            setState(() {
+              dragged.position = Offset(
+                nestedSnapXCoordinatesTarget + target.type.snapXOffset,
+                nestedSnapYCoordinatesTarget + target.type.snapYOffset,
+              );
+              dragged.snappedTo = target.id;
+              dragged.isNested = true;
+            });
 
-              //add it to the list
-              target.nestedBlocks?.add(dragged);
-            }
-            //4.2 snap for if
-            else if (target.type.code == 'if (count <= 10):') {
-              setState(() {
-                dragged.position = Offset(
-                  nestedSnapXCoordinatesTarget - 38,
-                  nestedSnapYCoordinatesTarget,
-                );
-                dragged.snappedTo = target.id;
-                dragged.isNested = true;
-              });
-
-              target.nestedBlocks?.add(dragged);
-            }
+            //add it to the list
+            target.nestedBlocks?.add(dragged);
 
             if (dragged.nestedBlocks!.isNotEmpty) {
               onEndDrag(dragged.nestedBlocks![0].id, snap: false);
@@ -454,26 +439,14 @@ class _canvasWidgetState extends State<canvasWidget> {
         //this means its re-snapping the block after being dragged
         else if (target.nestedBlocks?[0].id == dragged.id) {
           //3.1
-          if (target.type.code == 'while True:') {
-            setState(() {
-              dragged.position = Offset(
-                nestedSnapXCoordinatesTarget - 38,
-                nestedSnapYCoordinatesTarget - 12,
-              );
-              dragged.snappedTo = target.id;
-              dragged.isNested = true;
-            });
-          } //3.2
-          else if (target.type.code == 'if (count <= 10):') {
-            setState(() {
-              dragged.position = Offset(
-                nestedSnapXCoordinatesTarget - 38,
-                nestedSnapYCoordinatesTarget,
-              );
-              dragged.snappedTo = target.id;
-              dragged.isNested = true;
-            });
-          }
+          setState(() {
+            dragged.position = Offset(
+              nestedSnapXCoordinatesTarget + target.type.snapXOffset,
+              nestedSnapYCoordinatesTarget + target.type.snapYOffset,
+            );
+            dragged.snappedTo = target.id;
+            dragged.isNested = true;
+          });
 
           if (dragged.nestedBlocks!.isNotEmpty) {
             onEndDrag(dragged.nestedBlocks![0].id, snap: false);

@@ -36,6 +36,9 @@ void main() async {
 
         // Tracks whether the code panel or output panel is displays. Facilitates communication within the codeBar widget.
         ChangeNotifierProvider(create: (context) => CodeOutputTextPanelNotifier()),
+
+        // Tracks which user is logged into the app
+        ChangeNotifierProvider(create: (context) => ParticipantInformation()),
       ],
       child: const MainApp(),
     ),

@@ -1,5 +1,7 @@
+import 'package:edublocks_flutter/Classes/Participant.dart';
 import 'package:edublocks_flutter/Services/firestore.dart';
 import 'package:edublocks_flutter/Services/providers.dart';
+import 'package:edublocks_flutter/Views/codeScreen.dart';
 import 'package:edublocks_flutter/Widgets/buttonWithIcon.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
@@ -40,20 +42,32 @@ class _loginPageState extends State<loginPage> {
 
       if (await doesParticipantExist(classID, participantID)) {
 
-        
+        Participant? user = await getParticipantInfo(classID, participantID);
+
+        if (user == null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('There was a problem logging you in. Please try again')),
+          );
+          return;
+        }
+        else {
+          Provider.of<ParticipantInformation>(context, listen: false).login(user);
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => CodeScreen(),
+            ),
+          );
+        }
 
         //Provider.of<ParticipantInformation>(context, listen: false).login();
       }
       else {
         ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Your 4 digit ID Number was not correct. Please double check and try again')),
-      );
-      return;
+          SnackBar(content: Text('Your 4 digit ID Number was not correct. Please double check and try again')),
+        );
+        return;
       }
-
-    }
-
-    
+    }    
   }
 
   @override
@@ -86,7 +100,8 @@ class _loginPageState extends State<loginPage> {
                 autofocus: true,
                 autocorrect: false
               ),
-              buttonWithIcon(backgroundColor: runButtonColour, text: "Login", onTap: _onLoginPressed),
+              //buttonWithIcon(backgroundColor: runButtonColour, text: "Login", onTap: _onLoginPressed),
+              ElevatedButton(onPressed: _onLoginPressed, child: Text("Login")),
             ]
           ),
         ),

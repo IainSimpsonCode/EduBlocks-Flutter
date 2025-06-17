@@ -12,7 +12,7 @@ class TextFormatter {
     String trimmed = line.trimLeft();
 
     // List of characters that can denote the end of a command
-    const stopCharacters = ["!", "(", ")", " ", '"', "'", "."];
+    const stopCharacters = ["!", "(", ")", " ", '"', "'", ".", ":"];
 
     // Check each character to see if it matches the stop character
     for (int i = 0; i < trimmed.length; i++) {
@@ -26,7 +26,7 @@ class TextFormatter {
     return trimmed;
   }
 
-  static Widget formatCodeLine(String line, Color mainCommandColour) {
+  static List<TextSpan> formatCodeLine(String line, Color mainCommandColour) {
 
     List<TextSpan> textSpans = [];
 
@@ -43,9 +43,7 @@ class TextFormatter {
         style: codeTextStyle
       ));
 
-      return Text.rich(TextSpan(
-        children: textSpans
-      ));
+      return textSpans;
     }
 
 
@@ -65,12 +63,17 @@ class TextFormatter {
     final keywordColour = Color(0xFFe06c75);
     final stringColour = Colors.green;
     final numberColour = Color(0xFFe5c07b);
+    final inputColour = Color(0xFFf59421);
+    final appendColour = Color(0xFF15b9d3);
+    final variableColour = Color(0xFF364fd7);
 
-    final keywordsAndVariables = ["time", "random", "math", "sleep", "count"];
+    final keywords = ["time", "random", "math", "sleep"];
+    final variables = ["count", "age", "friends", "number1", "number2"];
 
-    final String keywordPattern = keywordsAndVariables.map(RegExp.escape).join('|');
+    final String keywordPattern = keywords.map(RegExp.escape).join('|');
+    final String variablePattern = variables.map(RegExp.escape).join('|');
 
-    final RegExp regex = RegExp(r'''(?<space>\s+|^\s+)|(?<keyword>\b(?:''' + keywordPattern + r''')\b)|(?<mainCommand>\b''' + mainCommand + r'''\b)|(?<string>["'](?:\\.|[^\\])*?["'])|(?<comment>#.*$)|(?<bool>\bTrue\b|\bFalse\b)|(?<number>\b\d+(?:\.\d+)?\b)|(?<syntax>[()\[\]:,\.])|(?<operands>[+=<>\-])|(?<word>\b\w+\b)
+    final RegExp regex = RegExp(r'''(?<space>\s+|^\s+)|(?<keyword>\b(?:''' + keywordPattern + r''')\b)|(?<variables>\b(?:''' + variablePattern + r''')\b)|(?<input>\binput\b|\bint\b)|(?<append>\bappend\b)|(?<mainCommand>\b''' + mainCommand + r'''\b)|(?<string>["'](?:\\.|[^\\])*?["'])|(?<comment>#.*$)|(?<bool>\bTrue\b|\bFalse\b)|(?<number>\b\d+(?:\.\d+)?\b)|(?<syntax>[()\[\]:,\.])|(?<operands>[+=<>\-])|(?<word>\b\w+\b)
     ''', multiLine: true, caseSensitive: false, dotAll: true);
 
     final matches = regex.allMatches(line);
@@ -81,6 +84,12 @@ class TextFormatter {
 
       if (match.namedGroup('mainCommand') != null) {
         style = codeTextStyle.copyWith(color: mainCommandColour);
+      } else if (match.namedGroup('input') != null) {
+        style = codeTextStyle.copyWith(color: inputColour);
+      } else if (match.namedGroup('append') != null) {
+        style = codeTextStyle.copyWith(color: appendColour);
+      } else if (match.namedGroup('variables') != null) {
+        style = codeTextStyle.copyWith(color: variableColour);
       } else if (match.namedGroup('string') != null) {
         style = codeTextStyle.copyWith(color: stringColour);
       } else if (match.namedGroup('comment') != null) {
@@ -102,8 +111,6 @@ class TextFormatter {
       textSpans.add(TextSpan(text: text, style: style));
     }
 
-    return Text.rich(TextSpan(
-      children: textSpans
-    ));
+    return textSpans;
   }
 }

@@ -42,8 +42,9 @@ class ParticipantInformation extends ChangeNotifier {
 /// - ```append``` Blocks:<br>
 /// ```Provider.of<BlockLibrary>(context, listen: false).addBlock(Block value);```<br>
 class BlockLibrary extends ChangeNotifier {
-  List<Block> _allBlocks = List.empty();
-  List<Category> _allCategories = List.empty();
+  List<Block> _allBlocks = [];
+  List<Category> _allCategories = [];
+  List<String> _variableNames = [];
 
   String? _categorySelected;
 
@@ -100,6 +101,13 @@ class BlockLibrary extends ChangeNotifier {
     else {
       return _allBlocks.where((element) => element.category == category).toList();
     }
+  }
+
+  // -- Variable Names --
+  List<String> get variableNames => _variableNames;
+
+  void addVariable(String variableName) {
+    
   }
 }
 
@@ -383,7 +391,16 @@ class CodeTracker extends ChangeNotifier {
     }
 
     for (var block in blocks) {
-      returnWidgets.add(TextFormatter.formatCodeLine("${actualIndent()}${block["code"]}", Color((altColours ? block["alternateCodeColour"] : block["standardCodeColour"]) ?? 0xFFffffff)));
+
+      List<TextSpan> formattedText = [TextSpan(
+        text: "${block["line"] < 10 ? 0 : null}${block["line"]}: ",
+        style: codeTextStyle
+      )];
+
+      formattedText.addAll(TextFormatter.formatCodeLine("${actualIndent()}${block["code"]}", Color((altColours ? block["alternateCodeColour"] : block["standardCodeColour"]) ?? 0xFFffffff)));
+      
+
+      returnWidgets.add(Text.rich(TextSpan( children: formattedText)));
 
       // If the block has nested blocks (Eg while loops and if statements), increase the indent
       if (block["hasChildren"] == true) {

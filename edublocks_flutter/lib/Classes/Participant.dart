@@ -17,9 +17,9 @@ class Participant {
     this.seenGavin = false
   });
 
-  factory Participant.fromJson(Map<String, dynamic> json) {
+  factory Participant.fromJson(String id, Map<String, dynamic> json) {
     return Participant(
-      ID: json["ID"],
+      ID: id,
       task1: json["task1"] ?? false,
       task2: json["task2"] ?? false,
       task3: json["task3"] ?? false,

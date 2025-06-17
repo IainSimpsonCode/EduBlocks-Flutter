@@ -56,11 +56,9 @@ Future<Participant?> getParticipantInfo(String classID, String participantID) as
         .doc(participantID);
 
     DocumentSnapshot doc = await docRef.get();
-    return Participant.fromJson(doc.data() as Map<String, dynamic>);
-
-    
+    return Participant.fromJson(doc.id, doc.data() as Map<String, dynamic>);    
   } catch (e) {
-    print('doesParticipantExist(): \nError checking document: $e');
+    print('getParticipantInfo(): \nError loading document: $e');
     return null;
   }
 }

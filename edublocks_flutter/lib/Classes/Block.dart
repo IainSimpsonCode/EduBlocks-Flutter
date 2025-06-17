@@ -19,6 +19,9 @@ class Block {
   final int standardCodeColour;
   int? alternateCodeColour;
 
+  int snapXOffset;
+  int snapYOffset;
+
   Block({
     required this.category,
     required this.code,
@@ -30,6 +33,8 @@ class Block {
     required this.height,
     required this.standardCodeColour,
     required this.displayImageHeight,
+    this.snapXOffset = 0,
+    this.snapYOffset = 0
   });
 
   factory Block.fromJson(Map<String, dynamic> json) {
@@ -44,6 +49,8 @@ class Block {
       height: json['height'] ?? 80,
       standardCodeColour: int.parse(json["standardCodeColour"] ?? "0xFF7d8799"),
       displayImageHeight: json['displayImageHeight'] ?? json['height'] ?? 80,
+      snapXOffset: json['snapXOffset'] ?? 0,
+      snapYOffset: json['snapYOffset'] ?? 0
     );
   }
 }

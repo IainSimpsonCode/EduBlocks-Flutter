@@ -34,15 +34,55 @@
       "imageName": "block_images/print.png",
       "condition": false,
       "hasChildren": false,
-      "standardCodeColour": "0xFF61afef",
-      "alternateCodeColour": "0xFFf59421"
+      "standardCodeColour": "0xFF61afef"
     },
     {
       "category": "Statements",
-      "code": "input()",
-      "imageName": "block_images/input.png",
-      "condition": true,
-      "hasChildren": false
+      "code": "print('You are in primary school')",
+      "imageName": "block_images/print_primary-school.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef"
+    },
+    {
+      "category": "Statements",
+      "code": "print('You are in high school')",
+      "imageName": "block_images/print_high-school.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef"
+    },
+    {
+      "category": "Statements",
+      "code": "print('You are old')",
+      "imageName": "block_images/print_you-are-old.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef"
+    },
+    {
+      "category": "Statements",
+      "code": "print('My friend is')",
+      "imageName": "block_images/print_my-friend-string.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef"
+    },
+    {
+      "category": "Statements",
+      "code": "print(friends[0])",
+      "imageName": "block_images/print_friends_0.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef"
+    },
+    {
+      "category": "Statements",
+      "code": "print(number1 + number2)",
+      "imageName": "block_images/print_number1+number2.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef"
     },
     {
       "category": "Variables",
@@ -59,6 +99,41 @@
       "hasChildren": false
     },
     {
+      "category": "Variables",
+      "code": "number1 = int(5)",
+      "imageName": "block_images/number1_variable.png",
+      "condition": false,
+      "hasChildren": false
+    },
+    {
+      "category": "Variables",
+      "code": "number2 = 2",
+      "imageName": "block_images/number2_variable.png",
+      "condition": false,
+      "hasChildren": false
+    },
+    {
+      "category": "Variables",
+      "code": "age = input('How old are you')",
+      "imageName": "block_images/age-variable_input.png",
+      "condition": false,
+      "hasChildren": false
+    },
+    {
+      "category": "Variables",
+      "code": "friends = 'Bob'",
+      "imageName": "block_images/friends-variable.png",
+      "condition": false,
+      "hasChildren": false
+    },
+    {
+      "category": "Lists",
+      "code": "friends.append('Ann')",
+      "imageName": "block_images/friends-append.png",
+      "condition": false,
+      "hasChildren": false
+    },
+    {
       "category": "Loops",
       "code": "while True:",
       "imageName": "block_images/whileTrue.png",
@@ -67,7 +142,9 @@
       "hasChildren": true,
       "priorityBuild": true,
       "height": 380,
-      "displayImageHeight": 150
+      "displayImageHeight": 150,
+      "snapXOffset": -38,
+      "snapYOffset": -12
     },
     {
       "category": "Logic",
@@ -78,7 +155,41 @@
       "hasChildren": true,
       "priorityBuild": true,
       "height": 270,
-      "displayImageHeight": 150
+      "displayImageHeight": 150,
+      "snapXOffset": -38
+    },
+    {
+      "category": "Logic",
+      "code": "if (age <= 11):",
+      "imageName": "block_images/if_age_less-than_11.png",
+      "condition": false,
+      "hasChildren": true,
+      "priorityBuild": true,
+      "height": 270,
+      "displayImageHeight": 150,
+      "snapXOffset": -38
+    },
+    {
+      "category": "Logic",
+      "code": "elif (age <= 16):",
+      "imageName": "block_images/else-if_age_less-than_16.png",
+      "condition": false,
+      "hasChildren": true,
+      "priorityBuild": true,
+      "height": 270,
+      "displayImageHeight": 150,
+      "snapXOffset": -38
+    },
+    {
+      "category": "Logic",
+      "code": "else:",
+      "imageName": "block_images/else.png",
+      "condition": false,
+      "hasChildren": true,
+      "priorityBuild": true,
+      "height": 270,
+      "displayImageHeight": 150,
+      "snapXOffset": -38
     }
   ]
 }
