@@ -489,7 +489,7 @@ class _canvasWidgetState extends State<canvasWidget> {
   }
 
   void callInsertBlock(MoveableBlock block) {
-// 0.25 second delay
+    // 0.25 second delay
 
     // 1.1 snapping ONE block to the end of the main chain with no children
     // simply append it to the json
@@ -536,58 +536,139 @@ class _canvasWidgetState extends State<canvasWidget> {
     MoveableBlock parent = getParent(block);
 
     int parentNestedBlocks = getNumberOfNestedBlocks(parent);
+    switch (parent.type.code) {
+      case 'while True:':
+        switch (parentNestedBlocks) {
+          case 0:
+            parent.type.imageName =
+                "block_images/whileTrue/whileTrueSmallV1.png";
+            parent.height = 150.0;
+            break;
+          case 1:
+            parent.type.imageName =
+                "block_images/whileTrue/whileTrueSmallV2.png";
+            parent.height = 190.0;
+            break;
+          case 2:
+            parent.type.imageName =
+                "block_images/whileTrue/whileTrue2Blocks.png";
+            parent.height = 190.0 + (70 * (parentNestedBlocks - 1));
+            break;
+          case 3:
+            parent.type.imageName =
+                "block_images/whileTrue/whileTrue3Blocks.png";
+            parent.height = 190.0 + (70 * (parentNestedBlocks - 1));
+            break;
+          case 4:
+            parent.type.imageName =
+                "block_images/whileTrue/whileTrue4Blocks.png";
+            parent.height = 190.0 + (70 * (parentNestedBlocks - 1));
+            break;
+        }
+        break;
 
-    if (parent.type.code == 'while True:') {
-      switch (parentNestedBlocks) {
-        case 0:
-          parent.type.imageName = "block_images/whileTrue/whileTrueSmallV2.png";
-          parent.height = 190.0;
-          break;
-        case 1:
-          parent.type.imageName = "block_images/whileTrue/whileTrueSmallV2.png";
-          parent.height = 190.0;
-          break;
-        case 2:
-          parent.type.imageName = "block_images/whileTrue/whileTrue2Blocks.png";
-          parent.height = 190.0 + (70 * (parentNestedBlocks - 1));
-          break;
-        case 3:
-          parent.type.imageName = "block_images/whileTrue/whileTrue3Blocks.png";
-          parent.height = 190.0 + (70 * (parentNestedBlocks - 1));
-          break;
-        case 4:
-          parent.type.imageName = "block_images/whileTrue/whileTrue4Blocks.png";
-          parent.height = 190.0 + (70 * (parentNestedBlocks - 1));
-          break;
-      }
-    } else {
-      switch (parentNestedBlocks) {
-        case 0:
-          parent.type.imageName = "block_images/ifCount/ifCountLessOr=10SmallV2.png";
-          parent.height = 200.0;
-          break;
-        case 1:
-          parent.type.imageName = "block_images/ifCount/ifCountLessOr=10SmallV2.png";
-          parent.height = 200.0;
-          break;
-        case 2:
-          parent.type.imageName = "block_images/ifCount/ifCountLessOr=102Blocks.png";
-          parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
-          break;
-        case 3:
-          parent.type.imageName = "block_images/ifCount/ifCountLessOr=103Blocks.png";
-          parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
-          break;
-        
-      }
+      case 'if (count <= 10):':
+        switch (parentNestedBlocks) {
+          case 0:
+            parent.type.imageName =
+                "block_images/logic/countLessThan10/ifCountLessThan10_Small.png";
+            parent.height = 165.0;
+            break;
+          case 1:
+            parent.type.imageName =
+                "block_images/logic/countLessThan10/ifCountLessThan10_1Block.png";
+            parent.height = 205.0;
+            break;
+          case 2:
+            parent.type.imageName =
+                "block_images/logic/countLessThan10/ifCountLessThan10_2Blocks.png";
+            parent.height = 205.0 + (70 * (parentNestedBlocks - 1));
+            break;
+          case 3:
+            parent.type.imageName =
+                "block_images/logic/countLessThan10/ifCountLessThan10_3Blocks.png";
+            parent.height = 205.0 + (70 * (parentNestedBlocks - 1));
+            break;
+        }
+        break;
+
+      case 'if (age <= 11):':
+        switch (parentNestedBlocks) {
+          case 0:
+            parent.type.imageName =
+                "block_images/logic/ageLessThan11/ifAgeLessThan11Small.png";
+            parent.height = 165.0;
+            break;
+          case 1:
+            parent.type.imageName =
+                "block_images/logic/ageLessThan11/ifAgeLessThan11_1Block.png";
+            parent.height = 205.0;
+            break;
+          case 2:
+            parent.type.imageName =
+                "block_images/logic/ageLessThan11/ifAgeLessThan11_2Blocks.png";
+            parent.height = 205.0 + (70 * (parentNestedBlocks - 1));
+            break;
+          case 3:
+            parent.type.imageName =
+                "block_images/logic/ageLessThan11/ifAgeLessThan11_3Blocks.png";
+            parent.height = 205.0 + (70 * (parentNestedBlocks - 1));
+            break;
+        }
+        break;
+
+      case "elif (age <= 16):":
+        switch (parentNestedBlocks) {
+          case 0:
+            parent.type.imageName =
+                "block_images/logic/elseIfAgeLessThan16/elseIfAgeLessThan16Small.png";
+            parent.height = 165.0;
+            break;
+          case 1:
+            parent.type.imageName =
+                "block_images/logic/elseIfAgeLessThan16/elseIfAgeLessThan16_1Block.png";
+            parent.height = 205.0;
+            break;
+          case 2:
+            parent.type.imageName =
+                "block_images/logic/elseIfAgeLessThan16/elseIfAgeLessThan16_2Blocks.png";
+            parent.height = 205.0 + (70 * (parentNestedBlocks - 1));
+            break;
+          case 3:
+            parent.type.imageName =
+                "block_images/logic/elseIfAgeLessThan16/elseIfAgeLessThan16_3Blocks.png";
+            parent.height = 205.0 + (70 * (parentNestedBlocks - 1));
+            break;
+        }
+        break;
+
+      case "else:":
+        switch (parentNestedBlocks) {
+          case 0:
+            parent.type.imageName = "block_images/logic/else/elseSmall.png";
+            parent.height = 150.0;
+            break;
+          case 1:
+            parent.type.imageName = "block_images/logic/else/else_1Block.png";
+            parent.height = 200.0;
+            break;
+          case 2:
+            parent.type.imageName = "block_images/logic/else/else_2Blocks.png";
+            parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
+            break;
+        }
+        break;
     }
 
     buildBlock(parent);
 
-    if(parent.isNested) {
-      
+    if (parent.isNested) {
       reSizeBlock(parent);
     }
+
+    // if(parent.childId != null) {
+    //   onEndDrag(parent.childId!);
+    // }
   }
 
   MoveableBlock getParent(MoveableBlock block) {
@@ -598,8 +679,10 @@ class _canvasWidgetState extends State<canvasWidget> {
       );
 
       if ((snappedTo.type.code == 'while True:' ||
-              snappedTo.type.code == 'if (count <= 10):') &&
-          snappedTo.id != block.id) {
+              snappedTo.type.code == 'if (count <= 10):' ||
+              snappedTo.type.code == 'if (age <= 11):') ||
+          snappedTo.type.code == 'elif (age <= 16):' ||
+          snappedTo.type.code == 'else:' && snappedTo.id != block.id) {
         return snappedTo;
       }
 
@@ -611,16 +694,14 @@ class _canvasWidgetState extends State<canvasWidget> {
     int blockUnits = 0;
     for (int i = 0; i < block.nestedBlocks!.length; i++) {
       MoveableBlock currentBlock = block.nestedBlocks![i];
-      
+
       if (currentBlock.type.code == "if (count <= 10):" ||
           currentBlock.type.code == "while True:") {
         if (currentBlock.nestedBlocksCount > 0) {
           blockUnits += currentBlock.nestedBlocksCount + 2;
-        } 
-        else if(currentBlock.isNested) {
+        } else if (currentBlock.isNested) {
           blockUnits += 3 + currentBlock.nestedBlocksCount;
-        }
-        else {
+        } else {
           blockUnits += 3;
         }
       } else {
