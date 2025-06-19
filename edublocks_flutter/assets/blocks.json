@@ -180,9 +180,10 @@
       "condition": false,
       "hasChildren": true,
       "priorityBuild": true,
-      "height": 165,
+      "height": 160,
       "displayImageHeight": 150,
-      "snapXOffset": -38
+      "snapXOffset": -38,
+      "snapYOffset": 1
     },
     {
       "category": "Logic",
@@ -192,7 +193,7 @@
       "condition": false,
       "hasChildren": true,
       "priorityBuild": true,
-      "height": 150,
+      "height": 145,
       "displayImageHeight": 150,
       "snapXOffset": -38,
       "snapYOffset": -10

@@ -29,6 +29,8 @@ class _canvasWidgetState extends State<canvasWidget> {
   List<MoveableBlock> draggedChain = [];
 
   MoveableBlock? selectedBlock;
+  MoveableBlock? proximityDetectedBlock;
+  bool isProximityChild = false;
   FocusNode _focusNode = FocusNode();
 
   @override
@@ -57,7 +59,7 @@ class _canvasWidgetState extends State<canvasWidget> {
               MoveableBlock(
                 id: getNewID(),
                 type: block,
-                position: const Offset(350, 100),
+                position: const Offset(400, 100),
                 height: block.height,
                 nestedBlocks: [],
               ),
@@ -295,13 +297,25 @@ class _canvasWidgetState extends State<canvasWidget> {
 
       if (childSnapXDistance.abs() < snapThreshold &&
           childSnapYDistance.abs() < snapThreshold) {
-        // print(target.type.code);
+        proximityDetectedBlock = widget.blocks.firstWhere(
+          (b) => b.id == target.id,
+        );
+        isProximityChild = true;
+      } else if (nestedSnapXDistance.abs() < snapThresholdNested &&
+          nestedSnapYDistance.abs() < snapThresholdNested) {
+        proximityDetectedBlock = widget.blocks.firstWhere(
+          (b) => b.id == target.id,
+        );
+        isProximityChild = false;
+      } else if (proximityDetectedBlock?.id == target.id) {
+        proximityDetectedBlock = null;
       }
     }
   }
 
   //Called by the gesture detector when a block is released
   void onEndDrag(int id, {bool snap = true}) {
+    proximityDetectedBlock = null;
     // Get the block
     final dragged = widget.blocks.firstWhere((b) => b.id == id);
     final draggedContext = blockKeys[dragged.id]?.currentContext;
@@ -335,7 +349,8 @@ class _canvasWidgetState extends State<canvasWidget> {
       final draggedSnapPointX = dragged.position.dx + 40;
 
       // Bottom snap Y position for target (child)
-      final childSnapY = target.position.dy + targetSize.height;
+
+      final childSnapY = target.position.dy + target.height!;
 
       //x and y positions of the target block for nested snapping
       final nestedSnapXCoordinatesTarget = target.position.dx + 60;
@@ -369,6 +384,7 @@ class _canvasWidgetState extends State<canvasWidget> {
 
             final targetSnappedTo = getParent(dragged);
             targetSnappedTo.nestedBlocks?.add(dragged);
+            reSizeBlock(dragged);
           }
 
           final draggedChainChildren = getConnectedChain(
@@ -394,7 +410,7 @@ class _canvasWidgetState extends State<canvasWidget> {
           final targetSnappedTo = widget.blocks.firstWhere(
             (b) => b.id == target.snappedTo,
           );
-          targetSnappedTo.nestedBlocks?.add(dragged);
+          // targetSnappedTo.nestedBlocks?.add(dragged);
           reSizeBlock(dragged);
         }
 
@@ -403,6 +419,40 @@ class _canvasWidgetState extends State<canvasWidget> {
         ).skip(1); // Skip the dragged block itself
         for (var childBlock in draggedChainChildren) {
           onEndDrag(childBlock.id, snap: false);
+        }
+      } else {
+        if (childSnapXDistance.abs() < snapThreshold &&
+            childSnapYDistance.abs() < snapThreshold) {
+          final oldChild = widget.blocks.firstWhere(
+            (b) => b.id == target.childId,
+          );
+          onStartDrag(oldChild.id);
+          setState(() {
+            oldChild.position = Offset(
+              targetSnapPointX - 40,
+              childSnapY - 10 + dragged.height!,
+            );
+            dragged.position = Offset(targetSnapPointX - 40, childSnapY - 10);
+            dragged.snappedTo = target.id;
+            target.childId = dragged.id;
+          });
+          dragged.childId = oldChild.id;
+          oldChild.snappedTo = null;
+          snapDone = true;
+          newSnap = true;
+
+          if (target.isNested) {
+            dragged.isNested = true;
+
+            final targetSnappedTo = getParent(dragged);
+            targetSnappedTo.nestedBlocks?.add(dragged);
+            reSizeBlock(dragged);
+          }
+
+          onEndDrag(oldChild.id, snap: false);
+
+          // Play sound
+          playSound(1);
         }
       }
 
@@ -435,8 +485,12 @@ class _canvasWidgetState extends State<canvasWidget> {
               onEndDrag(dragged.nestedBlocks![0].id, snap: false);
             }
 
+            reSizeBlock(dragged);
             if (dragged.childId != null) {
               onEndDrag(dragged.childId!, snap: false);
+            }
+            if (target.childId != null) {
+              onEndDrag(target.childId!);
             }
             snapDone = true; //snap is set as done
             newSnap = true; //this is a new snap
@@ -447,6 +501,7 @@ class _canvasWidgetState extends State<canvasWidget> {
         //this means its re-snapping the block after being dragged
         else if (target.nestedBlocks?[0].id == dragged.id) {
           //3.1
+
           setState(() {
             dragged.position = Offset(
               nestedSnapXCoordinatesTarget + target.type.snapXOffset,
@@ -460,17 +515,17 @@ class _canvasWidgetState extends State<canvasWidget> {
             onEndDrag(dragged.nestedBlocks![0].id, snap: false);
           }
 
-          if (dragged.childId != null) {
-            onEndDrag(dragged.childId!, snap: false);
-          }
+          // if (dragged.childId != null) {
+          //   onEndDrag(dragged.childId!, snap: false);
+          // }
 
           snapDone = true; //snap is done but its not a new snap
         }
       }
 
-      if (newSnap && dragged.isNested) {
-        reSizeBlock(widget.blocks.firstWhere((b) => b.id == dragged.id));
-      }
+      // if (newSnap && dragged.isNested) {
+      //   reSizeBlock(widget.blocks.firstWhere((b) => b.id == dragged.id));
+      // }
 
       //if the dragged block has a child, snap that as well.
       if (dragged.childId != null) {
@@ -489,8 +544,6 @@ class _canvasWidgetState extends State<canvasWidget> {
   }
 
   void callInsertBlock(MoveableBlock block) {
-    // 0.25 second delay
-
     // 1.1 snapping ONE block to the end of the main chain with no children
     // simply append it to the json
     if (block.childId == null &&
@@ -536,6 +589,7 @@ class _canvasWidgetState extends State<canvasWidget> {
     MoveableBlock parent = getParent(block);
 
     int parentNestedBlocks = getNumberOfNestedBlocks(parent);
+
     switch (parent.type.code) {
       case 'while True:':
         switch (parentNestedBlocks) {
@@ -543,6 +597,7 @@ class _canvasWidgetState extends State<canvasWidget> {
             parent.type.imageName =
                 "block_images/whileTrue/whileTrueSmallV1.png";
             parent.height = 150.0;
+
             break;
           case 1:
             parent.type.imageName =
@@ -622,22 +677,22 @@ class _canvasWidgetState extends State<canvasWidget> {
           case 0:
             parent.type.imageName =
                 "block_images/logic/elseIfAgeLessThan16/elseIfAgeLessThan16Small.png";
-            parent.height = 165.0;
+            parent.height = 160.0;
             break;
           case 1:
             parent.type.imageName =
                 "block_images/logic/elseIfAgeLessThan16/elseIfAgeLessThan16_1Block.png";
-            parent.height = 205.0;
+            parent.height = 200.0;
             break;
           case 2:
             parent.type.imageName =
                 "block_images/logic/elseIfAgeLessThan16/elseIfAgeLessThan16_2Blocks.png";
-            parent.height = 205.0 + (70 * (parentNestedBlocks - 1));
+            parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
             break;
           case 3:
             parent.type.imageName =
                 "block_images/logic/elseIfAgeLessThan16/elseIfAgeLessThan16_3Blocks.png";
-            parent.height = 205.0 + (70 * (parentNestedBlocks - 1));
+            parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
             break;
         }
         break;
@@ -666,9 +721,9 @@ class _canvasWidgetState extends State<canvasWidget> {
       reSizeBlock(parent);
     }
 
-    // if(parent.childId != null) {
-    //   onEndDrag(parent.childId!);
-    // }
+    if (parent.childId != null) {
+      onEndDrag(parent.childId!);
+    }
   }
 
   MoveableBlock getParent(MoveableBlock block) {
@@ -696,20 +751,19 @@ class _canvasWidgetState extends State<canvasWidget> {
       MoveableBlock currentBlock = block.nestedBlocks![i];
 
       if (currentBlock.type.code == "if (count <= 10):" ||
-          currentBlock.type.code == "while True:") {
-        if (currentBlock.nestedBlocksCount > 0) {
-          blockUnits += currentBlock.nestedBlocksCount + 2;
-        } else if (currentBlock.isNested) {
-          blockUnits += 3 + currentBlock.nestedBlocksCount;
+          currentBlock.type.code == "while True:" ||
+          currentBlock.type.code == "if (age <= 11):" ||
+          currentBlock.type.code == "elif (age <= 16):" ||
+          currentBlock.type.code == "else:") {
+        if (currentBlock.nestedBlocks!.isNotEmpty) {
+          blockUnits += getNumberOfNestedBlocks(currentBlock);
         } else {
-          blockUnits += 3;
+          blockUnits++;
         }
       } else {
         blockUnits++;
       }
     }
-
-    block.nestedBlocksCount = blockUnits;
     return blockUnits;
   }
 
@@ -728,7 +782,6 @@ class _canvasWidgetState extends State<canvasWidget> {
             "Line number: ${getBlockLineNumber(block.id, widget.blocks.firstWhere((b) => b.id == 0))}",
           );
 
-          // When a block is clicked, set it as selected (unless it's the start block)
           if (block.id != 0) {
             setState(() {
               if (selectedBlock?.id == block.id) {
@@ -742,13 +795,15 @@ class _canvasWidgetState extends State<canvasWidget> {
         },
         child: Container(
           key: blockKeys[block.id],
+          height: block.height,
+          width: block.width,
           child: Stack(
-            clipBehavior: Clip.none, // Allows overflow for the outside border
+            clipBehavior: Clip.none,
             children: [
-              // Yellow highlight positioned outside the block
+              // Left highlight bar
               if (selectedBlock?.id == block.id)
                 Positioned(
-                  left: -5, // Negative value to render outside
+                  left: -5,
                   top: 0,
                   bottom: 0,
                   child: Container(
@@ -763,7 +818,18 @@ class _canvasWidgetState extends State<canvasWidget> {
                   ),
                 ),
 
-              // The main block content
+              // Bottom outline using CustomPaint
+              if (proximityDetectedBlock?.id == block.id && isProximityChild)
+                Positioned.fill(
+                  child: CustomPaint(painter: BottomOutlinePainter()),
+                ),
+
+              if (proximityDetectedBlock?.id == block.id && !isProximityChild)
+                Positioned.fill(
+                  child: CustomPaint(painter: NestedOutlinePainter()),
+                ),
+
+              // Main block image with grayscale filter
               Container(
                 height: block.height,
                 child: ColorFiltered(
@@ -937,6 +1003,7 @@ class _canvasWidgetState extends State<canvasWidget> {
         setState(() {
           widget.blocks.removeWhere((element) => element.id == block.id);
         });
+        playSound(2);
       }
     }
   }
@@ -983,11 +1050,60 @@ class _canvasWidgetState extends State<canvasWidget> {
     if (option == 0) {
       await player.setAsset('sounds/disconnect.wav');
       await player.play();
-    } else {
+    } else if (option == 1) {
       await player.setAsset('sounds/click.mp3');
+      await player.play();
+    } else {
+      await player.setAsset('sounds/disconnect.wav');
       await player.play();
     }
   }
+}
+
+class BottomOutlinePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint =
+        Paint()
+          ..color = const Color(0xFFFFD600) // Yellow
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 10;
+
+    final path = Path();
+
+    double notchEndX = 0;
+
+    path.moveTo(notchEndX, size.height - 8); // start just after notch
+    path.lineTo(size.width, size.height - 8); // go to bottom-right
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
+}
+
+class NestedOutlinePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint =
+        Paint()
+          ..color = const Color(0xFFFFD600) // Yellow
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 10;
+
+    final path = Path();
+
+    double notchEndX = 25;
+
+    path.moveTo(notchEndX, 70); // start just after notch
+    path.lineTo(size.width, 70); // go to bottom-right
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
 
 class GridPainter extends CustomPainter {
