@@ -29,6 +29,7 @@ class _topBarWidgetState extends State<topBarWidget> {
 
       padding: EdgeInsets.all(14),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
         spacing: 0,
         children: [
           buttonWithIcon(
@@ -36,16 +37,7 @@ class _topBarWidgetState extends State<topBarWidget> {
             backgroundColor: runButtonColour,
             text: "Run",
             onTap: () {
-              
-            },
-          ),
-          Expanded(child: SizedBox()),
-          buttonWithIcon(
-            svgIconLocation: 'category_icons/play.svg', 
-            backgroundColor: runButtonColour,
-            text: "Run",
-            onTap: () {
-              
+              Provider.of<CodeTracker>(context, listen: false).run(context);
             },
           ),
         ],

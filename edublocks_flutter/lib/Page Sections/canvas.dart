@@ -684,6 +684,12 @@ class _canvasWidgetState extends State<canvasWidget> {
 
               // The main block content
               Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 3,
+                    color: Colors.red
+                  )
+                ),
                 height: block.height,
                 child: ColorFiltered(
                   colorFilter:

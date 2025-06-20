@@ -30,6 +30,7 @@ class _buttonWithIconState extends State<buttonWithIcon> {
   Widget build(BuildContext context) {
 
     return GestureDetector(
+      onTap: widget.onTap,
       child: Container(
         padding: EdgeInsets.all(8),
         decoration: BoxDecoration(
@@ -75,9 +76,6 @@ class _buttonWithIconState extends State<buttonWithIcon> {
           ),
         ),
       ),
-      onTap: () {
-
-      }
     );
   }
 }
