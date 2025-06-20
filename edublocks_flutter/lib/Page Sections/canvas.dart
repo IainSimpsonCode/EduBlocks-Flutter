@@ -829,14 +829,14 @@ class _canvasWidgetState extends State<canvasWidget> {
                   child: CustomPaint(painter: NestedOutlinePainter()),
                 ),
 
-              // Main block image with grayscale filter
+              // Main block image with grayscale filter and red outline
               Container(
-                decoration: BoxDecoration(
+                decoration: showRedBorder ? BoxDecoration(
                   border: Border.all(
                     width: 3,
                     color: Colors.red
                   )
-                ),
+                ) : null,
                 height: block.height,
                 child: ColorFiltered(
                   colorFilter:

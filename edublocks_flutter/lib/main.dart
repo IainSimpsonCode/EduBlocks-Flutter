@@ -1,14 +1,8 @@
-import 'dart:convert';
-import 'package:edublocks_flutter/Classes/Category.dart';
-import 'package:edublocks_flutter/Classes/Participant.dart';
 import 'package:edublocks_flutter/Services/providers.dart';
-import 'package:edublocks_flutter/Views/codeScreen.dart';
 import 'package:edublocks_flutter/Views/loadingScreen.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'Services/firebase_options.dart';
 
@@ -48,7 +42,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      debugShowCheckedModeBanner: !isProduction,
+      debugShowCheckedModeBanner: !isProduction, // If app is in production mode, dont show the debug banner.
       home: Scaffold(
         body: loadingScreen()
       ),
