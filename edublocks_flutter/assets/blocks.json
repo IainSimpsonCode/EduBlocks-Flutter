@@ -31,7 +31,7 @@
     {
       "category": "Statements",
       "code": "print(count)",
-      "imageName": "block_images/print.png",
+      "imageName": "block_images/statements/print.png",
       "condition": false,
       "hasChildren": false,
       "standardCodeColour": "0xFF61afef"
@@ -39,7 +39,7 @@
     {
       "category": "Statements",
       "code": "print('You are in primary school')",
-      "imageName": "block_images/print_primary-school.png",
+      "imageName": "block_images/statements/print_primary-school.png",
       "condition": false,
       "hasChildren": false,
       "standardCodeColour": "0xFF61afef"
@@ -47,7 +47,7 @@
     {
       "category": "Statements",
       "code": "print('You are in high school')",
-      "imageName": "block_images/print_high-school.png",
+      "imageName": "block_images/statements/print_high-school.png",
       "condition": false,
       "hasChildren": false,
       "standardCodeColour": "0xFF61afef"
@@ -55,7 +55,7 @@
     {
       "category": "Statements",
       "code": "print('You are old')",
-      "imageName": "block_images/print_you-are-old.png",
+      "imageName": "block_images/statements/print_you-are-old.png",
       "condition": false,
       "hasChildren": false,
       "standardCodeColour": "0xFF61afef"
@@ -63,7 +63,7 @@
     {
       "category": "Statements",
       "code": "print('My friend is')",
-      "imageName": "block_images/print_my-friend-string.png",
+      "imageName": "block_images/statements/print_my-friend-string.png",
       "condition": false,
       "hasChildren": false,
       "standardCodeColour": "0xFF61afef"
@@ -71,7 +71,7 @@
     {
       "category": "Statements",
       "code": "print(friends[0])",
-      "imageName": "block_images/print_friends_0.png",
+      "imageName": "block_images/statements/print_friends_0.png",
       "condition": false,
       "hasChildren": false,
       "standardCodeColour": "0xFF61afef"
@@ -79,7 +79,7 @@
     {
       "category": "Statements",
       "code": "print(number1 + number2)",
-      "imageName": "block_images/print_number1+number2.png",
+      "imageName": "block_images/statements/print_number1+number2.png",
       "condition": false,
       "hasChildren": false,
       "standardCodeColour": "0xFF61afef"
@@ -87,42 +87,43 @@
     {
       "category": "Variables",
       "code": "count += 1",
-      "imageName": "block_images/count+=1.png",
+      "imageName": "block_images/variables/count+=1.png",
       "condition": false,
       "hasChildren": false
     },
     {
       "category": "Variables",
       "code": "count = 0",
-      "imageName": "block_images/count=0.png",
+      "imageName": "block_images/variables/count=0.png",
       "condition": false,
       "hasChildren": false
     },
     {
       "category": "Variables",
       "code": "number1 = int(5)",
-      "imageName": "block_images/number1_variable.png",
+      "imageName": "block_images/variables/number1_variable.png",
       "condition": false,
       "hasChildren": false
     },
     {
       "category": "Variables",
       "code": "number2 = 2",
-      "imageName": "block_images/number2_variable.png",
+      "imageName": "block_images/variables/number2_variable.png",
       "condition": false,
       "hasChildren": false
     },
     {
       "category": "Variables",
       "code": "age = input('How old are you')",
-      "imageName": "block_images/age-variable_input.png",
+      "imageName": "block_images/variables/age-variable_input.png",
       "condition": false,
-      "hasChildren": false
+      "hasChildren": false,
+      "height": 95
     },
     {
       "category": "Variables",
       "code": "friends = 'Bob'",
-      "imageName": "block_images/friends-variable.png",
+      "imageName": "block_images/variables/friends-variable.png",
       "condition": false,
       "hasChildren": false
     },
@@ -136,12 +137,12 @@
     {
       "category": "Loops",
       "code": "while True:",
-      "imageName": "block_images/whileTrue/whileTrueSmallV2.png",
-      "displayImageName": "block_images/whileTrue/whileTrueSmallV2.png",
+      "imageName": "block_images/whileTrue/whileTrueSmallV1.png",
+      "displayImageName": "block_images/whileTrue/whileTrueSmallV1.png",
       "condition": false,
       "hasChildren": true,
       "priorityBuild": true,
-      "height": 190,
+      "height": 150,
       "displayImageHeight": 150,
       "snapXOffset": -38,
       "snapYOffset": -12
@@ -149,47 +150,53 @@
     {
       "category": "Logic",
       "code": "if (count <= 10):",
-      "imageName": "block_images/ifCount/ifCountLessOr=10SmallV2.png",
-      "displayImageName": "block_images/ifCount/ifCountLessOr=10SmallV2.png",
+      "imageName": "block_images/logic/countLessThan10/ifCountLessThan10_Small.png",
+      "displayImageName": "block_images/logic/countLessThan10/ifCountLessThan10_Small.png",
       "condition": false,
       "hasChildren": true,
       "priorityBuild": true,
-      "height": 200,
+      "height": 165,
       "displayImageHeight": 150,
-      "snapXOffset": -38
+      "snapXOffset": -38,
+      "snapYOffset": 2
     },
     {
       "category": "Logic",
       "code": "if (age <= 11):",
-      "imageName": "block_images/if_age_less-than_11.png",
+      "imageName": "block_images/logic/ageLessThan11/ifAgeLessThan11Small.png",
+      "displayImageName": "block_images/logic/ageLessThan11/ifAgeLessThan11Small.png",
       "condition": false,
       "hasChildren": true,
       "priorityBuild": true,
-      "height": 270,
+      "height": 165,
       "displayImageHeight": 150,
       "snapXOffset": -38
     },
     {
       "category": "Logic",
       "code": "elif (age <= 16):",
-      "imageName": "block_images/else-if_age_less-than_16.png",
+      "imageName": "block_images/logic/elseIfAgeLessThan16/elseIfAgeLessThan16Small.png",
+      "displayImageName": "block_images/logic/elseIfAgeLessThan16/elseIfAgeLessThan16Small.png",
       "condition": false,
       "hasChildren": true,
       "priorityBuild": true,
-      "height": 270,
+      "height": 160,
       "displayImageHeight": 150,
-      "snapXOffset": -38
+      "snapXOffset": -38,
+      "snapYOffset": 1
     },
     {
       "category": "Logic",
       "code": "else:",
-      "imageName": "block_images/else.png",
+      "imageName": "block_images/logic/else/elseSmall.png",
+      "displayImageName": "block_images/logic/else/elseSmall.png",
       "condition": false,
       "hasChildren": true,
       "priorityBuild": true,
-      "height": 270,
+      "height": 145,
       "displayImageHeight": 150,
-      "snapXOffset": -38
+      "snapXOffset": -38,
+      "snapYOffset": -10
     }
   ]
 }
