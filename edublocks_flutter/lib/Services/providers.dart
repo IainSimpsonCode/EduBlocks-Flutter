@@ -353,6 +353,25 @@ class CodeTracker extends ChangeNotifier {
     return pythonText;
   }
 
+  /// Replaces instances of "while True" with "for i in range(100)".
+  /// Takes the raw python code as a parameter, and returns the cleaned code
+  String cleanPythonCode(String rawCode) {
+
+    Map<String, String> replacements = {
+      "while True": "for i in range(100)"
+    };
+
+    print("Raw code: $rawCode");
+
+    replacements.forEach((key, value) {
+      rawCode = rawCode.replaceAll(key, value);
+    });
+
+    print("Cleaned code: $rawCode");
+
+    return rawCode;
+  }
+
   List<Widget> JSONToFormattedTextWidgets() {
     updateLineNumbers();
 
@@ -405,9 +424,7 @@ class CodeTracker extends ChangeNotifier {
     try {
       final url = Uri.parse("https://marklochrie.co.uk/edublocks/run");
       final headers = {"Content-Type": "application/json"};
-      final body = jsonEncode({"code": "print('Hello')"});
-
-      print(body);
+      final body = jsonEncode({"code": cleanPythonCode(JSONToPythonCode())});
 
       final response = await http.post(url, headers: headers, body: body);
       final data = jsonDecode(response.body);
@@ -418,7 +435,6 @@ class CodeTracker extends ChangeNotifier {
     }    
 
     setOutputString(output, context);
-    print("Output: $output");
     return output;
   }
 }

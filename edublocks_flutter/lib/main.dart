@@ -22,9 +22,6 @@ void main() async {
     // Declare all event handlers
     MultiProvider(
       providers: [
-        //// PageNotifier handles which page is displayed currently
-        //ChangeNotifierProvider(create: (context) => PageNotifier()),
-
         // BlockLibrary ChangeNotifier handles data relating to the blocks available from the block library fo users to use.
         ChangeNotifierProvider(create: (context) => BlockLibrary()),
 
