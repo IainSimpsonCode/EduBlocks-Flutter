@@ -33,11 +33,11 @@ class _categoryScrollerState extends State<categoryScroller> {
               color: category.color,
               borderRadius: BorderRadius.circular(8),
             ),
-            padding: const EdgeInsets.all(6), // optional padding inside container
+            padding: const EdgeInsets.all(6),
             margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
             child: SvgPicture.asset(
-              'category_icons/${category.iconName}.svg', // Use the field that stores icon filename or name
-              color: Colors.white, // tint SVG white if possible
+              'category_icons/${category.iconName}.svg',
+              color: Colors.white, 
               fit: BoxFit.contain,
               errorBuilder: (context, error, stackTrace) {
                 return const Icon(Icons.broken_image, size: 80);

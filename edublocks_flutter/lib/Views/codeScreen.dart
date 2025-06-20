@@ -1,6 +1,7 @@
 import 'package:edublocks_flutter/Page%20Sections/canvas.dart';
 import 'package:edublocks_flutter/Page%20Sections/codeBar.dart';
 import 'package:edublocks_flutter/Page%20Sections/sideBar.dart';
+import 'package:edublocks_flutter/Page%20Sections/topBar.dart';
 import 'package:edublocks_flutter/Services/providers.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
@@ -16,14 +17,50 @@ class CodeScreen extends StatefulWidget {
 class _CodeScreenState extends State<CodeScreen> {
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    // Show a popup to display which task they are working on.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final text = "Dialog test";
+      showDialog(
+        barrierDismissible: false, // User must click a button to proceed
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Welcome'),
+            content: Text(text),
+            actions: [
+              TextButton(
+                child: Text('OK'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          );
+        },
+      );
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
+      height: MediaQuery.sizeOf(context).height,
+      width: MediaQuery.sizeOf(context).width,
       color: canvasColour,
-      child: Row(
+      child: Column(
         children: [
-          sideBarWidget(),
-          canvasWidget(),
-          codeBarWidget(),
+          topBarWidget(),
+          Expanded(
+            child: Row(
+              children: [
+                sideBarWidget(),
+                canvasWidget(),
+                codeBarWidget(),
+              ],
+            ),
+          ),
         ],
       ),
     );
