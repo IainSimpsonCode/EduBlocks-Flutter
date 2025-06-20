@@ -33,6 +33,43 @@ class _canvasWidgetState extends State<canvasWidget> {
   bool isProximityChild = false;
   FocusNode _focusNode = FocusNode();
 
+  /// Function called when the BlocksToLoad function calls ```notifyListeners()```. Is run everytime a block is added to the queue of blocks to load from the block library
+  void _handleLoadingBlock() {
+    //Load blocks on the screen
+    bool run = true;
+    while (run) {
+      // Get the next block from the queue
+      Block? block =
+          Provider.of<BlocksToLoad>(context, listen: false).getBlockToLoad();
+
+      if (block == null) {
+        // If there was no block left in the queue (queue is empty), leave the loop
+        run = false;
+        break;
+      } else {
+        setState(() {
+          // Load next block in the queue
+          widget.blocks.add(
+            MoveableBlock(
+              id: getNewID(),
+              type: block,
+              position: const Offset(400, 100),
+              height: block.height,
+              nestedBlocks: [],
+            ),
+          );
+        });
+        for (var block in widget.blocks) {
+          if (!blockKeys.containsKey(block.id)) {
+            blockKeys[block.id] = GlobalKey();
+          }
+
+          dragPositions[block.id] = block.position;
+        }
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -40,41 +77,7 @@ class _canvasWidgetState extends State<canvasWidget> {
     _focusNode.requestFocus();
 
     // Listen to updates from the queue of blocks to load
-    Provider.of<BlocksToLoad>(context, listen: false).addListener(() {
-      //Load blocks on the screen
-      bool run = true;
-      while (run) {
-        // Get the next block from the queue
-        Block? block =
-            Provider.of<BlocksToLoad>(context, listen: false).getBlockToLoad();
-
-        if (block == null) {
-          // If there was no block left in the queue (queue is empty), leave the loop
-          run = false;
-          break;
-        } else {
-          setState(() {
-            // Load next block in the queue
-            widget.blocks.add(
-              MoveableBlock(
-                id: getNewID(),
-                type: block,
-                position: const Offset(400, 100),
-                height: block.height,
-                nestedBlocks: [],
-              ),
-            );
-          });
-          for (var block in widget.blocks) {
-            if (!blockKeys.containsKey(block.id)) {
-              blockKeys[block.id] = GlobalKey();
-            }
-
-            dragPositions[block.id] = block.position;
-          }
-        }
-      }
-    });
+    Provider.of<BlocksToLoad>(context, listen: false).addListener(_handleLoadingBlock);
 
     widget.blocks = [
       MoveableBlock(
@@ -96,6 +99,13 @@ class _canvasWidgetState extends State<canvasWidget> {
 
       dragPositions[block.id] = block.position;
     }
+  }
+
+  @override
+  void dispose() {
+    // Safely remove provider listener
+    Provider.of<BlocksToLoad>(context, listen: false).removeListener(_handleLoadingBlock);
+    super.dispose();
   }
 
   int getNewID() {

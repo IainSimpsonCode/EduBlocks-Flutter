@@ -16,15 +16,24 @@ class _sideBarWidgetState extends State<sideBarWidget> {
 
   bool minimised = true;
 
+  void _handleBlockLibraryUpdates() {
+    setState(() {
+      
+    });
+  }
+
   @override
   void initState() {
     super.initState();
 
-    Provider.of<BlockLibrary>(context, listen: false).addListener(() {
-      setState(() {
-        
-      });
-    });
+    Provider.of<BlockLibrary>(context, listen: false).addListener(_handleBlockLibraryUpdates);
+  }
+
+  @override
+  void dispose() {
+    // Safely remove provider listener
+    Provider.of<BlockLibrary>(context, listen: false).removeListener(_handleBlockLibraryUpdates);
+    super.dispose();
   }
 
   @override

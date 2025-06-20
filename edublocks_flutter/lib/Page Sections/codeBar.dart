@@ -14,16 +14,25 @@ class codeBarWidget extends StatefulWidget {
 
 class _codeBarWidgetState extends State<codeBarWidget> {
 
+  void _handleCodeOutputTextPanelUpdates() {
+    setState(() {
+      
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    Provider.of<CodeOutputTextPanelNotifier>(context, listen: false).addListener(() {
-      setState(() {
-        
-      });
-    });
+    Provider.of<CodeOutputTextPanelNotifier>(context, listen: false).addListener(_handleCodeOutputTextPanelUpdates);
+  }
+
+  @override
+  void dispose() {
+    // Safely remove provider listener
+    Provider.of<CodeOutputTextPanelNotifier>(context, listen: false).removeListener(_handleCodeOutputTextPanelUpdates);
+    super.dispose();
   }
 
   @override
