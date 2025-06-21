@@ -9,6 +9,7 @@ import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:edublocks_flutter/features.dart';
 
 class ParticipantInformation extends ChangeNotifier {
   Participant? currentParticipant;
@@ -423,7 +424,7 @@ class CodeTracker extends ChangeNotifier {
     if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant != null) {
       final isSolutionCorrect = await Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.checkSolution(JSONToPythonCode());
       print("Correct Solution?: $isSolutionCorrect");
-      
+
       // Show a popup to display which task they are working on.
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final text = isSolutionCorrect ? "Correct solution. Well done!" : "That wasnt quite right. Try again.";

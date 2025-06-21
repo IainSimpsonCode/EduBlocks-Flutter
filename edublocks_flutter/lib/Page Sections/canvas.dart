@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../Classes/MoveableBlock.dart';
 import 'package:collection/collection.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:edublocks_flutter/features.dart';
 
 class canvasWidget extends StatefulWidget {
   canvasWidget({super.key});
