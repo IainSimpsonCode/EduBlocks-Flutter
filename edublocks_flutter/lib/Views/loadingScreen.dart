@@ -1,11 +1,13 @@
+import 'dart:convert';
+
 import 'package:edublocks_flutter/Classes/Block.dart';
 import 'package:edublocks_flutter/Classes/Category.dart';
 import 'package:edublocks_flutter/Views/codeScreen.dart';
 import 'package:edublocks_flutter/Views/loginPage.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
-
 import 'package:edublocks_flutter/Services/firestore.dart';
+import 'package:flutter/services.dart';
 
 Future<List<int>> loadAllResources(BuildContext context) async {
   return await Future.wait([

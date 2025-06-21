@@ -7,7 +7,6 @@ import 'package:edublocks_flutter/Widgets/codeTextPanel.dart';
 import 'package:edublocks_flutter/Widgets/outputTextPanel.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
@@ -419,6 +418,35 @@ class CodeTracker extends ChangeNotifier {
 
   /// Will send the code currently stored in the CodeTracker notifier to a python compiler server. Returns the output as a string to be shown on the output pane.
   Future<String> run(BuildContext context) async {
+
+    // Check if the code matches the desired solution
+    if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant != null) {
+      final isSolutionCorrect = await Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.checkSolution(JSONToPythonCode());
+      print("Correct Solution?: $isSolutionCorrect");
+      
+      // Show a popup to display which task they are working on.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final text = isSolutionCorrect ? "Correct solution. Well done!" : "That wasnt quite right. Try again.";
+        showDialog(
+          barrierDismissible: false, // User must click a button to proceed
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Run'),
+              content: Text(text),
+              actions: [
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ],
+            );
+          },
+        );
+      });
+    }
+
+
     String output = "";
 
     try {

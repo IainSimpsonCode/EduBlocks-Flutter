@@ -23,7 +23,8 @@ class _CodeScreenState extends State<CodeScreen> {
 
     // Show a popup to display which task they are working on.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final text = "Dialog test";
+      final taskNumber = Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getTask() ?? 0;
+      final text = "You are working on task $taskNumber";
       showDialog(
         barrierDismissible: false, // User must click a button to proceed
         context: context,

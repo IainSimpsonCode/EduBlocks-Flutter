@@ -15,6 +15,7 @@ class sideBarWidget extends StatefulWidget {
 class _sideBarWidgetState extends State<sideBarWidget> {
 
   bool minimised = true;
+  late BlockLibrary _blockLibrary;
 
   void _handleBlockLibraryUpdates() {
     setState(() {
@@ -26,20 +27,21 @@ class _sideBarWidgetState extends State<sideBarWidget> {
   void initState() {
     super.initState();
 
-    Provider.of<BlockLibrary>(context, listen: false).addListener(_handleBlockLibraryUpdates);
+    _blockLibrary = Provider.of<BlockLibrary>(context, listen: false);
+    _blockLibrary.addListener(_handleBlockLibraryUpdates);
   }
 
   @override
   void dispose() {
     // Safely remove provider listener
-    Provider.of<BlockLibrary>(context, listen: false).removeListener(_handleBlockLibraryUpdates);
+    _blockLibrary.removeListener(_handleBlockLibraryUpdates);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
 
-    String? categorySelected = Provider.of<BlockLibrary>(context, listen: false).categorySelected;
+    String? categorySelected = _blockLibrary.categorySelected;
     minimised = (categorySelected == null);
 
     // If the sideBar is minimised, it's size should be divided by 2.

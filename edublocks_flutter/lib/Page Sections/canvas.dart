@@ -33,6 +33,8 @@ class _canvasWidgetState extends State<canvasWidget> {
   bool isProximityChild = false;
   FocusNode _focusNode = FocusNode();
 
+  late BlocksToLoad _blocksToLoad;
+
   /// Function called when the BlocksToLoad function calls ```notifyListeners()```. Is run everytime a block is added to the queue of blocks to load from the block library
   void _handleLoadingBlock() {
     //Load blocks on the screen
@@ -40,7 +42,7 @@ class _canvasWidgetState extends State<canvasWidget> {
     while (run) {
       // Get the next block from the queue
       Block? block =
-          Provider.of<BlocksToLoad>(context, listen: false).getBlockToLoad();
+          _blocksToLoad.getBlockToLoad();
 
       if (block == null) {
         // If there was no block left in the queue (queue is empty), leave the loop
@@ -77,7 +79,8 @@ class _canvasWidgetState extends State<canvasWidget> {
     _focusNode.requestFocus();
 
     // Listen to updates from the queue of blocks to load
-    Provider.of<BlocksToLoad>(context, listen: false).addListener(_handleLoadingBlock);
+    _blocksToLoad = Provider.of<BlocksToLoad>(context, listen: false);
+    _blocksToLoad.addListener(_handleLoadingBlock);
 
     widget.blocks = [
       MoveableBlock(
@@ -104,7 +107,7 @@ class _canvasWidgetState extends State<canvasWidget> {
   @override
   void dispose() {
     // Safely remove provider listener
-    Provider.of<BlocksToLoad>(context, listen: false).removeListener(_handleLoadingBlock);
+    _blocksToLoad.removeListener(_handleLoadingBlock);
     super.dispose();
   }
 
