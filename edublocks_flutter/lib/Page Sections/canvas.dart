@@ -31,6 +31,7 @@ class _canvasWidgetState extends State<canvasWidget> {
   MoveableBlock? selectedBlock;
   MoveableBlock? proximityDetectedBlock;
   bool isProximityChild = false;
+  MoveableBlock? errorBlock;
   FocusNode _focusNode = FocusNode();
 
   @override
@@ -829,6 +830,11 @@ class _canvasWidgetState extends State<canvasWidget> {
                   child: CustomPaint(painter: NestedOutlinePainter()),
                 ),
 
+              if(proximityDetectedBlock?.id == 0)
+                Positioned.fill(
+                  child: CustomPaint(painter: ErrorOutlinePainter()),
+                ),
+
               // Main block image with grayscale filter
               Container(
                 height: block.height,
@@ -1106,6 +1112,28 @@ class NestedOutlinePainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
 
+class ErrorOutlinePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint =
+        Paint()
+          ..color = const Color.fromARGB(255, 255, 0, 0) // Yellow
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 10;
+
+    final rect = Rect.fromLTWH(
+      0,
+      0,
+      size.width,
+      size.height,
+    );
+
+    canvas.drawRect(rect, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
+}
 class GridPainter extends CustomPainter {
   final double gridSpacing;
   final TextStyle labelStyle;
