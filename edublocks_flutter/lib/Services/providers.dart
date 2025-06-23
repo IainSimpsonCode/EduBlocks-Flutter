@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:edublocks_flutter/Classes/Block.dart';
 import 'package:edublocks_flutter/Classes/Category.dart';
+import 'package:edublocks_flutter/Classes/MoveableBlock.dart';
 import 'package:edublocks_flutter/Classes/Participant.dart';
 import 'package:edublocks_flutter/Services/TextFormatter.dart';
 import 'package:edublocks_flutter/Widgets/codeTextPanel.dart';
@@ -134,6 +135,9 @@ class BlocksToLoad extends ChangeNotifier {
 }
 
 class CodeTracker extends ChangeNotifier {
+
+  List<MoveableBlock> blocks = [];
+
   String _codeJSONString = """{"blocks": [{"line": 1, "code": "# Start Here", "hasChildren": false}]}""";
   String _outputString = "";
 
