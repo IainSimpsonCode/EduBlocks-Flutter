@@ -17,3 +17,11 @@ bool detailedErrorMessages(BuildContext context) {
 bool altColours(BuildContext context) {
   return (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getFeature() == "C" && Provider.of<TaskTracker>(context, listen: false).isFeatureVisible);
 }
+
+bool redBorder(BuildContext context) {
+  return (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getFeature() == "D" && Provider.of<TaskTracker>(context, listen: false).isFeatureVisible);
+}
+
+bool greyscaleHighlight(BuildContext context) {
+  return (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getFeature() == "E" && Provider.of<TaskTracker>(context, listen: false).isFeatureVisible);
+}
