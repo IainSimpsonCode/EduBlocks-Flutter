@@ -376,7 +376,7 @@ class CodeTracker extends ChangeNotifier {
     return rawCode;
   }
 
-  List<Widget> JSONToFormattedTextWidgets() {
+  List<Widget> JSONToFormattedTextWidgets(BuildContext context) {
     updateLineNumbers();
 
     // Parse the JSON
@@ -403,7 +403,7 @@ class CodeTracker extends ChangeNotifier {
         style: codeTextStyle
       )];
 
-      formattedText.addAll(TextFormatter.formatCodeLine("${actualIndent()}${block["code"]}", Color((altColours ? block["alternateCodeColour"] : block["standardCodeColour"]) ?? 0xFFffffff)));
+      formattedText.addAll(TextFormatter.formatCodeLine("${actualIndent()}${block["code"]}", Color((altColours(context) ? block["alternateCodeColour"] : block["standardCodeColour"]) ?? 0xFFffffff)));
       
 
       returnWidgets.add(Text.rich(TextSpan( children: formattedText)));
