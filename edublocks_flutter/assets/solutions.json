@@ -1,13 +1,18 @@
 {
-    "1": "\n# Start Here\ncount = 0\nwhile True:\n count += 1\n print(count)\n pass",
+    "1": "\n# Start Here\nwhile True:\n count += 1\n print(count)\n pass",
+    "1fixed": "\n# Start Here\ncount = 0\nwhile True:\n count += 1\n print(count)\n pass",
     "1ErrorLine": "3",
-    "2": "\n# Start Here\nwhile True:\n print('You are old')\n pass",
+    "2": "\n# Start Here\nelif (age <= 16):\n print('You are in High School')\n pass\nif (age <= 11):\n print('You are in Primary School')\n pass\nelse\n print('You are old')\n pass",
+    "2fixed": "\n# Start Here\nif (age <= 11):\n print('You are in Primary School')\n pass\nelif (age <= 16):\n print('You are in High School')\n pass\nelse\n print('You are old')\n pass",
     "2ErrorLine": "2",
-    "3": "\n# Start Here\nprint('My friend is')",
+    "3": "\n# Start Here\nfriends = 'Bob'\nfriends.append('Ann')\nprint('My friend is')\nprint(friends[0])",
+    "3fixed": "\n# Start Here\nfriends = ['Bob', 'Charles']\nfriends.append('Ann')\nprint('My friend is')\nprint(friends[0])",
     "3ErrorLine": "2",
-    "4": "\n# Start Here",
+    "4": "\n# Start Here\nnumber1 = int(5)\nnumber2 = '2'\nprint(number1 + number2)",
     "4ErrorLine": "2",
+    "4fixed": "\n# Start Here\nnumber1 = int(5)\nnumber2 = 2\nprint(number1 + number2)",
     "5": "\n# Start Here\nfriends = 'Bob'\nprint(friends[0])",
     "5ErrorLine": "3"
-
+,
+    "5fixed": "\n# Start Here\nfriends = ['Bob', 'Charles']\nprint(friends[0])"
 }
