@@ -16,6 +16,8 @@ class CodeScreen extends StatefulWidget {
 
 class _CodeScreenState extends State<CodeScreen> {
 
+  late TaskTracker _taskTracker;
+
   void _showPopUpMessage() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final taskNumber = Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getTask() ?? 0;
@@ -39,12 +41,29 @@ class _CodeScreenState extends State<CodeScreen> {
     });
   }
 
+  void _onTaskUpdate() {
+    setState(() {
+      
+    });
+  }
+
   @override
   void initState() {
     super.initState();
 
-    // Show a popup to display which task they are working on.
+    // Show a popup to display which task they are initially working on.
     _showPopUpMessage();
+    
+    // Add a listener to update the widget when the state of the task changes
+    _taskTracker = Provider.of<TaskTracker>(context, listen: false);
+    _taskTracker.addListener(_onTaskUpdate);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    _taskTracker.removeListener(_onTaskUpdate);
   }
 
   @override

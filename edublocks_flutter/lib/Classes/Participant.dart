@@ -137,29 +137,32 @@ class Participant {
     return incompleteTasks[random.nextInt(incompleteTasks.length)];
   }
 
-  void taskComplete(int task) {
-    if (task == 1) {
+  void taskComplete() {
+    if (_currentTask == 1) {
       task1 = true;
     } 
-    else if (task == 2) {
+    else if (_currentTask == 2) {
       task2 = true;
     } 
-    else if (task == 3) {
+    else if (_currentTask == 3) {
       task3 = true;
     } 
-    else if (task == 4) {
+    else if (_currentTask == 4) {
       task4 = true;
     } 
-    else if (task == 5) {
+    else if (_currentTask == 5) {
       task5 = true;
     } 
+
+    _currentTask = null;
+    _currentProgress = 0;
   }
 
   Future<bool> checkSolution(String solution) async {
     final String response = await rootBundle.loadString('assets/solutions.json'); // Get the solutions from a json file
     final data = json.decode(response);
 
-    if (solution == data[_currentTask.toString()]) { // If the solution given matches the solution for the currentTask
+    if (solution == data["$_currentTask${_currentProgress == 1 ? "fixed" : null}${_currentProgress == 2 ? "extention" : null}"]) { // If the solution given matches the solution for the currentTask
       return true;
     }
     else {

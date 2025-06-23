@@ -480,12 +480,10 @@ class CodeOutputTextPanelNotifier extends ChangeNotifier {
 }
 
 class TaskTracker extends ChangeNotifier {
-  void nextTask() {
+  void taskUpdate() {
     notifyListeners();
   }
-}
-
-class FeatureTracker extends ChangeNotifier {
+  
   bool _featureVisible = false;
 
   bool get isFeatureVisible => _featureVisible;

@@ -32,8 +32,8 @@ void main() async {
         // Tracks which user is logged into the app
         ChangeNotifierProvider(create: (context) => ParticipantInformation()),
 
-        // Tracks if features should be visible of not
-        ChangeNotifierProvider(create: (context) => FeatureTracker()),
+        // Tracks if features should be visible of not and the progress of the user through tasks
+        ChangeNotifierProvider(create: (context) => TaskTracker()),
       ],
       child: const MainApp(),
     ),
