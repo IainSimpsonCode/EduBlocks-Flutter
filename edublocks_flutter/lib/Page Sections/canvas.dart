@@ -45,6 +45,7 @@ class _canvasWidgetState extends State<canvasWidget> {
   FocusNode _focusNode = FocusNode();
 
   late BlocksToLoad _blocksToLoad;
+  late FeatureTracker _featureTracker;
 
   /// Function called when the BlocksToLoad function calls ```notifyListeners()```. Is run everytime a block is added to the queue of blocks to load from the block library
   void _handleLoadingBlock() {
@@ -82,6 +83,10 @@ class _canvasWidgetState extends State<canvasWidget> {
     }
   }
 
+  void _handleFeatureTrackerChange() {
+
+  }
+
   @override
   void initState() {
     super.initState();
@@ -91,6 +96,10 @@ class _canvasWidgetState extends State<canvasWidget> {
     // Listen to updates from the queue of blocks to load
     _blocksToLoad = Provider.of<BlocksToLoad>(context, listen: false);
     _blocksToLoad.addListener(_handleLoadingBlock);
+
+    // Listen to updates about the visibility of features
+    _featureTracker = Provider.of<FeatureTracker>(context, listen: false);
+    _featureTracker.addListener(_handleFeatureTrackerChange);
 
     widget.blocks = [
       MoveableBlock(
@@ -118,6 +127,7 @@ class _canvasWidgetState extends State<canvasWidget> {
   void dispose() {
     // Safely remove provider listener
     _blocksToLoad.removeListener(_handleLoadingBlock);
+    _featureTracker.removeListener(_handleFeatureTrackerChange);
     super.dispose();
   }
 

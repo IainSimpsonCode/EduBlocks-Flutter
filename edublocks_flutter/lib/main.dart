@@ -31,6 +31,9 @@ void main() async {
 
         // Tracks which user is logged into the app
         ChangeNotifierProvider(create: (context) => ParticipantInformation()),
+
+        // Tracks if features should be visible of not
+        ChangeNotifierProvider(create: (context) => FeatureTracker()),
       ],
       child: const MainApp(),
     ),

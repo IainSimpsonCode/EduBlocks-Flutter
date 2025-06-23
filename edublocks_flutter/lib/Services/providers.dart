@@ -484,3 +484,19 @@ class TaskTracker extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+class FeatureTracker extends ChangeNotifier {
+  bool _featureVisible = false;
+
+  bool get isFeatureVisible => _featureVisible;
+
+  void activateFeature() {
+    _featureVisible = true;
+    notifyListeners();
+  }
+
+  void deactivateFeature() {
+    _featureVisible = false;
+    notifyListeners();
+  }
+}
