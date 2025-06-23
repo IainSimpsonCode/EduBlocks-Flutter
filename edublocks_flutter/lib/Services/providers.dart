@@ -399,7 +399,7 @@ class CodeTracker extends ChangeNotifier {
     for (var block in blocks) {
 
       List<TextSpan> formattedText = [TextSpan(
-        text: "${block["line"] < 10 ? 0 : null}${block["line"]}: ",
+        text: "${block["line"] < 10 ? 0 : ""}${block["line"]}: ",
         style: codeTextStyle
       )];
 
