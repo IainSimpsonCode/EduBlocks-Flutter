@@ -829,7 +829,7 @@ class _canvasWidgetState extends State<canvasWidget> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // 🔢 Number box
-              Padding(
+              lineNumbering(context) ? Padding(
                 padding: const EdgeInsets.all(8.0), // adjust padding as needed
                 child: Container(
                   width: 75,
@@ -852,7 +852,7 @@ class _canvasWidgetState extends State<canvasWidget> {
                     ),
                   ),
                 ),
-              ),
+              ) : SizedBox(width: 0, height: 0),
               // 🧱 Stack with block content
               SizedBox(
                 width: block.width,
