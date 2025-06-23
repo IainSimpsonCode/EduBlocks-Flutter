@@ -13,9 +13,27 @@ class topBarWidget extends StatefulWidget {
 
 class _topBarWidgetState extends State<topBarWidget> {
 
+  void _handleParticipantInfoChange() {
+    setState(() {
+      
+    });
+  }
+
+  late ParticipantInformation participantInformation;
+
   @override
   void initState() {
     super.initState();
+
+    participantInformation = Provider.of<ParticipantInformation>(context, listen: false);
+    participantInformation.addListener(_handleParticipantInfoChange);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    participantInformation.removeListener(_handleParticipantInfoChange);
   }
 
   @override
@@ -31,6 +49,12 @@ class _topBarWidgetState extends State<topBarWidget> {
         mainAxisAlignment: MainAxisAlignment.end,
         spacing: 0,
         children: [
+          Expanded(
+            child: Text(
+              "Participant ID: ${Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.ID ?? "Not logged in"}\nYou are working on Task ${Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getTask() ?? 0}",
+              style: codeTextStyle,
+            ),
+          ),
           buttonWithIcon(
             svgIconLocation: 'category_icons/play.svg', 
             backgroundColor: runButtonColour,

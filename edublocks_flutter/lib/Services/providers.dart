@@ -447,7 +447,6 @@ class CodeTracker extends ChangeNotifier {
       });
     }
 
-
     String output = "";
 
     try {
@@ -478,4 +477,10 @@ class CodeOutputTextPanelNotifier extends ChangeNotifier {
   }
 
   Widget textPanel() => _codeSelected ? codeTextPanel() : outputTextPanel();
+}
+
+class TaskTracker extends ChangeNotifier {
+  void nextTask() {
+    notifyListeners();
+  }
 }
