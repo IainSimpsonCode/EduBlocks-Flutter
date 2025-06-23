@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:edublocks_flutter/Services/providers.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 class Participant {
   final String ID;
@@ -56,6 +59,10 @@ class Participant {
       seenGavin: json["seenGavin"] ?? false
     );
   }
+
+  /// Returns the current progress of the participant through thier current task.
+  /// 0 = they are at the start; 1 = they have completed the task up to the first error; 2 = they have used the feature to fix the error; 3 = they have completed the extention
+  int get currentProgress => _currentProgress;
 
   /// Returns the value of the current task to complete
   /// If all tasks have been completed, function will return ```null```
@@ -158,11 +165,26 @@ class Participant {
     _currentProgress = 0;
   }
 
-  Future<bool> checkSolution(String solution) async {
+  Future<bool> checkSolution(BuildContext context, String solution) async {
     final String response = await rootBundle.loadString('assets/solutions.json'); // Get the solutions from a json file
     final data = json.decode(response);
 
-    if (solution == data["$_currentTask${_currentProgress == 1 ? "fixed" : null}${_currentProgress == 2 ? "extention" : null}"]) { // If the solution given matches the solution for the currentTask
+    print("Solution: $solution");
+    print("Answer ($_currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}): ${data["$_currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}"]}");
+
+    if (solution == data["$_currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}"]) { // If the solution given matches the solution for the currentTask
+      _currentProgress++; // If the solution was correct, increase thier progress
+      if (_currentProgress == 1) { // If they have completed up to the first error
+        Provider.of<TaskTracker>(context, listen: false).activateFeature(); // Show the new feature
+      }
+      else if (_currentProgress == 2) { // If they have successfully fixed the error
+        Provider.of<TaskTracker>(context, listen: false).taskUpdate(); // Notify listeners that the task has been updated
+      }
+      else if (_currentProgress == 3) { // If they have completed the task (including the extention)
+        taskComplete(); // Mark the task as complete
+        Provider.of<TaskTracker>(context, listen: false).deactivateFeature(); // Hide the feature
+      }
+
       return true;
     }
     else {

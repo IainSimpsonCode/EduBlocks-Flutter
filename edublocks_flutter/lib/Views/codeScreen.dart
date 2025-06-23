@@ -18,16 +18,20 @@ class _CodeScreenState extends State<CodeScreen> {
 
   late TaskTracker _taskTracker;
 
-  void _showPopUpMessage() {
+  void _showTaskPopUpMessage() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final taskNumber = Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getTask() ?? 0;
-      final text = "You are working on task $taskNumber";
+      final taskNumber = Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getTask();
+      if (taskNumber == null) {
+        return;
+      }
+
+      final text = "You are working on task $taskNumber.\nPlease find it in your workbook";
       showDialog(
         barrierDismissible: false, // User must click a button to proceed
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Welcome'),
+            title: Text('Your Task'),
             content: Text(text),
             actions: [
               TextButton(
@@ -43,7 +47,9 @@ class _CodeScreenState extends State<CodeScreen> {
 
   void _onTaskUpdate() {
     setState(() {
-      
+      if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.currentProgress == 0) { // If a new task is started
+        _showTaskPopUpMessage(); // Notify the user which task they are on
+      }
     });
   }
 
@@ -52,7 +58,7 @@ class _CodeScreenState extends State<CodeScreen> {
     super.initState();
 
     // Show a popup to display which task they are initially working on.
-    _showPopUpMessage();
+    _showTaskPopUpMessage();
     
     // Add a listener to update the widget when the state of the task changes
     _taskTracker = Provider.of<TaskTracker>(context, listen: false);

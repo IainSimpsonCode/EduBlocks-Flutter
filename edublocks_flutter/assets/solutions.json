@@ -12,7 +12,6 @@
     "4ErrorLine": "2",
     "4fixed": "\n# Start Here\nnumber1 = int(5)\nnumber2 = 2\nprint(number1 + number2)",
     "5": "\n# Start Here\nfriends = 'Bob'\nprint(friends[0])",
-    "5ErrorLine": "3"
-,
+    "5ErrorLine": "3",
     "5fixed": "\n# Start Here\nfriends = ['Bob', 'Charles']\nprint(friends[0])"
 }

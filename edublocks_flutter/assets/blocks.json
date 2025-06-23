@@ -107,6 +107,13 @@
     },
     {
       "category": "Variables",
+      "code": "number2 = '2'",
+      "imageName": "block_images/variables/number2_variable.png",
+      "condition": false,
+      "hasChildren": false
+    },
+    {
+      "category": "Variables",
       "code": "number2 = 2",
       "imageName": "block_images/variables/number2_variable.png",
       "condition": false,

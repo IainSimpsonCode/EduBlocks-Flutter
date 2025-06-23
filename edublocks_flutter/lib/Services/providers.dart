@@ -422,12 +422,30 @@ class CodeTracker extends ChangeNotifier {
 
     // Check if the code matches the desired solution
     if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant != null) {
-      final isSolutionCorrect = await Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.checkSolution(JSONToPythonCode());
+      // Define what the popup should say after run is clicked
+      String correctAnswerText = "";
+      String incorrectAnswerText = "";
+      if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.currentProgress == 0) { // If they are at the start of the task
+        correctAnswerText = "You've correcly put together the code from the workbook. However, this code is broken and has an error. We have added a new feature to the app to help you try and fix the error. Read through the error message provided on the output panel and see if you can fix the error.";
+        incorrectAnswerText = "That wasnt quite right. Your code doesn't match with what is in your workbook. Reread the task and try again.";
+      }
+      else if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.currentProgress == 1) { // If they have the new feature and are debugging
+        correctAnswerText = "Correct! You've found what was causing the problem and successfully fixed it. \nNow you can work on making the code even better. Try the extention activity in your workbook.";
+        incorrectAnswerText = "That wasnt quite right. The original error hasn't been fixed. Try again.";
+      }
+      else if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.currentProgress == 2) { // If they are doing the extention activity
+        correctAnswerText = "Well done! You've completed the task, and made it even better through the extention acitvity. Now you can start your next task.";
+        incorrectAnswerText = "That wasnt quite right. Your code doesn't match with what is in your workbook. Reread the task and try again.";
+      }
+
+
+      final isSolutionCorrect = await Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.checkSolution(context, JSONToPythonCode());
       print("Correct Solution?: $isSolutionCorrect");
+
 
       // Show a popup to display which task they are working on.
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        final text = isSolutionCorrect ? "Correct solution. Well done!" : "That wasnt quite right. Try again.";
+        final text = isSolutionCorrect ? correctAnswerText : incorrectAnswerText;
         showDialog(
           barrierDismissible: false, // User must click a button to proceed
           context: context,
