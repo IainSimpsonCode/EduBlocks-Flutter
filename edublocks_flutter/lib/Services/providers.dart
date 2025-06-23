@@ -8,6 +8,7 @@ import 'package:edublocks_flutter/Widgets/codeTextPanel.dart';
 import 'package:edublocks_flutter/Widgets/outputTextPanel.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:edublocks_flutter/features.dart';
@@ -442,10 +443,8 @@ class CodeTracker extends ChangeNotifier {
         incorrectAnswerText = "That wasnt quite right. Your code doesn't match with what is in your workbook. Reread the task and try again.";
       }
 
-
       final isSolutionCorrect = await Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.checkSolution(context, JSONToPythonCode());
       print("Correct Solution?: $isSolutionCorrect");
-
 
       // Show a popup to display which task they are working on.
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -467,9 +466,21 @@ class CodeTracker extends ChangeNotifier {
           },
         );
       });
+    
+      // Get the relevant detailed error message
+      final String response = await rootBundle.loadString('assets/solutions.json'); // Get the solutions from a json file
+      final data = json.decode(response);
+      int currentTask = Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.getTask() ?? 0;
+      if (data["$currentTask"] == JSONToPythonCode() && detailedErrorMessages(context)) { // if the code given matches what the task requires, and the feature is detailed error messages
+        // Return the detailed error message
+        String detailedErrorMessage = data["${currentTask}detailedErrorMessage"] ?? "Task $currentTask: Error message not found";
+        setOutputString(detailedErrorMessage, context);
+        return detailedErrorMessage;
+      }
     }
 
     String output = "";
+
 
     try {
       final url = Uri.parse("https://marklochrie.co.uk/edublocks/run");
