@@ -9,6 +9,15 @@ import '../Classes/MoveableBlock.dart';
 import 'package:collection/collection.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:edublocks_flutter/features.dart';
+import 'dart:convert';
+import 'package:flutter/services.dart' show rootBundle;
+
+Future<void> loadJsonFromAssets() async {
+  String jsonString = await rootBundle.loadString('assets/data.json');
+  Map<String, dynamic> jsonMap = jsonDecode(jsonString);
+  
+  print(jsonMap);
+}
 
 class canvasWidget extends StatefulWidget {
   canvasWidget({super.key});
@@ -43,8 +52,7 @@ class _canvasWidgetState extends State<canvasWidget> {
     bool run = true;
     while (run) {
       // Get the next block from the queue
-      Block? block =
-          _blocksToLoad.getBlockToLoad();
+      Block? block = _blocksToLoad.getBlockToLoad();
 
       if (block == null) {
         // If there was no block left in the queue (queue is empty), leave the loop
@@ -779,7 +787,15 @@ class _canvasWidgetState extends State<canvasWidget> {
         blockUnits++;
       }
     }
+    showSelectedError(0, 0);
     return blockUnits;
+  }
+
+  Future<void> showSelectedError(int errorType, int task) async {
+    String solutionsString = await rootBundle.loadString('assets/solutions.json');
+    Map<String, dynamic> jsonMap = jsonDecode(solutionsString);
+
+
   }
 
   Widget buildBlock(MoveableBlock block) {
@@ -808,93 +824,119 @@ class _canvasWidgetState extends State<canvasWidget> {
             print("Block selected: ${block.type.code}");
           }
         },
-        child: Container(
-          key: blockKeys[block.id],
+        child: SizedBox(
           height: block.height,
-          width: block.width,
-          child: Stack(
-            clipBehavior: Clip.none,
+          width: block.width ?? 1000 + 100, // add width for the number box
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Left highlight bar
-              if (selectedBlock?.id == block.id)
-                Positioned(
-                  left: -5,
-                  top: 0,
-                  bottom: 0,
-                  child: Container(
-                    width: 5,
-                    decoration: BoxDecoration(
-                      color: blockHighlightColour,
-                      borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        bottomLeft: Radius.circular(8),
+              // 🔢 Number box
+              Padding(
+                padding: const EdgeInsets.all(8.0), // adjust padding as needed
+                child: Container(
+                  width: 75,
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 179, 179, 179),
+                    borderRadius: const BorderRadius.all(Radius.circular(8)),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      top: 20,
+                    ), // distance from top
+                    child: Text(
+                      '${getBlockLineNumber(block.id, widget.blocks.firstWhere((b) => b.id == 0)) ?? ''}',
+                      style: const TextStyle(
+                        color: Color.fromARGB(255, 0, 0, 0),
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
                       ),
+                      textAlign: TextAlign.center,
                     ),
                   ),
                 ),
-
-              // Bottom outline using CustomPaint
-              if (proximityDetectedBlock?.id == block.id && isProximityChild)
-                Positioned.fill(
-                  child: CustomPaint(painter: BottomOutlinePainter()),
-                ),
-
-              if (proximityDetectedBlock?.id == block.id && !isProximityChild)
-                Positioned.fill(
-                  child: CustomPaint(painter: NestedOutlinePainter()),
-                ),
-
-              if(proximityDetectedBlock?.id == 0)
-                Positioned.fill(
-                  child: CustomPaint(painter: ErrorOutlinePainter()),
-                ),
-
-              // Main block image with grayscale filter
-              Container(
-                decoration: showRedBorder ? BoxDecoration(
-                  border: Border.all(
-                    width: 3,
-                    color: Colors.red
-                  )
-                ) : null,
+              ),
+              // 🧱 Stack with block content
+              SizedBox(
+                width: block.width,
                 height: block.height,
-                child: ColorFiltered(
-                  colorFilter:
-                      getBlockLineNumber(
-                                block.id,
-                                widget.blocks.firstWhere((b) => b.id == 0),
-                              ) ==
-                              null
-                          ? const ColorFilter.matrix([
-                            0.2126,
-                            0.7152,
-                            0.0722,
-                            0,
-                            0,
-                            0.2126,
-                            0.7152,
-                            0.0722,
-                            0,
-                            0,
-                            0.2126,
-                            0.7152,
-                            0.0722,
-                            0,
-                            0,
-                            0,
-                            0,
-                            0,
-                            1,
-                            0,
-                          ])
-                          : const ColorFilter.mode(
-                            Colors.transparent,
-                            BlendMode.multiply,
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  key: blockKeys[block.id],
+                  children: [
+                    // Keep all your existing Positioned elements here
+                    if (selectedBlock?.id == block.id)
+                      Positioned(
+                        left: -5,
+                        top: 0,
+                        bottom: 0,
+                        child: Container(
+                          width: 5,
+                          decoration: BoxDecoration(
+                            color: blockHighlightColour,
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(8),
+                              bottomLeft: Radius.circular(8),
+                            ),
                           ),
-                  child: Image.asset(
-                    block.type.imageName,
-                    fit: BoxFit.fitHeight,
-                  ),
+                        ),
+                      ),
+
+                    if (proximityDetectedBlock?.id == block.id &&
+                        isProximityChild)
+                      Positioned.fill(
+                        child: CustomPaint(painter: BottomOutlinePainter()),
+                      ),
+
+                    if (proximityDetectedBlock?.id == block.id &&
+                        !isProximityChild)
+                      Positioned.fill(
+                        child: CustomPaint(painter: NestedOutlinePainter()),
+                      ),
+
+                    if (proximityDetectedBlock?.id == 0)
+                      Positioned.fill(
+                        child: CustomPaint(painter: ErrorOutlinePainter()),
+                      ),
+
+                    ColorFiltered(
+                      colorFilter:
+                          getBlockLineNumber(
+                                    block.id,
+                                    widget.blocks.firstWhere((b) => b.id == 0),
+                                  ) ==
+                                  null
+                              ? const ColorFilter.matrix([
+                                0.2126,
+                                0.7152,
+                                0.0722,
+                                0,
+                                0,
+                                0.2126,
+                                0.7152,
+                                0.0722,
+                                0,
+                                0,
+                                0.2126,
+                                0.7152,
+                                0.0722,
+                                0,
+                                0,
+                                0,
+                                0,
+                                0,
+                                1,
+                                0,
+                              ])
+                              : const ColorFilter.mode(
+                                Colors.transparent,
+                                BlendMode.multiply,
+                              ),
+                      child: Image.asset(
+                        block.type.imageName,
+                        fit: BoxFit.fitHeight,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -1141,12 +1183,7 @@ class ErrorOutlinePainter extends CustomPainter {
           ..style = PaintingStyle.stroke
           ..strokeWidth = 10;
 
-    final rect = Rect.fromLTWH(
-      0,
-      0,
-      size.width,
-      size.height,
-    );
+    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
 
     canvas.drawRect(rect, paint);
   }
@@ -1154,6 +1191,7 @@ class ErrorOutlinePainter extends CustomPainter {
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
+
 class GridPainter extends CustomPainter {
   final double gridSpacing;
   final TextStyle labelStyle;
