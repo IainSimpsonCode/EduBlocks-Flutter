@@ -13,16 +13,25 @@ class outputTextPanel extends StatefulWidget {
 
 class _outputTextPanelState extends State<outputTextPanel> {
 
+  void _handleCodeTrackerUpdates() {
+    setState(() {
+      
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    Provider.of<CodeTracker>(context, listen: false).addListener(() {
-      setState(() {
-        
-      });
-    });
+    Provider.of<CodeTracker>(context, listen: false).addListener(_handleCodeTrackerUpdates);
+  }
+
+  @override
+  void dispose() {
+    // Safely remove provider listener
+    Provider.of<CodeTracker>(context, listen: false).removeListener(_handleCodeTrackerUpdates);
+    super.dispose();
   }
 
   @override
@@ -35,14 +44,16 @@ class _outputTextPanelState extends State<outputTextPanel> {
         ),
         padding: EdgeInsets.all(8),
         child: ListView(
-          children: [Text(
-            "# Output text will go here",
-            style: GoogleFonts.firaCode(
-              fontSize: 14,
-              fontWeight: FontWeight.w400,
-              color: codeTextColour
-            ),
-          )],
+          children: [
+            Text(
+              Provider.of<CodeTracker>(context, listen: false).outputString,
+              style: GoogleFonts.firaCode(
+                fontSize: 14,
+                fontWeight: FontWeight.w400,
+                color: codeTextColour
+              ),
+            )
+          ],
         ),
       ),
     );

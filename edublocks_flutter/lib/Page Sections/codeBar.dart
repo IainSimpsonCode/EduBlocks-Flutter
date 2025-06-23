@@ -14,16 +14,28 @@ class codeBarWidget extends StatefulWidget {
 
 class _codeBarWidgetState extends State<codeBarWidget> {
 
+  late CodeOutputTextPanelNotifier _codeOutputTextPanelNotifier;
+
+  void _handleCodeOutputTextPanelUpdates() {
+    setState(() {
+      
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    Provider.of<CodeOutputTextPanelNotifier>(context, listen: false).addListener(() {
-      setState(() {
-        
-      });
-    });
+    _codeOutputTextPanelNotifier = Provider.of<CodeOutputTextPanelNotifier>(context, listen: false);
+    _codeOutputTextPanelNotifier.addListener(_handleCodeOutputTextPanelUpdates);
+  }
+
+  @override
+  void dispose() {
+    // Safely remove provider listener
+    _codeOutputTextPanelNotifier.removeListener(_handleCodeOutputTextPanelUpdates);
+    super.dispose();
   }
 
   @override
@@ -37,7 +49,7 @@ class _codeBarWidgetState extends State<codeBarWidget> {
         spacing: 16,
         children: [
           codeOutputToggleButtons(),
-          Provider.of<CodeOutputTextPanelNotifier>(context, listen: false).textPanel(),
+          _codeOutputTextPanelNotifier.textPanel(),
         ]
       ),
     );

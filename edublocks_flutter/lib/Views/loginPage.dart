@@ -54,7 +54,7 @@ class _loginPageState extends State<loginPage> {
           Provider.of<ParticipantInformation>(context, listen: false).login(user);
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => CodeScreen(),
+              builder: (context) => Material( child: CodeScreen()),
             ),
           );
         }

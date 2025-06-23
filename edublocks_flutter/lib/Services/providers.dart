@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:edublocks_flutter/Classes/Block.dart';
 import 'package:edublocks_flutter/Classes/Category.dart';
 import 'package:edublocks_flutter/Classes/Participant.dart';
@@ -8,7 +7,9 @@ import 'package:edublocks_flutter/Widgets/codeTextPanel.dart';
 import 'package:edublocks_flutter/Widgets/outputTextPanel.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:edublocks_flutter/features.dart';
 
 class ParticipantInformation extends ChangeNotifier {
   Participant? currentParticipant;
@@ -133,14 +134,25 @@ class BlocksToLoad extends ChangeNotifier {
 }
 
 class CodeTracker extends ChangeNotifier {
-  String codeJSONString = """{"blocks": [{"line": 1, "code": "# Start Here", "hasChildren": false}]}""";
+  String _codeJSONString = """{"blocks": [{"line": 1, "code": "# Start Here", "hasChildren": false}]}""";
+  String _outputString = "";
+
+  String get outputString => _outputString;
+  void setOutputString(String value, BuildContext context) {
+    _outputString = value;
+
+    Provider.of<CodeOutputTextPanelNotifier>(context, listen: false).codeSelected = false;
+
+    notifyListeners();
+  }
+  bool outputChanged = false;
 
   /// Check and update all line numbers in the JSON string.
   /// ### How it works
   /// Start a counter initialised at 0. For each block, set it's line number to the counter then add 1 to the counter.
   void updateLineNumbers() {
     // Parse the JSON
-    Map<String, dynamic> data = jsonDecode(codeJSONString);
+    Map<String, dynamic> data = jsonDecode(_codeJSONString);
     List blocks = data["blocks"];
 
     int counter = 1;
@@ -150,7 +162,7 @@ class CodeTracker extends ChangeNotifier {
       counter++;
     }
 
-    codeJSONString = jsonEncode({"blocks": blocks});
+    _codeJSONString = jsonEncode({"blocks": blocks});
   }
 
   /// Insert a block (using the ```Block``` class) into the code chain at a specific line number
@@ -158,7 +170,7 @@ class CodeTracker extends ChangeNotifier {
     if (line <= 1 && line != -1) {return 1;} // Line number must be positive (except -1), and cannot be 1 as this is the start block. Inserting at -1 will automatically place the block at the end of the chain.
 
     // Parse the JSON
-    Map<String, dynamic> data = jsonDecode(codeJSONString); 
+    Map<String, dynamic> data = jsonDecode(_codeJSONString); 
     List blocks = data['blocks'];
 
     // New object to insert
@@ -193,7 +205,7 @@ class CodeTracker extends ChangeNotifier {
     }
 
     // Save the results
-    codeJSONString = jsonEncode({"blocks": blocks});
+    _codeJSONString = jsonEncode({"blocks": blocks});
     updateLineNumbers();
 
     notifyListeners();
@@ -205,7 +217,7 @@ class CodeTracker extends ChangeNotifier {
     if (line <= 1 && line != -1) {return 1;} // Line number must be positive (except -1), and cannot be 1 as this is the start block. Removing at -1 will automatically remove the block at the end of the chain.
 
     // Parse the JSON
-    Map<String, dynamic> data = jsonDecode(codeJSONString); 
+    Map<String, dynamic> data = jsonDecode(_codeJSONString); 
     List blocks = data['blocks'];
 
     if (line == -1) {
@@ -242,7 +254,7 @@ class CodeTracker extends ChangeNotifier {
     }
 
     // Save the results
-    codeJSONString = jsonEncode({"blocks": blocks});
+    _codeJSONString = jsonEncode({"blocks": blocks});
     updateLineNumbers();
 
     notifyListeners();
@@ -254,7 +266,7 @@ class CodeTracker extends ChangeNotifier {
     if (line <= 1 && line != -1) {return 1;} // Line number must be positive (except -1), and cannot be 1 as this is the start block. Removing at -1 will automatically remove the block at the end of the chain.
 
     // Parse the JSON
-    Map<String, dynamic> data = jsonDecode(codeJSONString); 
+    Map<String, dynamic> data = jsonDecode(_codeJSONString); 
     List blocks = data['blocks'];
 
     if (line == -1) {
@@ -296,7 +308,7 @@ class CodeTracker extends ChangeNotifier {
     }
 
     // Save the results
-    codeJSONString = jsonEncode({"blocks": blocks});
+    _codeJSONString = jsonEncode({"blocks": blocks});
     updateLineNumbers();
 
     notifyListeners();
@@ -306,16 +318,16 @@ class CodeTracker extends ChangeNotifier {
 
   /// Returns a list of strings, with just python code.
   /// This list of strings can either be used to create a list of text widgets to be used on the UI, or used to create a string to be sent to the compiler.
-  List<String> JSONToPythonCode() {
+  String JSONToPythonCode() {
     updateLineNumbers();
 
     // Parse the JSON
-    Map<String, dynamic> data = jsonDecode(codeJSONString);
+    Map<String, dynamic> data = jsonDecode(_codeJSONString);
     List blocks = data["blocks"];
 
-    List<String> pythonText = List.empty(growable: true);
+    String pythonText = "";
 
-    const indent = "  ";
+    const indent = " ";
     int numOfIndents = 0;
     String actualIndent() {
       String _actualIndent = "";
@@ -326,7 +338,7 @@ class CodeTracker extends ChangeNotifier {
     }
 
     for (var block in blocks) {
-      pythonText.add("${actualIndent()}${block["code"]}");
+      pythonText += "\n${actualIndent()}${block["code"]}";
 
       // If the block has nested blocks (Eg while loops and if statements), increase the indent
       if (block["hasChildren"] == true) {
@@ -341,40 +353,30 @@ class CodeTracker extends ChangeNotifier {
     return pythonText;
   }
 
-  /// Creates a list of unformatted text widgets to be shown on the UI.
-  /// Displays the code from the blocks placed on screen, unformatted
-  List<Widget> pythonCodeToTextWidgets() {
-    final pythonCode = JSONToPythonCode();
+  /// Replaces instances of "while True" with "for i in range(100)".
+  /// Takes the raw python code as a parameter, and returns the cleaned code
+  String cleanPythonCode(String rawCode) {
 
-    List<Widget> textWidgets = [];
+    Map<String, String> replacements = {
+      "while True": "for i in range(100)"
+    };
 
-    int line = 1;
+    print("Raw code: $rawCode");
 
-    for (String code in pythonCode) {
-      // If the line number is less than 10, add a leading 0 to help allign the text correctly in the code panel.
-      String? leadingZero;
-      if (line < 10) { leadingZero = "0"; }
+    replacements.forEach((key, value) {
+      rawCode = rawCode.replaceAll(key, value);
+    });
 
-      textWidgets.add(Text(
-        "$leadingZero$line: $code",
-        style: GoogleFonts.firaCode(
-          fontSize: 14,
-          fontWeight: FontWeight.w400,
-          color: codeTextColour
-        ),
-      ));
+    print("Cleaned code: $rawCode");
 
-      line++;
-    }
-
-    return textWidgets;
+    return rawCode;
   }
 
   List<Widget> JSONToFormattedTextWidgets() {
     updateLineNumbers();
 
     // Parse the JSON
-    Map<String, dynamic> data = jsonDecode(codeJSONString);
+    Map<String, dynamic> data = jsonDecode(_codeJSONString);
     List blocks = data["blocks"];
 
     List<Widget> returnWidgets = [];
@@ -415,10 +417,54 @@ class CodeTracker extends ChangeNotifier {
     return returnWidgets;
   }
 
-  /// Will send the code currently stored in the CodeTracker notifier to a python compiler server. Returns the output as a list of text widgets to be shown on the output pane.
-  Future<List<Widget>> run() async {
-    List<Widget> outputTextWidgets = [];
-    return outputTextWidgets;
+  /// Will send the code currently stored in the CodeTracker notifier to a python compiler server. Returns the output as a string to be shown on the output pane.
+  Future<String> run(BuildContext context) async {
+
+    // Check if the code matches the desired solution
+    if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant != null) {
+      final isSolutionCorrect = await Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.checkSolution(JSONToPythonCode());
+      print("Correct Solution?: $isSolutionCorrect");
+
+      // Show a popup to display which task they are working on.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final text = isSolutionCorrect ? "Correct solution. Well done!" : "That wasnt quite right. Try again.";
+        showDialog(
+          barrierDismissible: false, // User must click a button to proceed
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Run'),
+              content: Text(text),
+              actions: [
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ],
+            );
+          },
+        );
+      });
+    }
+
+
+    String output = "";
+
+    try {
+      final url = Uri.parse("https://marklochrie.co.uk/edublocks/run");
+      final headers = {"Content-Type": "application/json"};
+      final body = jsonEncode({"code": cleanPythonCode(JSONToPythonCode())});
+
+      final response = await http.post(url, headers: headers, body: body);
+      final data = jsonDecode(response.body);
+
+      output = data["output"] ?? data["error"] ?? "Unknown response";
+    } catch (e) {
+      output = "Error: ${e.toString()}";
+    }    
+
+    setOutputString(output, context);
+    return output;
   }
 }
 

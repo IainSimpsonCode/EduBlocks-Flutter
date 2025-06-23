@@ -1,0 +1,7 @@
+{
+    "1": "\n# Start Here\ncount = 0\nwhile True:\n count += 1\n print(count)\n pass",
+    "2": "\n# Start Here\nwhile True:\n print('You are old')\n pass",
+    "3": "\n# Start Here\nprint('My friend is')",
+    "4": "\n# Start Here",
+    "5": "\n# Start Here\nfriends = 'Bob'\nprint(friends[0])"
+}

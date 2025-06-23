@@ -17,6 +17,34 @@ class CodeScreen extends StatefulWidget {
 class _CodeScreenState extends State<CodeScreen> {
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    // Show a popup to display which task they are working on.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final taskNumber = Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getTask() ?? 0;
+      final text = "You are working on task $taskNumber";
+      showDialog(
+        barrierDismissible: false, // User must click a button to proceed
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Welcome'),
+            content: Text(text),
+            actions: [
+              TextButton(
+                child: Text('OK'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          );
+        },
+      );
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       height: MediaQuery.sizeOf(context).height,

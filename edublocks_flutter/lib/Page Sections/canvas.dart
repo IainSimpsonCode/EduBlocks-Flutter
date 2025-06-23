@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../Classes/MoveableBlock.dart';
 import 'package:collection/collection.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:edublocks_flutter/features.dart';
 
 class canvasWidget extends StatefulWidget {
   canvasWidget({super.key});
@@ -34,6 +35,45 @@ class _canvasWidgetState extends State<canvasWidget> {
   MoveableBlock? errorBlock;
   FocusNode _focusNode = FocusNode();
 
+  late BlocksToLoad _blocksToLoad;
+
+  /// Function called when the BlocksToLoad function calls ```notifyListeners()```. Is run everytime a block is added to the queue of blocks to load from the block library
+  void _handleLoadingBlock() {
+    //Load blocks on the screen
+    bool run = true;
+    while (run) {
+      // Get the next block from the queue
+      Block? block =
+          _blocksToLoad.getBlockToLoad();
+
+      if (block == null) {
+        // If there was no block left in the queue (queue is empty), leave the loop
+        run = false;
+        break;
+      } else {
+        setState(() {
+          // Load next block in the queue
+          widget.blocks.add(
+            MoveableBlock(
+              id: getNewID(),
+              type: block,
+              position: const Offset(400, 100),
+              height: block.height,
+              nestedBlocks: [],
+            ),
+          );
+        });
+        for (var block in widget.blocks) {
+          if (!blockKeys.containsKey(block.id)) {
+            blockKeys[block.id] = GlobalKey();
+          }
+
+          dragPositions[block.id] = block.position;
+        }
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -41,41 +81,8 @@ class _canvasWidgetState extends State<canvasWidget> {
     _focusNode.requestFocus();
 
     // Listen to updates from the queue of blocks to load
-    Provider.of<BlocksToLoad>(context, listen: false).addListener(() {
-      //Load blocks on the screen
-      bool run = true;
-      while (run) {
-        // Get the next block from the queue
-        Block? block =
-            Provider.of<BlocksToLoad>(context, listen: false).getBlockToLoad();
-
-        if (block == null) {
-          // If there was no block left in the queue (queue is empty), leave the loop
-          run = false;
-          break;
-        } else {
-          setState(() {
-            // Load next block in the queue
-            widget.blocks.add(
-              MoveableBlock(
-                id: getNewID(),
-                type: block,
-                position: const Offset(400, 100),
-                height: block.height,
-                nestedBlocks: [],
-              ),
-            );
-          });
-          for (var block in widget.blocks) {
-            if (!blockKeys.containsKey(block.id)) {
-              blockKeys[block.id] = GlobalKey();
-            }
-
-            dragPositions[block.id] = block.position;
-          }
-        }
-      }
-    });
+    _blocksToLoad = Provider.of<BlocksToLoad>(context, listen: false);
+    _blocksToLoad.addListener(_handleLoadingBlock);
 
     widget.blocks = [
       MoveableBlock(
@@ -97,6 +104,13 @@ class _canvasWidgetState extends State<canvasWidget> {
 
       dragPositions[block.id] = block.position;
     }
+  }
+
+  @override
+  void dispose() {
+    // Safely remove provider listener
+    _blocksToLoad.removeListener(_handleLoadingBlock);
+    super.dispose();
   }
 
   int getNewID() {
@@ -837,6 +851,12 @@ class _canvasWidgetState extends State<canvasWidget> {
 
               // Main block image with grayscale filter
               Container(
+                decoration: showRedBorder ? BoxDecoration(
+                  border: Border.all(
+                    width: 3,
+                    color: Colors.red
+                  )
+                ) : null,
                 height: block.height,
                 child: ColorFiltered(
                   colorFilter:
