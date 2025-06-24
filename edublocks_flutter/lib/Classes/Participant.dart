@@ -28,6 +28,8 @@ class Participant {
   /// 0 = they are at the start; 1 = they have completed the task up to the first error; 2 = they have used the feature to fix the error; 3 = they have completed the extention
   int _currentProgress = 0; 
 
+  String _errorLine = "# Start Here";
+
   Participant({
     required this.ID,
     this.task1 = false,
@@ -70,7 +72,9 @@ class Participant {
     // If the current task is null, assign it a new task
     _currentTask ??= assignTask();
 
-    return _currentTask;
+    //return _currentTask;
+    _currentTask = 1;
+    return 1;
   }
 
   /// Returns the value of the current feature to complete
@@ -79,7 +83,8 @@ class Participant {
     // If the current feature is null, assign it a new feature
     _currentFeature ??= assignFeature();
 
-    return _currentFeature;
+    //return _currentFeature;
+    return "D";
   }
   
   /// Returns the number of task to complete next (```int?``` between 1 and 5, inclusive). The next task is selected randomly from the pool of tasks that have not already been completed.
@@ -169,6 +174,8 @@ class Participant {
     final String response = await rootBundle.loadString('assets/solutions.json'); // Get the solutions from a json file
     final data = json.decode(response);
 
+    _errorLine = data["${_currentTask}ErrorCode"] ?? "# Start Here";
+
     print("Solution: $solution");
     print("Answer ($_currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}): ${data["$_currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}"]}");
 
@@ -190,5 +197,10 @@ class Participant {
     else {
       return false;
     }
+  }
+
+  /// Returns the line number where the error is located. Or returns null if no task is selected or the task is not found
+  String getErrorLine() {
+    return _errorLine;
   }
 }

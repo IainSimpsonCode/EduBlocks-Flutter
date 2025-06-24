@@ -824,7 +824,7 @@ class _canvasWidgetState extends State<canvasWidget> {
         },
         child: SizedBox(
           height: block.height,
-          width: block.width ?? 1000 + 100, // add width for the number box
+          width: (block.width ?? 1000) + (lineNumbering(context) ? 100 : 0), // if line numbering is activated, add width for the number box
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -891,10 +891,10 @@ class _canvasWidgetState extends State<canvasWidget> {
                         child: CustomPaint(painter: NestedOutlinePainter()),
                       ),
 
-                    if (proximityDetectedBlock?.id == 0)
+                    if (block.type.code == Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getErrorLine() && redBorder(context))
                       Positioned.fill(
-                        child: CustomPaint(painter: ErrorOutlinePainter()),
-                      ),
+                          child: CustomPaint(painter: ErrorOutlinePainter()),
+                        ),
 
                     ColorFiltered(
                       colorFilter:
