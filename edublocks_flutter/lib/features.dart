@@ -8,9 +8,7 @@ const bool requireLogin = true;     // Should the app load a login screen on sta
 
 bool lineNumbering(BuildContext context) {
   return (
-    Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getFeature() == "A" && 
-    Provider.of<TaskTracker>(context, listen: false).isFeatureVisible && 
-    Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getCodeUpToFirstError() == Provider.of<CodeTracker>(context, listen: false).JSONToPythonCode()
+    Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getFeature() == "A" 
   );
 }
 
@@ -24,9 +22,7 @@ bool detailedErrorMessages(BuildContext context) {
 
 bool altColours(BuildContext context) {
   return (
-    Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getFeature() == "C" && 
-    Provider.of<TaskTracker>(context, listen: false).isFeatureVisible &&
-    Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getCodeUpToFirstError() == Provider.of<CodeTracker>(context, listen: false).JSONToPythonCode()
+    Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getFeature() == "C"
   );
 }
 

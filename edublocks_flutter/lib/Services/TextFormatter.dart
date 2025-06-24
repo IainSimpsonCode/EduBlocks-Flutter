@@ -1,3 +1,4 @@
+import 'package:edublocks_flutter/features.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -26,7 +27,7 @@ class TextFormatter {
     return trimmed;
   }
 
-  static List<TextSpan> formatCodeLine(String line, Color mainCommandColour) {
+  static List<TextSpan> formatCodeLine(BuildContext context, String line, Color mainCommandColour) {
 
     List<TextSpan> textSpans = [];
 
@@ -61,11 +62,11 @@ class TextFormatter {
     final operandsColor = Color(0xFF56b6c2);
     final syntaxColor = Colors.white;
     final keywordColour = Color(0xFFe06c75);
-    final stringColour = Colors.green;
+    final stringColour = altColours(context) ? Colors.white : Colors.green;
     final numberColour = Color(0xFFe5c07b);
     final inputColour = Color(0xFFf59421);
     final appendColour = Color(0xFF15b9d3);
-    final variableColour = Color(0xFF364fd7);
+    final variableColour = altColours(context) ? Color(0xFF364fd7) : keywordColour;
 
     final keywords = ["time", "random", "math", "sleep"];
     final variables = ["count", "age", "friends", "number1", "number2"];

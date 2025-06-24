@@ -445,7 +445,7 @@ class CodeTracker extends ChangeNotifier {
         style: codeTextStyle
       )];
 
-      formattedText.addAll(TextFormatter.formatCodeLine("${actualIndent()}${block["code"]}", Color((altColours(context) ? block["alternateCodeColour"] : block["standardCodeColour"]) ?? 0xFFffffff)));
+      formattedText.addAll(TextFormatter.formatCodeLine(context, "${actualIndent()}${block["code"]}", Color((altColours(context) ? block["alternateCodeColour"] : block["standardCodeColour"]) ?? 0xFFffffff)));
       
 
       returnWidgets.add(Text.rich(TextSpan( children: formattedText)));
