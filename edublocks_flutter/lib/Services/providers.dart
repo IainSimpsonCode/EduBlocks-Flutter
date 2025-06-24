@@ -575,7 +575,34 @@ class TaskTracker extends ChangeNotifier {
 
 class DeleteAll extends ChangeNotifier {
   void deleteAll(BuildContext context) {
-    Provider.of<CodeTracker>(context, listen: false).reinitialiseCanvasVariables(context);
-    notifyListeners();
+
+    // Check they really want to delete all the blocks
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final text = "Are you sure you want to delete all the blocks you have placed?";
+      showDialog(
+        barrierDismissible: false, // User must click a button to proceed
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Are you sure?'),
+            content: Text(text),
+            actions: [
+              TextButton(
+                child: Text('Yes'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Provider.of<CodeTracker>(context, listen: false).reinitialiseCanvasVariables(context);
+                  notifyListeners();
+                },
+              ),
+              TextButton(
+                child: Text('No'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          );
+        },
+      );
+    });
   }
 }
