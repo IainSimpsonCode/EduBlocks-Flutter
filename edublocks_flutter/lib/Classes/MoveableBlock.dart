@@ -14,6 +14,7 @@ class MoveableBlock {
   List<MoveableBlock>? nestedBlocks;
   bool isNested = false;
   int nestedBlocksCount = 0;
+  bool priority = false;
 
   // For Variable type blocks
   List<String>? options;

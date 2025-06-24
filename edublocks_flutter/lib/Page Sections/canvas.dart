@@ -15,7 +15,7 @@ import 'package:flutter/services.dart' show rootBundle;
 Future<void> loadJsonFromAssets() async {
   String jsonString = await rootBundle.loadString('assets/data.json');
   Map<String, dynamic> jsonMap = jsonDecode(jsonString);
-  
+
   print(jsonMap);
 }
 
@@ -69,7 +69,8 @@ class _canvasWidgetState extends State<canvasWidget> {
             ),
           );
         });
-        for (var block in Provider.of<CodeTracker>(context, listen: false).blocks) {
+        for (var block
+            in Provider.of<CodeTracker>(context, listen: false).blocks) {
           if (!blockKeys.containsKey(block.id)) {
             blockKeys[block.id] = GlobalKey();
           }
@@ -144,18 +145,20 @@ class _canvasWidgetState extends State<canvasWidget> {
       chain.add(block);
 
       // Get side-snapped (nested) blocks
-      final nested = Provider.of<CodeTracker>(context, listen: false).blocks.where(
-        (b) => b.snappedTo == block.id && block.childId != b.id,
-      );
+      final nested = Provider.of<CodeTracker>(
+        context,
+        listen: false,
+      ).blocks.where((b) => b.snappedTo == block.id && block.childId != b.id);
       for (var b in nested) {
         collect(b);
       }
 
       // Get vertically snapped child
       if (block.childId != null) {
-        final child = Provider.of<CodeTracker>(context, listen: false).blocks.firstWhereOrNull(
-          (b) => b.id == block.childId,
-        );
+        final child = Provider.of<CodeTracker>(
+          context,
+          listen: false,
+        ).blocks.firstWhereOrNull((b) => b.id == block.childId);
         if (child != null) collect(child);
       }
     }
@@ -199,10 +202,14 @@ class _canvasWidgetState extends State<canvasWidget> {
 
       // Traverse next block in the chain
       if (block.childId != null &&
-          Provider.of<CodeTracker>(context, listen: false).blocks.any((b) => b.id == block.childId)) {
-        MoveableBlock? child = Provider.of<CodeTracker>(context, listen: false).blocks.firstWhere(
-          (b) => b.id == block.childId,
-        );
+          Provider.of<CodeTracker>(
+            context,
+            listen: false,
+          ).blocks.any((b) => b.id == block.childId)) {
+        MoveableBlock? child = Provider.of<CodeTracker>(
+          context,
+          listen: false,
+        ).blocks.firstWhere((b) => b.id == block.childId);
         return traverse(child);
       }
 
@@ -215,16 +222,25 @@ class _canvasWidgetState extends State<canvasWidget> {
   void onStartDrag(int id) {
     int? blockLineNumber = getBlockLineNumber(
       id,
-      Provider.of<CodeTracker>(context, listen: false).blocks.firstWhere((b) => b.id == 0),
+      Provider.of<CodeTracker>(
+        context,
+        listen: false,
+      ).blocks.firstWhere((b) => b.id == 0),
     );
 
     // Get the block being dragged from the blocks list
-    final dragged = Provider.of<CodeTracker>(context, listen: false).blocks.firstWhere((b) => b.id == id);
+    final dragged = Provider.of<CodeTracker>(
+      context,
+      listen: false,
+    ).blocks.firstWhere((b) => b.id == id);
 
     // If the block is attached to another block
     if (dragged.snappedTo != null) {
       // Find the parent block it is snapped to
-      final parent = Provider.of<CodeTracker>(context, listen: false).blocks.firstWhere((b) => b.id == dragged.snappedTo);
+      final parent = Provider.of<CodeTracker>(
+        context,
+        listen: false,
+      ).blocks.firstWhere((b) => b.id == dragged.snappedTo);
 
       // If the parent has nested blocks
       if (parent.nestedBlocks != null && parent.nestedBlocks!.isNotEmpty) {
@@ -248,6 +264,8 @@ class _canvasWidgetState extends State<canvasWidget> {
 
       if (dragged.isNested) {
         reSizeBlock(dragged);
+        removeIsNested(dragged);
+        dragged.isNested = false;
       }
 
       //PLay disconnect sound
@@ -255,7 +273,6 @@ class _canvasWidgetState extends State<canvasWidget> {
 
       // The dragged block is now not snapped to another block
       dragged.snappedTo = null;
-      dragged.isNested = false;
 
       // If the block line number was found in the chain using the getBlockLineNumber() function, remove the block from the JSON string at the specified line number
       if (blockLineNumber != null) {
@@ -269,6 +286,17 @@ class _canvasWidgetState extends State<canvasWidget> {
     draggedChain = getConnectedChain(dragged);
   }
 
+  void removeIsNested(MoveableBlock block) {
+    if (block.childId != null) {
+      final child = Provider.of<CodeTracker>(
+        context,
+        listen: false,
+      ).blocks.firstWhere((b) => b.id == block.childId);
+      child.isNested = false;
+      removeIsNested(child);
+    }
+  }
+
   //Update positions of dragged and child blocks
   void onUpdateDrag(int id, DragUpdateDetails details) {
     setState(() {
@@ -277,8 +305,12 @@ class _canvasWidgetState extends State<canvasWidget> {
         dragPositions[block.id] = block.position;
       }
     });
-    for (var target in Provider.of<CodeTracker>(context, listen: false).blocks) {
-      final dragged = Provider.of<CodeTracker>(context, listen: false).blocks.firstWhere((b) => b.id == id);
+    for (var target
+        in Provider.of<CodeTracker>(context, listen: false).blocks) {
+      final dragged = Provider.of<CodeTracker>(
+        context,
+        listen: false,
+      ).blocks.firstWhere((b) => b.id == id);
       final draggedContext = blockKeys[dragged.id]?.currentContext;
       final draggedBox = draggedContext?.findRenderObject() as RenderBox?;
 
@@ -318,15 +350,17 @@ class _canvasWidgetState extends State<canvasWidget> {
 
       if (childSnapXDistance.abs() < snapThreshold &&
           childSnapYDistance.abs() < snapThreshold) {
-        proximityDetectedBlock = Provider.of<CodeTracker>(context, listen: false).blocks.firstWhere(
-          (b) => b.id == target.id,
-        );
+        proximityDetectedBlock = Provider.of<CodeTracker>(
+          context,
+          listen: false,
+        ).blocks.firstWhere((b) => b.id == target.id);
         isProximityChild = true;
       } else if (nestedSnapXDistance.abs() < snapThresholdNested &&
           nestedSnapYDistance.abs() < snapThresholdNested) {
-        proximityDetectedBlock = Provider.of<CodeTracker>(context, listen: false).blocks.firstWhere(
-          (b) => b.id == target.id,
-        );
+        proximityDetectedBlock = Provider.of<CodeTracker>(
+          context,
+          listen: false,
+        ).blocks.firstWhere((b) => b.id == target.id);
         isProximityChild = false;
       } else if (proximityDetectedBlock?.id == target.id) {
         proximityDetectedBlock = null;
@@ -338,7 +372,10 @@ class _canvasWidgetState extends State<canvasWidget> {
   void onEndDrag(int id, {bool snap = true}) {
     proximityDetectedBlock = null;
     // Get the block
-    final dragged = Provider.of<CodeTracker>(context, listen: false).blocks.firstWhere((b) => b.id == id);
+    final dragged = Provider.of<CodeTracker>(
+      context,
+      listen: false,
+    ).blocks.firstWhere((b) => b.id == id);
     final draggedContext = blockKeys[dragged.id]?.currentContext;
     final draggedBox = draggedContext?.findRenderObject() as RenderBox?;
 
@@ -348,9 +385,9 @@ class _canvasWidgetState extends State<canvasWidget> {
         false; //USed for tracking if a block was snapped as a child, if not snap it as a nested block
     bool newSnap =
         false; //Used for calling the insertBlock function in the provider. is made true only if a block is snapped for the first time.
-
     //iterate through all blocks
-    for (var target in Provider.of<CodeTracker>(context, listen: false).blocks) {
+    for (var target
+        in Provider.of<CodeTracker>(context, listen: false).blocks) {
       newSnap = false;
       if (target.id == dragged.id) continue;
 
@@ -428,11 +465,12 @@ class _canvasWidgetState extends State<canvasWidget> {
         if (target.isNested) {
           dragged.isNested = true;
 
-          final targetSnappedTo = Provider.of<CodeTracker>(context, listen: false).blocks.firstWhere(
-            (b) => b.id == target.snappedTo,
-          );
-          // targetSnappedTo.nestedBlocks?.add(dragged);
+          MoveableBlock parent = getParent(dragged);
+
+          parent.nestedBlocks?.add(dragged);
           reSizeBlock(dragged);
+        } else if (dragged.isNested) {
+          dragged.isNested = false;
         }
 
         final draggedChainChildren = getConnectedChain(
@@ -444,9 +482,10 @@ class _canvasWidgetState extends State<canvasWidget> {
       } else {
         if (childSnapXDistance.abs() < snapThreshold &&
             childSnapYDistance.abs() < snapThreshold) {
-          final oldChild = Provider.of<CodeTracker>(context, listen: false).blocks.firstWhere(
-            (b) => b.id == target.childId,
-          );
+          final oldChild = Provider.of<CodeTracker>(
+            context,
+            listen: false,
+          ).blocks.firstWhere((b) => b.id == target.childId);
           onStartDrag(oldChild.id);
           setState(() {
             oldChild.position = Offset(
@@ -549,14 +588,17 @@ class _canvasWidgetState extends State<canvasWidget> {
       // }
 
       //if the dragged block has a child, snap that as well.
-      if (dragged.childId != null) {
-        onEndDrag(dragged.childId!, snap: false);
-      }
+      // if (dragged.childId != null) {
+      //   onEndDrag(dragged.childId!, snap: false);
+      // }
 
       //if its a new snap and that block is in the main chain
       if (newSnap &&
           getConnectedChain(
-            Provider.of<CodeTracker>(context, listen: false).blocks.firstWhere((b) => b.id == 0),
+            Provider.of<CodeTracker>(
+              context,
+              listen: false,
+            ).blocks.firstWhere((b) => b.id == 0),
           ).contains(dragged)) {
         callInsertBlock(dragged);
         break;
@@ -581,7 +623,10 @@ class _canvasWidgetState extends State<canvasWidget> {
         block.type,
         getBlockLineNumber(
           block.id,
-          Provider.of<CodeTracker>(context, listen: false).blocks.firstWhere((b) => b.id == 0),
+          Provider.of<CodeTracker>(
+            context,
+            listen: false,
+          ).blocks.firstWhere((b) => b.id == 0),
         )!,
       );
     }
@@ -589,7 +634,10 @@ class _canvasWidgetState extends State<canvasWidget> {
     else {
       //call getConnectedChain by passing in the first block of the connected chain
       List<MoveableBlock> chain = getConnectedChain(
-        Provider.of<CodeTracker>(context, listen: false).blocks.firstWhere((b) => b.id == block.id),
+        Provider.of<CodeTracker>(
+          context,
+          listen: false,
+        ).blocks.firstWhere((b) => b.id == block.id),
       );
 
       //iterate through and all of the blocks
@@ -599,7 +647,10 @@ class _canvasWidgetState extends State<canvasWidget> {
           chain[i].type,
           getBlockLineNumber(
             chain[i].id,
-            Provider.of<CodeTracker>(context, listen: false).blocks.firstWhere((b) => b.id == 0),
+            Provider.of<CodeTracker>(
+              context,
+              listen: false,
+            ).blocks.firstWhere((b) => b.id == 0),
           )!,
         );
       }
@@ -750,9 +801,10 @@ class _canvasWidgetState extends State<canvasWidget> {
   MoveableBlock getParent(MoveableBlock block) {
     bool breakLoop = false;
     while (true) {
-      MoveableBlock snappedTo = Provider.of<CodeTracker>(context, listen: false).blocks.firstWhere(
-        (b) => b.id == block.snappedTo,
-      );
+      MoveableBlock snappedTo = Provider.of<CodeTracker>(
+        context,
+        listen: false,
+      ).blocks.firstWhere((b) => b.id == block.snappedTo);
 
       if ((snappedTo.type.code == 'while True:' ||
               snappedTo.type.code == 'if (count <= 10):' ||
@@ -778,25 +830,26 @@ class _canvasWidgetState extends State<canvasWidget> {
           currentBlock.type.code == "else:") {
         if (currentBlock.nestedBlocks!.isNotEmpty) {
           blockUnits += getNumberOfNestedBlocks(currentBlock);
+          blockUnits = blockUnits + 2;
         } else {
-          blockUnits++;
+          blockUnits = blockUnits + 2;
         }
       } else {
         blockUnits++;
       }
     }
-    showSelectedError(0, 0);
     return blockUnits;
   }
 
-  Future<void> showSelectedError(int errorType, int task) async {
-    String solutionsString = await rootBundle.loadString('assets/solutions.json');
-    Map<String, dynamic> jsonMap = jsonDecode(solutionsString);
-
-
-  }
-
   Widget buildBlock(MoveableBlock block) {
+    if (block.type.code ==
+            Provider.of<ParticipantInformation>(
+              context,
+              listen: false,
+            ).currentParticipant?.getErrorLine() &&
+        redBorder(context)) {
+      block.priority = true;
+    }
     return Positioned(
       left: block.position.dx,
       top: block.position.dy,
@@ -824,36 +877,40 @@ class _canvasWidgetState extends State<canvasWidget> {
         },
         child: SizedBox(
           height: block.height,
-          width: (block.width ?? 1000) + (lineNumbering(context) ? 100 : 0), // if line numbering is activated, add width for the number box
+          width: (block.width ?? 1000) + (lineNumbering(context) ? 100 : 0),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // 🔢 Number box
-              lineNumbering(context) ? Padding(
-                padding: const EdgeInsets.all(8.0), // adjust padding as needed
-                child: Container(
-                  width: 75,
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 179, 179, 179),
-                    borderRadius: const BorderRadius.all(Radius.circular(8)),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      top: 20,
-                    ), // distance from top
-                    child: Text(
-                      '${getBlockLineNumber(block.id, Provider.of<CodeTracker>(context, listen: false).blocks.firstWhere((b) => b.id == 0)) ?? ''}',
-                      style: const TextStyle(
-                        color: Color.fromARGB(255, 0, 0, 0),
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
+              // Number box
+              lineNumbering(context)
+                  ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      width: 75,
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 179, 179, 179),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(8),
+                        ),
                       ),
-                      textAlign: TextAlign.center,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          top: 20,
+                        ), // distance from top
+                        child: Text(
+                          '${getBlockLineNumber(block.id, Provider.of<CodeTracker>(context, listen: false).blocks.firstWhere((b) => b.id == 0)) ?? ''}',
+                          style: const TextStyle(
+                            color: Color.fromARGB(255, 0, 0, 0),
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ) : SizedBox(width: 0, height: 0),
-              // 🧱 Stack with block content
+                  )
+                  : SizedBox(width: 0, height: 0),
+              // Stack with block content
               SizedBox(
                 width: block.width,
                 height: block.height,
@@ -861,7 +918,6 @@ class _canvasWidgetState extends State<canvasWidget> {
                   clipBehavior: Clip.none,
                   key: blockKeys[block.id],
                   children: [
-                    // Keep all your existing Positioned elements here
                     if (selectedBlock?.id == block.id)
                       Positioned(
                         left: -5,
@@ -891,16 +947,24 @@ class _canvasWidgetState extends State<canvasWidget> {
                         child: CustomPaint(painter: NestedOutlinePainter()),
                       ),
 
-                    if (block.type.code == Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getErrorLine() && redBorder(context))
+                    if (block.type.code ==
+                            Provider.of<ParticipantInformation>(
+                              context,
+                              listen: false,
+                            ).currentParticipant?.getErrorLine() &&
+                        redBorder(context))
                       Positioned.fill(
-                          child: CustomPaint(painter: ErrorOutlinePainter()),
-                        ),
+                        child: CustomPaint(painter: ErrorOutlinePainter()),
+                      ),
 
                     ColorFiltered(
                       colorFilter:
                           getBlockLineNumber(
                                     block.id,
-                                    Provider.of<CodeTracker>(context, listen: false).blocks.firstWhere((b) => b.id == 0),
+                                    Provider.of<CodeTracker>(
+                                      context,
+                                      listen: false,
+                                    ).blocks.firstWhere((b) => b.id == 0),
                                   ) ==
                                   null
                               ? const ColorFilter.matrix([
@@ -949,15 +1013,19 @@ class _canvasWidgetState extends State<canvasWidget> {
       if (removeDecendants == true) {
         int? blockLineNumber = getBlockLineNumber(
           block.id,
-          Provider.of<CodeTracker>(context, listen: false).blocks.firstWhere((b) => b.id == 0),
+          Provider.of<CodeTracker>(
+            context,
+            listen: false,
+          ).blocks.firstWhere((b) => b.id == 0),
         );
 
         // If the block is attached to another block
         if (block.snappedTo != null) {
           // Find the parent block it is snapped to
-          final parent = Provider.of<CodeTracker>(context, listen: false).blocks.firstWhere(
-            (b) => b.id == block.snappedTo,
-          );
+          final parent = Provider.of<CodeTracker>(
+            context,
+            listen: false,
+          ).blocks.firstWhere((b) => b.id == block.snappedTo);
 
           // If the parent has nested blocks
           if (parent.nestedBlocks != null && parent.nestedBlocks!.isNotEmpty) {
@@ -985,15 +1053,19 @@ class _canvasWidgetState extends State<canvasWidget> {
       } else if (removeDecendants == false) {
         int? blockLineNumber = getBlockLineNumber(
           block.id,
-          Provider.of<CodeTracker>(context, listen: false).blocks.firstWhere((b) => b.id == 0),
+          Provider.of<CodeTracker>(
+            context,
+            listen: false,
+          ).blocks.firstWhere((b) => b.id == 0),
         );
 
         // If the block is attached to another block
         if (block.snappedTo != null) {
           // Find the parent block it is snapped to
-          final parent = Provider.of<CodeTracker>(context, listen: false).blocks.firstWhere(
-            (b) => b.id == block.snappedTo,
-          );
+          final parent = Provider.of<CodeTracker>(
+            context,
+            listen: false,
+          ).blocks.firstWhere((b) => b.id == block.snappedTo);
 
           // If the parent has nested blocks
           if (parent.nestedBlocks != null && parent.nestedBlocks!.isNotEmpty) {
@@ -1022,9 +1094,10 @@ class _canvasWidgetState extends State<canvasWidget> {
         // If the block is attached to another block
         if (block.snappedTo != null) {
           // Find the parent block it is snapped to
-          final parent = Provider.of<CodeTracker>(context, listen: false).blocks.firstWhere(
-            (b) => b.id == block.snappedTo,
-          );
+          final parent = Provider.of<CodeTracker>(
+            context,
+            listen: false,
+          ).blocks.firstWhere((b) => b.id == block.snappedTo);
 
           // If the parent has nested blocks
           if (parent.nestedBlocks != null && parent.nestedBlocks!.isNotEmpty) {
@@ -1057,7 +1130,10 @@ class _canvasWidgetState extends State<canvasWidget> {
         // If the block had any children, detatch them
         if (block.childId != null) {
           detatch(
-            Provider.of<CodeTracker>(context, listen: false).blocks.firstWhere((element) => element.id == block.childId),
+            Provider.of<CodeTracker>(
+              context,
+              listen: false,
+            ).blocks.firstWhere((element) => element.id == block.childId),
             true,
           );
         }
@@ -1067,7 +1143,10 @@ class _canvasWidgetState extends State<canvasWidget> {
 
         // Then remove the block from blocks to prevent it being redrawn
         setState(() {
-          Provider.of<CodeTracker>(context, listen: false).blocks.removeWhere((element) => element.id == block.id);
+          Provider.of<CodeTracker>(
+            context,
+            listen: false,
+          ).blocks.removeWhere((element) => element.id == block.id);
         });
         playSound(2);
       }
@@ -1096,7 +1175,9 @@ class _canvasWidgetState extends State<canvasWidget> {
                     ),
                 // Render any blocks that have priorityBuild first
                 ...Provider.of<CodeTracker>(context, listen: false).blocks
-                    .where((b) => b.type.priorityBuild == true)
+                    .where(
+                      (b) => b.type.priorityBuild == true || b.priority == true,
+                    )
                     .map(buildBlock)
                     .toList(),
                 // Render the remaining blocks
