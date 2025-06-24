@@ -84,7 +84,7 @@ class Participant {
     _currentFeature ??= assignFeature();
 
     //return _currentFeature;
-    return "D";
+    return "E";
   }
   
   /// Returns the number of task to complete next (```int?``` between 1 and 5, inclusive). The next task is selected randomly from the pool of tasks that have not already been completed.
