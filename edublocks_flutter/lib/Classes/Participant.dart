@@ -29,6 +29,7 @@ class Participant {
   int _currentProgress = 0; 
 
   String _errorLine = "# Start Here";
+  String _taskCodeUpToError = "";
 
   Participant({
     required this.ID,
@@ -175,6 +176,8 @@ class Participant {
     final data = json.decode(response);
 
     _errorLine = data["${_currentTask}ErrorCode"] ?? "# Start Here";
+    _taskCodeUpToError = data["$_currentTask"] ?? "# Start Here";
+
 
     print("Solution: $solution");
     print("Answer ($_currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}): ${data["$_currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}"]}");
@@ -202,5 +205,9 @@ class Participant {
   /// Returns the line number where the error is located. Or returns null if no task is selected or the task is not found
   String getErrorLine() {
     return _errorLine;
+  }
+
+  String getCodeUpToFirstError() {
+    return _taskCodeUpToError;
   }
 }
