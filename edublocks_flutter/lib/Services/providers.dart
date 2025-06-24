@@ -4,6 +4,7 @@ import 'package:edublocks_flutter/Classes/Category.dart';
 import 'package:edublocks_flutter/Classes/MoveableBlock.dart';
 import 'package:edublocks_flutter/Classes/Participant.dart';
 import 'package:edublocks_flutter/Services/TextFormatter.dart';
+import 'package:edublocks_flutter/Services/toastNotifications.dart';
 import 'package:edublocks_flutter/Widgets/codeTextPanel.dart';
 import 'package:edublocks_flutter/Widgets/outputTextPanel.dart';
 import 'package:edublocks_flutter/style.dart';
@@ -488,25 +489,34 @@ class CodeTracker extends ChangeNotifier {
       print("Correct Solution?: $isSolutionCorrect");
 
       // Show a popup to display which task they are working on.
+      // WidgetsBinding.instance.addPostFrameCallback((_) {
+      //   final text = isSolutionCorrect ? correctAnswerText : incorrectAnswerText;
+      //   showDialog(
+      //     barrierDismissible: false, // User must click a button to proceed
+      //     context: context,
+      //     builder: (BuildContext context) {
+      //       return AlertDialog(
+      //         title: Text('Run'),
+      //         content: Text(text),
+      //         actions: [
+      //           TextButton(
+      //             child: Text('OK'),
+      //             onPressed: () => Navigator.of(context).pop(),
+      //           ),
+      //         ],
+      //       );
+      //     },
+      //   );
+      // });
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final text = isSolutionCorrect ? correctAnswerText : incorrectAnswerText;
-        showDialog(
-          barrierDismissible: false, // User must click a button to proceed
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Run'),
-              content: Text(text),
-              actions: [
-                TextButton(
-                  child: Text('OK'),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ],
-            );
-          },
-        );
+        final icon = isSolutionCorrect ? Icons.check_circle : Icons.warning_amber;
+        final color = isSolutionCorrect ? Colors.green : Colors.amber;
+        final time = isSolutionCorrect ? 10 : 5; // If correct, give more time to read the longer notification
+
+        showToastWithIcon(context, text, icon, color, time);
       });
+
     
       // Get the relevant detailed error message
       final String response = await rootBundle.loadString('assets/solutions.json'); // Get the solutions from a json file
