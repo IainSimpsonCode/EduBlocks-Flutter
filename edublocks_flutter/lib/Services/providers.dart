@@ -137,7 +137,48 @@ class BlocksToLoad extends ChangeNotifier {
 
 class CodeTracker extends ChangeNotifier {
 
+  // Variables requiered for canvas()
   List<MoveableBlock> blocks = [];
+  Map<int, GlobalKey> blockKeys = {};
+  Map<int, Offset> dragPositions = {}; // store latest drag global positions
+  List<MoveableBlock> draggedChain = [];
+  MoveableBlock? selectedBlock;
+  MoveableBlock? proximityDetectedBlock;
+  bool isProximityChild = false;
+  MoveableBlock? errorBlock;
+
+  void reinitialiseCanvasVariables(BuildContext context) {
+    blockKeys = {};
+    dragPositions ={};
+    draggedChain = [];
+    selectedBlock = null;
+    proximityDetectedBlock = null;
+    isProximityChild = false;
+    errorBlock = null;
+    
+    blocks = [
+      MoveableBlock(
+        id: 0,
+        type: Provider.of<BlockLibrary>(
+          context,
+          listen: false,
+        ).getBlockByCode("# Start Here"),
+        position: const Offset(50, 50),
+        height: 90,
+        nestedBlocks: [],
+      ),
+    ];
+
+    for (var block in blocks) {
+      if (!blockKeys.containsKey(block.id)) {
+        blockKeys[block.id] = GlobalKey();
+      }
+
+      dragPositions[block.id] = block.position;
+    }
+
+    removeBlock(2);
+  }
 
   String _codeJSONString = """{"blocks": [{"line": 1, "code": "# Start Here", "hasChildren": false}]}""";
   String _outputString = "";
@@ -534,7 +575,7 @@ class TaskTracker extends ChangeNotifier {
 
 class DeleteAll extends ChangeNotifier {
   void deleteAll(BuildContext context) {
-    Provider.of<CodeTracker>(context, listen: false).blocks.removeWhere((block) => block.id != 0);
+    Provider.of<CodeTracker>(context, listen: false).reinitialiseCanvasVariables(context);
     notifyListeners();
   }
 }
