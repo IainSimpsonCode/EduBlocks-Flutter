@@ -137,7 +137,48 @@ class BlocksToLoad extends ChangeNotifier {
 
 class CodeTracker extends ChangeNotifier {
 
+  // Variables requiered for canvas()
   List<MoveableBlock> blocks = [];
+  Map<int, GlobalKey> blockKeys = {};
+  Map<int, Offset> dragPositions = {}; // store latest drag global positions
+  List<MoveableBlock> draggedChain = [];
+  MoveableBlock? selectedBlock;
+  MoveableBlock? proximityDetectedBlock;
+  bool isProximityChild = false;
+  MoveableBlock? errorBlock;
+
+  void reinitialiseCanvasVariables(BuildContext context) {
+    blockKeys = {};
+    dragPositions ={};
+    draggedChain = [];
+    selectedBlock = null;
+    proximityDetectedBlock = null;
+    isProximityChild = false;
+    errorBlock = null;
+    
+    blocks = [
+      MoveableBlock(
+        id: 0,
+        type: Provider.of<BlockLibrary>(
+          context,
+          listen: false,
+        ).getBlockByCode("# Start Here"),
+        position: const Offset(50, 50),
+        height: 90,
+        nestedBlocks: [],
+      ),
+    ];
+
+    for (var block in blocks) {
+      if (!blockKeys.containsKey(block.id)) {
+        blockKeys[block.id] = GlobalKey();
+      }
+
+      dragPositions[block.id] = block.position;
+    }
+
+    removeBlock(2);
+  }
 
   String _codeJSONString = """{"blocks": [{"line": 1, "code": "# Start Here", "hasChildren": false}]}""";
   String _outputString = "";
@@ -404,7 +445,7 @@ class CodeTracker extends ChangeNotifier {
         style: codeTextStyle
       )];
 
-      formattedText.addAll(TextFormatter.formatCodeLine("${actualIndent()}${block["code"]}", Color((altColours(context) ? block["alternateCodeColour"] : block["standardCodeColour"]) ?? 0xFFffffff)));
+      formattedText.addAll(TextFormatter.formatCodeLine(context, "${actualIndent()}${block["code"]}", Color((altColours(context) ? block["alternateCodeColour"] : block["standardCodeColour"]) ?? 0xFFffffff)));
       
 
       returnWidgets.add(Text.rich(TextSpan( children: formattedText)));
@@ -534,7 +575,34 @@ class TaskTracker extends ChangeNotifier {
 
 class DeleteAll extends ChangeNotifier {
   void deleteAll(BuildContext context) {
-    Provider.of<CodeTracker>(context, listen: false).blocks.removeWhere((block) => block.id != 0);
-    notifyListeners();
+
+    // Check they really want to delete all the blocks
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final text = "Are you sure you want to delete all the blocks you have placed?";
+      showDialog(
+        barrierDismissible: false, // User must click a button to proceed
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Are you sure?'),
+            content: Text(text),
+            actions: [
+              TextButton(
+                child: Text('Yes'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Provider.of<CodeTracker>(context, listen: false).reinitialiseCanvasVariables(context);
+                  notifyListeners();
+                },
+              ),
+              TextButton(
+                child: Text('No'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          );
+        },
+      );
+    });
   }
 }

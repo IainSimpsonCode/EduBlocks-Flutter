@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:edublocks_flutter/Services/firestore.dart';
 import 'package:edublocks_flutter/Services/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class Participant {
+  final String classID;
   final String ID;
   bool task1;
   bool task2;
@@ -32,6 +34,7 @@ class Participant {
   String _taskCodeUpToError = "";
 
   Participant({
+    required this.classID,
     required this.ID,
     this.task1 = false,
     this.task2 = false,
@@ -46,8 +49,9 @@ class Participant {
     this.seenGavin = false
   });
 
-  factory Participant.fromJson(String id, Map<String, dynamic> json) {
+  factory Participant.fromJson(String classid, String id, Map<String, dynamic> json) {
     return Participant(
+      classID: classid,
       ID: id,
       task1: json["task1"] ?? false,
       task2: json["task2"] ?? false,
@@ -164,8 +168,27 @@ class Participant {
       task5 = true;
     } 
 
+    if (_currentFeature == "A") {
+      featureA = true;
+    }
+    else if (_currentFeature == "B") {
+      featureB = true;
+    }
+    else if (_currentFeature == "C") {
+      featureC = true;
+    }
+    else if (_currentFeature == "D") {
+      featureD = true;
+    }
+    else if (_currentFeature == "E") {
+      featureE = true;
+    }
+
     _currentTask = null;
+    _currentFeature = null;
     _currentProgress = 0;
+
+    saveParticipantData(this);
   }
 
   Future<bool> checkSolution(BuildContext context, String solution) async {

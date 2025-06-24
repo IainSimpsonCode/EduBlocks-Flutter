@@ -51,7 +51,7 @@ class _topBarWidgetState extends State<topBarWidget> {
         children: [
           Expanded(
             child: Text(
-              "Participant ID: ${Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.ID ?? "Not logged in"}\nYou are working on Task ${Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getTask() ?? 0} with Feature ${Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getFeature() ?? "0"}",
+              "Participant ID: ${Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.classID ?? ""}${Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.ID ?? "Not logged in"}\nYou are working on Task ${Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getTask() ?? 0} with Feature ${Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getFeature() ?? "0"}",
               style: codeTextStyle,
             ),
           ),
