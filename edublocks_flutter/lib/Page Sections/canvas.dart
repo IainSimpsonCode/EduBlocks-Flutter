@@ -797,6 +797,7 @@ class _canvasWidgetState extends State<canvasWidget> {
   }
 
   Widget buildBlock(MoveableBlock block) {
+    
     return Positioned(
       left: block.position.dx,
       top: block.position.dy,

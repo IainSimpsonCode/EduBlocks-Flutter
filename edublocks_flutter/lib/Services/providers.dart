@@ -531,3 +531,10 @@ class TaskTracker extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+class DeleteAll extends ChangeNotifier {
+  void deleteAll(BuildContext context) {
+    Provider.of<CodeTracker>(context, listen: false).blocks.removeWhere((block) => block.id != 0);
+    notifyListeners();
+  }
+}

@@ -47,13 +47,21 @@ class _topBarWidgetState extends State<topBarWidget> {
       padding: EdgeInsets.all(14),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
-        spacing: 0,
+        spacing: 14,
         children: [
           Expanded(
             child: Text(
               "Participant ID: ${Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.ID ?? "Not logged in"}\nYou are working on Task ${Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getTask() ?? 0} with Feature ${Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getFeature() ?? "0"}",
               style: codeTextStyle,
             ),
+          ),
+          buttonWithIcon(
+            svgIconLocation: 'category_icons/trash.svg', 
+            backgroundColor: Colors.red[400]!,
+            text: "Delete All",
+            onTap: () {
+              Provider.of<DeleteAll>(context, listen: false).deleteAll(context);
+            },
           ),
           buttonWithIcon(
             svgIconLocation: 'category_icons/play.svg', 
