@@ -34,6 +34,9 @@ void main() async {
 
         // Tracks if features should be visible of not and the progress of the user through tasks
         ChangeNotifierProvider(create: (context) => TaskTracker()),
+
+        // Handles when the delete all button is pressed
+        ChangeNotifierProvider(create: (context) => DeleteAll()),
       ],
       child: const MainApp(),
     ),

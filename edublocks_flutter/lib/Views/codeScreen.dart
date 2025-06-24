@@ -17,6 +17,7 @@ class CodeScreen extends StatefulWidget {
 class _CodeScreenState extends State<CodeScreen> {
 
   late TaskTracker _taskTracker;
+  late DeleteAll _deleteAllButton;
 
   void _showTaskPopUpMessage() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -53,6 +54,12 @@ class _CodeScreenState extends State<CodeScreen> {
     });
   }
 
+  void _onDeleteAllPressed() {
+    setState(() {
+      
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -63,13 +70,18 @@ class _CodeScreenState extends State<CodeScreen> {
     // Add a listener to update the widget when the state of the task changes
     _taskTracker = Provider.of<TaskTracker>(context, listen: false);
     _taskTracker.addListener(_onTaskUpdate);
+
+    // Add a listener to delete all blocks on screen when
+    _deleteAllButton = Provider.of<DeleteAll>(context, listen: false);
+    _deleteAllButton.addListener(_onDeleteAllPressed);
   }
 
   @override
   void dispose() {
-    super.dispose();
-
     _taskTracker.removeListener(_onTaskUpdate);
+    _deleteAllButton.removeListener(_onDeleteAllPressed);
+
+    super.dispose();
   }
 
   @override
