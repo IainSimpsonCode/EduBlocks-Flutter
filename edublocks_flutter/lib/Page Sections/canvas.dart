@@ -1170,13 +1170,18 @@ class _canvasWidgetState extends State<canvasWidget> {
                 // Render any blocks that have priorityBuild first
                 ...Provider.of<CodeTracker>(context, listen: false).blocks
                     .where(
-                      (b) => b.type.priorityBuild == true || b.priority == true,
+                      (b) => b.type.priorityBuild == true,
                     )
                     .map(buildBlock)
                     .toList(),
                 // Render the remaining blocks
                 ...Provider.of<CodeTracker>(context, listen: false).blocks
-                    .where((b) => b.type.priorityBuild != true)
+                    .where((b) => b.type.priorityBuild != true &&  b.priority == false)
+                    .map(buildBlock)
+                    .toList(),
+                // Render the remaining blocks
+                ...Provider.of<CodeTracker>(context, listen: false).blocks
+                    .where((b) => b.priority == true)
                     .map(buildBlock)
                     .toList(),
               ],
@@ -1254,9 +1259,9 @@ class ErrorOutlinePainter extends CustomPainter {
         Paint()
           ..color = const Color.fromARGB(255, 255, 0, 0) // Yellow
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 10;
+          ..strokeWidth = 12;
 
-    final rect = Rect.fromLTWH(0, 0, size.width, size.height);
+    final rect = Rect.fromLTWH(0, 1, size.width, size.height - 10);
 
     canvas.drawRect(rect, paint);
   }

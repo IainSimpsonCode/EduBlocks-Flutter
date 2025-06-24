@@ -4,7 +4,7 @@
     "1extention": "\n# Start Here\ncount = 0\nwhile True:\n if (count <= 10):\n  count += 1\n  print(count)\n  pass\n pass",
     "1ErrorCode": "count += 1",
     "1detailedErrorMessage": "1 Error",
-    "2": "\n# Start Here\nelif (age <= 16):\n print('You are in High School')\n pass\nif (age <= 11):\n print('You are in Primary School')\n pass\nelse\n print('You are old')\n pass",
+    "2": "\n# Start Here\nelif (age <= 16):\n print('You are in High School')\n pass\nif (age <= 11):\n print('You are in Primary School')\n pass\nelse:\n print('You are old')\n pass",
     "2fixed": "\n# Start Here\nif (age <= 11):\n print('You are in Primary School')\n pass\nelif (age <= 16):\n print('You are in High School')\n pass\nelse\n print('You are old')\n pass",
     "2extention": "\n# Start Here\nprint('My friend is')\nif (age <= 11):\n print('You are in Primary School')\n pass\nelif (age <= 16):\n print('You are in High School')\n pass\nelse\n print('You are old')\n pass",
     "2ErrorCode": "elif (age <= 16):",

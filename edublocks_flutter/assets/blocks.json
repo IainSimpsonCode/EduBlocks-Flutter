@@ -38,7 +38,7 @@
     },
     {
       "category": "Statements",
-      "code": "print('You are in primary school')",
+      "code": "print('You are in Primary School')",
       "imageName": "block_images/statements/print_primary-school.png",
       "condition": false,
       "hasChildren": false,
@@ -46,7 +46,7 @@
     },
     {
       "category": "Statements",
-      "code": "print('You are in high school')",
+      "code": "print('You are in High School')",
       "imageName": "block_images/statements/print_high-school.png",
       "condition": false,
       "hasChildren": false,
