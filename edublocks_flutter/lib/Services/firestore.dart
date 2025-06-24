@@ -56,9 +56,38 @@ Future<Participant?> getParticipantInfo(String classID, String participantID) as
         .doc(participantID);
 
     DocumentSnapshot doc = await docRef.get();
-    return Participant.fromJson(doc.id, doc.data() as Map<String, dynamic>);    
+    return Participant.fromJson(classID, participantID, doc.data() as Map<String, dynamic>);    
   } catch (e) {
     print('getParticipantInfo(): \nError loading document: $e');
     return null;
+  }
+}
+
+Future<bool> saveParticipantData(Participant participant) async {
+  try {
+    DocumentReference docRef = FirebaseFirestore.instance
+        .collection('Classes')
+        .doc(participant.classID)
+        .collection('Participants')
+        .doc(participant.ID);
+
+    await docRef.set({
+      "task1": participant.task1,
+      "task2": participant.task2,
+      "task3": participant.task3,
+      "task4": participant.task4,
+      "task5": participant.task5,
+      "featureA": participant.featureA,
+      "featureB": participant.featureB,
+      "featureC": participant.featureC,
+      "featureD": participant.featureD,
+      "featureE": participant.featureE,
+      "seenGavin": participant.seenGavin,
+    });
+
+    return true;
+  } catch (e) {
+    print("saveParticipantData(): \nError saving data: $e");
+    return false;
   }
 }
