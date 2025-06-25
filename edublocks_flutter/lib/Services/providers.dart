@@ -178,7 +178,18 @@ class CodeTracker extends ChangeNotifier {
       dragPositions[block.id] = block.position;
     }
 
-    removeBlock(2);
+    removeBlock(2); // Remove all blocks after the start block
+  }
+
+  /// Returns the total height of all the blocks within the chain of blocks
+  double getHeightOfBlockChain() {
+    double totalHeight = 0;
+
+    for (MoveableBlock block in blocks) {
+      totalHeight += block.height ?? 0;
+    }
+
+    return totalHeight;
   }
 
   String _codeJSONString = """{"blocks": [{"line": 1, "code": "# Start Here", "hasChildren": false}]}""";
@@ -488,26 +499,6 @@ class CodeTracker extends ChangeNotifier {
       final isSolutionCorrect = await Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.checkSolution(context, JSONToPythonCode());
       print("Correct Solution?: $isSolutionCorrect");
 
-      // Show a popup to display which task they are working on.
-      // WidgetsBinding.instance.addPostFrameCallback((_) {
-      //   final text = isSolutionCorrect ? correctAnswerText : incorrectAnswerText;
-      //   showDialog(
-      //     barrierDismissible: false, // User must click a button to proceed
-      //     context: context,
-      //     builder: (BuildContext context) {
-      //       return AlertDialog(
-      //         title: Text('Run'),
-      //         content: Text(text),
-      //         actions: [
-      //           TextButton(
-      //             child: Text('OK'),
-      //             onPressed: () => Navigator.of(context).pop(),
-      //           ),
-      //         ],
-      //       );
-      //     },
-      //   );
-      // });
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final text = isSolutionCorrect ? correctAnswerText : incorrectAnswerText;
         final icon = isSolutionCorrect ? Icons.check_circle : Icons.warning_amber;
