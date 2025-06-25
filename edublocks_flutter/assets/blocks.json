@@ -177,7 +177,8 @@
       "priorityBuild": true,
       "height": 165,
       "displayImageHeight": 150,
-      "snapXOffset": -38
+      "snapXOffset": -38,
+      "snapYOffset": 3
     },
     {
       "category": "Logic",
@@ -190,7 +191,7 @@
       "height": 160,
       "displayImageHeight": 150,
       "snapXOffset": -38,
-      "snapYOffset": 1
+      "snapYOffset": 3
     },
     {
       "category": "Logic",
@@ -203,7 +204,7 @@
       "height": 145,
       "displayImageHeight": 150,
       "snapXOffset": -38,
-      "snapYOffset": -10
+      "snapYOffset": -8
     }
   ]
 }

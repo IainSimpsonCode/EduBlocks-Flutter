@@ -30,8 +30,8 @@ class _canvasWidgetState extends State<canvasWidget> {
 
   late CodeTracker _codeTracker;
 
-  final double snapThreshold = 10;
-  final double snapThresholdNested = 10;
+  final double snapThreshold = 20;
+  final double snapThresholdNested = 15;
   
   final player = AudioPlayer();
   FocusNode _focusNode = FocusNode();
@@ -358,6 +358,7 @@ class _canvasWidgetState extends State<canvasWidget> {
           listen: false,
         ).blocks.firstWhere((b) => b.id == target.id);
         _codeTracker.isProximityChild = false;
+        print( _codeTracker.proximityDetectedBlock!.id);
       } else if (_codeTracker.proximityDetectedBlock?.id == target.id) {
         _codeTracker.proximityDetectedBlock = null;
       }
@@ -687,6 +688,11 @@ class _canvasWidgetState extends State<canvasWidget> {
                 "block_images/whileTrue/whileTrue4Blocks.png";
             parent.height = 190.0 + (70 * (parentNestedBlocks - 1));
             break;
+          default:
+            parent.type.imageName =
+                "block_images/whileTrue/whileTrue4Blocks.png";
+            parent.height = 190.0 + (70 * (parentNestedBlocks - 1));
+            break;
         }
         break;
 
@@ -712,6 +718,11 @@ class _canvasWidgetState extends State<canvasWidget> {
                 "block_images/logic/countLessThan10/ifCountLessThan10_3Blocks.png";
             parent.height = 205.0 + (70 * (parentNestedBlocks - 1));
             break;
+          default:
+            parent.type.imageName =
+                "block_images/logic/countLessThan10/ifCountLessThan10_3Blocks.png";
+            parent.height = 205.0 + (70 * (parentNestedBlocks - 1));
+            break;
         }
         break;
 
@@ -725,18 +736,22 @@ class _canvasWidgetState extends State<canvasWidget> {
           case 1:
             parent.type.imageName =
                 "block_images/logic/ageLessThan11/ifAgeLessThan11_1Block.png";
-            parent.height = 205.0;
+            parent.height = 208.0;
             break;
           case 2:
             parent.type.imageName =
                 "block_images/logic/ageLessThan11/ifAgeLessThan11_2Blocks.png";
-            parent.height = 205.0 + (70 * (parentNestedBlocks - 1));
+            parent.height = 210.0 + (70 * (parentNestedBlocks - 1));
             break;
           case 3:
             parent.type.imageName =
                 "block_images/logic/ageLessThan11/ifAgeLessThan11_3Blocks.png";
-            parent.height = 205.0 + (70 * (parentNestedBlocks - 1));
+            parent.height = 210.0 + (70 * (parentNestedBlocks - 1));
             break;
+          default:
+            parent.type.imageName =
+                "block_images/logic/ageLessThan11/ifAgeLessThan11_3Blocks.png";
+            parent.height = 210.0 + (70 * (parentNestedBlocks - 1));
         }
         break;
 
@@ -750,17 +765,22 @@ class _canvasWidgetState extends State<canvasWidget> {
           case 1:
             parent.type.imageName =
                 "block_images/logic/elseIfAgeLessThan16/elseIfAgeLessThan16_1Block.png";
-            parent.height = 200.0;
+            parent.height = 208.0;
             break;
           case 2:
             parent.type.imageName =
                 "block_images/logic/elseIfAgeLessThan16/elseIfAgeLessThan16_2Blocks.png";
-            parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
+            parent.height = 208.0 + (70 * (parentNestedBlocks - 1));
             break;
           case 3:
             parent.type.imageName =
                 "block_images/logic/elseIfAgeLessThan16/elseIfAgeLessThan16_3Blocks.png";
-            parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
+            parent.height = 208.0 + (70 * (parentNestedBlocks - 1));
+            break;
+          default:
+            parent.type.imageName =
+                "block_images/logic/elseIfAgeLessThan16/elseIfAgeLessThan16_3Blocks.png";
+            parent.height = 208.0 + (70 * (parentNestedBlocks - 1));
             break;
         }
         break;
@@ -776,6 +796,10 @@ class _canvasWidgetState extends State<canvasWidget> {
             parent.height = 200.0;
             break;
           case 2:
+            parent.type.imageName = "block_images/logic/else/else_2Blocks.png";
+            parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
+            break;
+          default:
             parent.type.imageName = "block_images/logic/else/else_2Blocks.png";
             parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
             break;
@@ -1172,7 +1196,12 @@ class _canvasWidgetState extends State<canvasWidget> {
                     .toList(),
                 // Render the remaining blocks
                 ..._codeTracker.blocks
-                    .where((b) => b.type.priorityBuild != true)
+                    .where((b) => b.type.priorityBuild != true && b.priority == false)
+                    .map(buildBlock)
+                    .toList(),
+                // Render the remaining blocks
+                ..._codeTracker.blocks
+                    .where((b) => b.priority == true)
                     .map(buildBlock)
                     .toList(),
               ],
@@ -1231,10 +1260,11 @@ class NestedOutlinePainter extends CustomPainter {
 
     final path = Path();
 
-    double notchEndX = 25;
+    double notchEndX = 20;
+    double height = size.height/2;
 
-    path.moveTo(notchEndX, 70); // start just after notch
-    path.lineTo(size.width, 70); // go to bottom-right
+    path.moveTo(notchEndX, height); // start just after notch
+    path.lineTo(size.width, height); // go to bottom-right
 
     canvas.drawPath(path, paint);
   }
