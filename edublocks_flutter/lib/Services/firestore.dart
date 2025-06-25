@@ -82,7 +82,6 @@ Future<bool> saveParticipantData(Participant participant) async {
       "featureC": participant.featureC,
       "featureD": participant.featureD,
       "featureE": participant.featureE,
-      "seenGavin": participant.seenGavin,
     });
 
     return true;
