@@ -1198,7 +1198,12 @@ class _canvasWidgetState extends State<canvasWidget> {
                       .toList(),
                   // Render the remaining blocks
                   ..._codeTracker.blocks
-                      .where((b) => b.type.priorityBuild != true)
+                      .where((b) => b.type.priorityBuild != true && b.priority == false)
+                      .map(buildBlock)
+                      .toList(),
+                  // Render the remaining blocks
+                  ..._codeTracker.blocks
+                      .where((b) => b.priority == true)
                       .map(buildBlock)
                       .toList(),
                 ],
