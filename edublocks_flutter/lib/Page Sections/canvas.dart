@@ -1146,40 +1146,43 @@ class _canvasWidgetState extends State<canvasWidget> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: KeyboardListener(
-        focusNode: _focusNode,
-        autofocus: true,
-        onKeyEvent: _handleKeyEvent,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return Stack(
-              children: [
-                // Paint background
-                isProduction
-                    ? CustomPaint(
-                      size: Size(constraints.maxWidth, constraints.maxHeight),
-                    )
-                    : CustomPaint(
-                      size: Size(constraints.maxWidth, constraints.maxHeight),
-                      painter: GridPainter(gridSpacing: 100),
-                    ),
-                // Render any blocks that have priorityBuild first
-                ..._codeTracker.blocks
-                    .where(
-                      (b) => b.type.priorityBuild == true,
-                    )
-                    .map(buildBlock)
-                    .toList(),
-                // Render the remaining blocks
-                ..._codeTracker.blocks
-                    .where((b) => b.type.priorityBuild != true)
-                    .map(buildBlock)
-                    .toList(),
-              ],
-            );
-          },
+      child: SingleChildScrollView(child: SizedBox(
+        height: MediaQuery.sizeOf(context).height + (_codeTracker.getHeightOfBlockChain() * 2),
+        child: KeyboardListener(
+          focusNode: _focusNode,
+          autofocus: true,
+          onKeyEvent: _handleKeyEvent,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return Stack(
+                children: [
+                  // Paint background
+                  isProduction
+                      ? CustomPaint(
+                        size: Size(constraints.maxWidth, constraints.maxHeight),
+                      )
+                      : CustomPaint(
+                        size: Size(constraints.maxWidth, constraints.maxHeight),
+                        painter: GridPainter(gridSpacing: 100),
+                      ),
+                  // Render any blocks that have priorityBuild first
+                  ..._codeTracker.blocks
+                      .where(
+                        (b) => b.type.priorityBuild == true,
+                      )
+                      .map(buildBlock)
+                      .toList(),
+                  // Render the remaining blocks
+                  ..._codeTracker.blocks
+                      .where((b) => b.type.priorityBuild != true)
+                      .map(buildBlock)
+                      .toList(),
+                ],
+              );
+            },
+          ),
         ),
-      ),
+      )),
     );
   }
 

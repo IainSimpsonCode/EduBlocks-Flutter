@@ -71,6 +71,14 @@ class _topBarWidgetState extends State<topBarWidget> {
               Provider.of<CodeTracker>(context, listen: false).run(context);
             },
           ),
+          buttonWithIcon(
+            svgIconLocation: 'category_icons/flag.svg', 
+            backgroundColor: Colors.green[400]!,
+            text: "Next Task",
+            onTap: () {
+              
+            },
+          ),
         ],
       ),
     );
