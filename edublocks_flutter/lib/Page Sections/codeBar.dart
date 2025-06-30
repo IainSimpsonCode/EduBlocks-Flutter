@@ -1,6 +1,8 @@
 import 'package:edublocks_flutter/Services/providers.dart';
 import 'package:edublocks_flutter/Widgets/codeOutputToggleButtons.dart';
 import 'package:edublocks_flutter/Widgets/codeTextPanel.dart';
+import 'package:edublocks_flutter/Widgets/outputTextPanel.dart';
+import 'package:edublocks_flutter/features.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -46,8 +48,15 @@ class _codeBarWidgetState extends State<codeBarWidget> {
       color: codeBarColour,
       padding: EdgeInsets.all(16),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 16,
-        children: [
+        children: showCodeAndOutputSimultaniously(context) ? 
+        [
+          Text("Code: ", style: bodyMedium),
+          codeTextPanel(),
+          Text("Output: ", style: bodyMedium),
+          outputTextPanel(),
+        ] : [
           codeOutputToggleButtons(),
           _codeOutputTextPanelNotifier.textPanel(),
         ]

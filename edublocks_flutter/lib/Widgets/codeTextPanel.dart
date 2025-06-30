@@ -12,6 +12,8 @@ class codeTextPanel extends StatefulWidget {
 
 class _codeTextPanelState extends State<codeTextPanel> {
 
+  late CodeTracker _codeTracker;
+
   void _handleCodeTrackerUpdates() {
     setState(() {
       
@@ -23,19 +25,21 @@ class _codeTextPanelState extends State<codeTextPanel> {
     // TODO: implement initState
     super.initState();
 
-    Provider.of<CodeTracker>(context, listen: false).addListener(_handleCodeTrackerUpdates);
+    _codeTracker = Provider.of<CodeTracker>(context, listen: false);
+    _codeTracker.addListener(_handleCodeTrackerUpdates);
   }
 
   @override
   void dispose() {
     // Safely remove provider listener
-    Provider.of<CodeTracker>(context, listen: false).removeListener(_handleCodeTrackerUpdates);
+    _codeTracker.removeListener(_handleCodeTrackerUpdates);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
+      flex: 1,
       child: Container(
         decoration: BoxDecoration(
           color: codeTextPanelColour,

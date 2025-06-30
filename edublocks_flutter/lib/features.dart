@@ -44,3 +44,9 @@ bool greyscaleHighlight(BuildContext context) {
     Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getCodeUpToFirstError() == Provider.of<CodeTracker>(context, listen: false).JSONToPythonCode()
   );
 }
+
+bool showCodeAndOutputSimultaniously(BuildContext context) {
+  return (
+    Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getFeature() == "F"
+  );
+}

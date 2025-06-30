@@ -37,6 +37,7 @@ class _outputTextPanelState extends State<outputTextPanel> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
+      flex: 1,
       child: Container(
         decoration: BoxDecoration(
           color: codeTextPanelColour,

@@ -67,7 +67,7 @@ Future<bool> saveParticipantData(Participant participant) async {
       "featureD": participant.featureD,
       "featureE": participant.featureE,
       "featureF": participant.featureF
-    });
+    }, SetOptions(merge: true));
 
     return true;
   } catch (e) {
@@ -128,7 +128,7 @@ Future<bool> clearCurrentTask(Participant participant) async {
     await docRef.set({
       "currentTask": null,
       "currentFeature": null
-    });
+    }, SetOptions(merge: true));
 
     return true;
   } catch (e) {
