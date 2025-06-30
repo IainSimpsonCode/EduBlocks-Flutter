@@ -135,9 +135,7 @@ class Participant {
     // If the current task is null, assign it a new task
     currentTask ??= assignTask();
 
-    //return currentTask;
-    currentTask = 1;
-    return 1;
+    return currentTask;
   }
 
   /// Returns the value of the current feature to complete
@@ -146,9 +144,7 @@ class Participant {
     // If the current feature is null, assign it a new feature
     currentFeature ??= assignFeature();
 
-    //return currentFeature;
-    currentFeature = 'F';
-    return 'F';
+    return currentFeature;
   }
   
   /// Returns the number of task to complete next (```int?``` between 1 and 5, inclusive). The next task is selected randomly from the pool of tasks that have not already been completed.
