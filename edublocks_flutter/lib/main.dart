@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'Services/firebase_options.dart';
+import 'features.dart';
 
 void main() async {
 
@@ -30,6 +31,12 @@ void main() async {
 
         // Tracks which user is logged into the app
         ChangeNotifierProvider(create: (context) => ParticipantInformation()),
+
+        // Tracks if features should be visible of not and the progress of the user through tasks
+        ChangeNotifierProvider(create: (context) => TaskTracker()),
+
+        // Handles when the delete all button is pressed
+        ChangeNotifierProvider(create: (context) => DeleteAll()),
       ],
       child: const MainApp(),
     ),

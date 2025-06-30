@@ -17,7 +17,7 @@ class _categoryScrollerState extends State<categoryScroller> {
   @override
   Widget build(BuildContext context) {
 
-    final categories = Provider.of<BlockLibrary>(context).categories;
+    final categories = Provider.of<BlockLibrary>(context, listen: false).categories;
 
     return ListView.builder(
       itemCount: categories.length,

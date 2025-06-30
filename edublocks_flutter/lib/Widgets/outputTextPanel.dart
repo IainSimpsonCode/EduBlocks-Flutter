@@ -13,21 +13,31 @@ class outputTextPanel extends StatefulWidget {
 
 class _outputTextPanelState extends State<outputTextPanel> {
 
+  void _handleCodeTrackerUpdates() {
+    setState(() {
+      
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    Provider.of<CodeTracker>(context, listen: false).addListener(() {
-      setState(() {
-        
-      });
-    });
+    Provider.of<CodeTracker>(context, listen: false).addListener(_handleCodeTrackerUpdates);
+  }
+
+  @override
+  void dispose() {
+    // Safely remove provider listener
+    Provider.of<CodeTracker>(context, listen: false).removeListener(_handleCodeTrackerUpdates);
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
+      flex: 1,
       child: Container(
         decoration: BoxDecoration(
           color: codeTextPanelColour,

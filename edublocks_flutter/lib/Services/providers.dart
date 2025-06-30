@@ -1,15 +1,18 @@
 import 'dart:convert';
 import 'package:edublocks_flutter/Classes/Block.dart';
 import 'package:edublocks_flutter/Classes/Category.dart';
+import 'package:edublocks_flutter/Classes/MoveableBlock.dart';
 import 'package:edublocks_flutter/Classes/Participant.dart';
 import 'package:edublocks_flutter/Services/TextFormatter.dart';
+import 'package:edublocks_flutter/Services/toastNotifications.dart';
 import 'package:edublocks_flutter/Widgets/codeTextPanel.dart';
 import 'package:edublocks_flutter/Widgets/outputTextPanel.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:edublocks_flutter/features.dart';
 
 class ParticipantInformation extends ChangeNotifier {
   Participant? currentParticipant;
@@ -134,6 +137,61 @@ class BlocksToLoad extends ChangeNotifier {
 }
 
 class CodeTracker extends ChangeNotifier {
+
+  // Variables requiered for canvas()
+  List<MoveableBlock> blocks = [];
+  Map<int, GlobalKey> blockKeys = {};
+  Map<int, Offset> dragPositions = {}; // store latest drag global positions
+  List<MoveableBlock> draggedChain = [];
+  MoveableBlock? selectedBlock;
+  MoveableBlock? proximityDetectedBlock;
+  bool isProximityChild = false;
+  MoveableBlock? errorBlock;
+
+  void reinitialiseCanvasVariables(BuildContext context) {
+    blockKeys = {};
+    dragPositions ={};
+    draggedChain = [];
+    selectedBlock = null;
+    proximityDetectedBlock = null;
+    isProximityChild = false;
+    errorBlock = null;
+    
+    blocks = [
+      MoveableBlock(
+        id: 0,
+        type: Provider.of<BlockLibrary>(
+          context,
+          listen: false,
+        ).getBlockByCode("# Start Here"),
+        position: const Offset(50, 50),
+        height: 90,
+        nestedBlocks: [],
+      ),
+    ];
+
+    for (var block in blocks) {
+      if (!blockKeys.containsKey(block.id)) {
+        blockKeys[block.id] = GlobalKey();
+      }
+
+      dragPositions[block.id] = block.position;
+    }
+
+    removeBlock(2); // Remove all blocks after the start block
+  }
+
+  /// Returns the total height of all the blocks within the chain of blocks
+  double getHeightOfBlockChain() {
+    double totalHeight = 0;
+
+    for (MoveableBlock block in blocks) {
+      totalHeight += block.height ?? 0;
+    }
+
+    return totalHeight;
+  }
+
   String _codeJSONString = """{"blocks": [{"line": 1, "code": "# Start Here", "hasChildren": false}]}""";
   String _outputString = "";
 
@@ -372,7 +430,7 @@ class CodeTracker extends ChangeNotifier {
     return rawCode;
   }
 
-  List<Widget> JSONToFormattedTextWidgets() {
+  List<Widget> JSONToFormattedTextWidgets(BuildContext context) {
     updateLineNumbers();
 
     // Parse the JSON
@@ -395,11 +453,11 @@ class CodeTracker extends ChangeNotifier {
     for (var block in blocks) {
 
       List<TextSpan> formattedText = [TextSpan(
-        text: "${block["line"] < 10 ? 0 : null}${block["line"]}: ",
+        text: "${block["line"] < 10 ? 0 : ""}${block["line"]}: ",
         style: codeTextStyle
       )];
 
-      formattedText.addAll(TextFormatter.formatCodeLine("${actualIndent()}${block["code"]}", Color((altColours ? block["alternateCodeColour"] : block["standardCodeColour"]) ?? 0xFFffffff)));
+      formattedText.addAll(TextFormatter.formatCodeLine(context, "${actualIndent()}${block["code"]}", Color((altColours(context) ? block["alternateCodeColour"] : block["standardCodeColour"]) ?? 0xFFffffff)));
       
 
       returnWidgets.add(Text.rich(TextSpan( children: formattedText)));
@@ -419,7 +477,56 @@ class CodeTracker extends ChangeNotifier {
 
   /// Will send the code currently stored in the CodeTracker notifier to a python compiler server. Returns the output as a string to be shown on the output pane.
   Future<String> run(BuildContext context) async {
+
+    // Check if the code matches the desired solution
+    if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant != null) {
+
+      // Record that the run button has been pressed
+      Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.runButtonPressed++;
+
+      // Define what the popup should say after run is clicked
+      String correctAnswerText = "";
+      String incorrectAnswerText = "";
+      if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.currentProgress == 0) { // If they are at the start of the task
+        correctAnswerText = "You've correcly put together the code from the workbook. However, this code is broken and has an error. We have added a new feature to the app to help you try and fix the error. Read through the error message provided on the output panel and see if you can fix the error.";
+        incorrectAnswerText = "That wasnt quite right. Your code doesn't match with what is in your workbook. Reread the task and try again.";
+      }
+      else if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.currentProgress == 1) { // If they have the new feature and are debugging
+        correctAnswerText = "Correct! You've found what was causing the problem and successfully fixed it. \nNow you can work on making the code even better. Try the extention activity in your workbook.";
+        incorrectAnswerText = "That wasnt quite right. The original error hasn't been fixed. Try again.";
+      }
+      else if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.currentProgress == 2) { // If they are doing the extention activity
+        correctAnswerText = "Well done! You've completed the task, and made it even better through the extention acitvity. Now you can start your next task.";
+        incorrectAnswerText = "That wasnt quite right. Your code doesn't match with what is in your workbook. Reread the task and try again.";
+      }
+
+      final isSolutionCorrect = await Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.checkSolution(context, JSONToPythonCode());
+      print("Correct Solution?: $isSolutionCorrect");
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final text = isSolutionCorrect ? correctAnswerText : incorrectAnswerText;
+        final icon = isSolutionCorrect ? Icons.check_circle : Icons.warning_amber;
+        final color = isSolutionCorrect ? Colors.green : Colors.amber;
+        final time = isSolutionCorrect ? 10 : 5; // If correct, give more time to read the longer notification
+
+        showToastWithIcon(context, text, icon, color, time);
+      });
+
+    
+      // Get the relevant detailed error message
+      final String response = await rootBundle.loadString('assets/solutions.json'); // Get the solutions from a json file
+      final data = json.decode(response);
+      int currentTask = Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.getTask() ?? 0;
+      if (data["$currentTask"] == JSONToPythonCode() && detailedErrorMessages(context)) { // if the code given matches what the task requires, and the feature is detailed error messages
+        // Return the detailed error message
+        String detailedErrorMessage = data["${currentTask}detailedErrorMessage"] ?? "Task $currentTask: Error message not found";
+        setOutputString(detailedErrorMessage, context);
+        return detailedErrorMessage;
+      }
+    }
+
     String output = "";
+
 
     try {
       final url = Uri.parse("https://marklochrie.co.uk/edublocks/run");
@@ -449,4 +556,58 @@ class CodeOutputTextPanelNotifier extends ChangeNotifier {
   }
 
   Widget textPanel() => _codeSelected ? codeTextPanel() : outputTextPanel();
+}
+
+class TaskTracker extends ChangeNotifier {
+  void taskUpdate() {
+    notifyListeners();
+  }
+  
+  bool _featureVisible = false;
+
+  bool get isFeatureVisible => _featureVisible;
+
+  void activateFeature() {
+    _featureVisible = true;
+    notifyListeners();
+  }
+
+  void deactivateFeature() {
+    _featureVisible = false;
+    notifyListeners();
+  }
+}
+
+class DeleteAll extends ChangeNotifier {
+  void deleteAll(BuildContext context) {
+
+    // Check they really want to delete all the blocks
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final text = "Are you sure you want to delete all the blocks you have placed?";
+      showDialog(
+        barrierDismissible: false, // User must click a button to proceed
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Are you sure?'),
+            content: Text(text),
+            actions: [
+              TextButton(
+                child: Text('Yes'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Provider.of<CodeTracker>(context, listen: false).reinitialiseCanvasVariables(context);
+                  notifyListeners();
+                },
+              ),
+              TextButton(
+                child: Text('No'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          );
+        },
+      );
+    });
+  }
 }

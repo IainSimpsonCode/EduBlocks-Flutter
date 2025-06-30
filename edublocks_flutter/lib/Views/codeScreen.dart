@@ -2,6 +2,7 @@ import 'package:edublocks_flutter/Page%20Sections/canvas.dart';
 import 'package:edublocks_flutter/Page%20Sections/codeBar.dart';
 import 'package:edublocks_flutter/Page%20Sections/sideBar.dart';
 import 'package:edublocks_flutter/Page%20Sections/topBar.dart';
+import 'package:edublocks_flutter/Services/firestore.dart';
 import 'package:edublocks_flutter/Services/providers.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
@@ -16,20 +17,27 @@ class CodeScreen extends StatefulWidget {
 
 class _CodeScreenState extends State<CodeScreen> {
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
+  late TaskTracker _taskTracker;
+  late DeleteAll _deleteAllButton;
 
-    // Show a popup to display which task they are working on.
+  void _showTaskPopUpMessage() {
+
+    saveCurrentTask(Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!);
+    saveCurrentFeature(Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!);
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final text = "Dialog test";
+      final taskNumber = Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getTask();
+      if (taskNumber == null) {
+        return;
+      }
+
+      final text = "You are working on task $taskNumber.\nPlease find it in your workbook";
       showDialog(
         barrierDismissible: false, // User must click a button to proceed
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('Welcome'),
+            title: Text('Your Task'),
             content: Text(text),
             actions: [
               TextButton(
@@ -41,6 +49,44 @@ class _CodeScreenState extends State<CodeScreen> {
         },
       );
     });
+  }
+
+  void _onTaskUpdate() {
+    setState(() {
+      if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.showNextTask() ?? false) { // If a new task is started
+        _showTaskPopUpMessage(); // Notify the user which task they are on
+      }
+    });
+  }
+
+  void _onDeleteAllPressed() {
+    setState(() {
+      
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Show a popup to display which task they are initially working on.
+    _showTaskPopUpMessage();
+    
+    // Add a listener to update the widget when the state of the task changes
+    _taskTracker = Provider.of<TaskTracker>(context, listen: false);
+    _taskTracker.addListener(_onTaskUpdate);
+
+    // Add a listener to delete all blocks on screen when
+    _deleteAllButton = Provider.of<DeleteAll>(context, listen: false);
+    _deleteAllButton.addListener(_onDeleteAllPressed);
+  }
+
+  @override
+  void dispose() {
+    _taskTracker.removeListener(_onTaskUpdate);
+    _deleteAllButton.removeListener(_onDeleteAllPressed);
+
+    super.dispose();
   }
 
   @override

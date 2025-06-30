@@ -12,17 +12,28 @@ class codeOutputToggleButtons extends StatefulWidget {
 
 class _codeOutputToggleButtonsState extends State<codeOutputToggleButtons> {
   bool isHovered = false;
+  late CodeTracker _codeTracker;
+
+  void _handleCodeTrackerUpdates() {
+    setState(() {
+      
+    });
+  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    Provider.of<CodeTracker>(context, listen: false).addListener(() {
-      setState(() {
-        
-      });
-    });
+    _codeTracker = Provider.of<CodeTracker>(context, listen: false);
+    _codeTracker.addListener(_handleCodeTrackerUpdates);
+  }
+
+  @override
+  void dispose() {
+    // Safely remove provider listener
+    _codeTracker.removeListener(_handleCodeTrackerUpdates);
+    super.dispose();
   }
 
   @override

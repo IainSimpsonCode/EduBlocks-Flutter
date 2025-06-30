@@ -1,4 +1,3 @@
-
 import 'package:edublocks_flutter/Classes/Block.dart';
 import 'package:flutter/material.dart';
 
@@ -8,12 +7,13 @@ class MoveableBlock {
   final Block type;
   double? height;
   double? width;
-  
+
   int? snappedTo;
   int? childId;
   List<MoveableBlock>? nestedBlocks;
   bool isNested = false;
   int nestedBlocksCount = 0;
+  bool priority = false;
 
   // For Variable type blocks
   List<String>? options;
