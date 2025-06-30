@@ -13,34 +13,49 @@ class blockLibraryScroller extends StatefulWidget {
 }
 
 class _blockLibraryScrollerState extends State<blockLibraryScroller> {
+  final Map<int, bool> _isHovering = {};
 
   @override
   Widget build(BuildContext context) {
-
-    final blocks = Provider.of<BlockLibrary>(context, listen: false).getBlocksByCategory(widget.category);
+    final blocks = Provider.of<BlockLibrary>(
+      context,
+      listen: false,
+    ).getBlocksByCategory(widget.category);
 
     return ListView.builder(
       itemCount: blocks.length,
       itemBuilder: (context, index) {
         final block = blocks[index];
+        final isHovered = _isHovering[index] ?? false;
+
         return Padding(
           padding: const EdgeInsets.all(8.0),
-          child: GestureDetector(
-            child: Image.asset(
-              block.displayImageName,
-              height: block.displayImageHeight,
-              fit: BoxFit.contain,
-              errorBuilder: (context, error, stackTrace) {
-                return const Icon(Icons.broken_image, size: 80);
+          child: MouseRegion(
+            onEnter: (_) => setState(() => _isHovering[index] = true),
+            onExit: (_) => setState(() => _isHovering[index] = false),
+            child: GestureDetector(
+              onTap: () {
+                Provider.of<BlocksToLoad>(
+                  context,
+                  listen: false,
+                ).AddBlockToLoad(block);
               },
+              child: AnimatedScale(
+                scale: isHovered ? 1.1 : 1.0,
+                duration: const Duration(milliseconds: 250),
+                child: Image.asset(
+                  block.displayImageName,
+                  height: block.displayImageHeight,
+                  fit: BoxFit.contain,
+                  errorBuilder: (context, error, stackTrace) {
+                    return const Icon(Icons.broken_image, size: 80);
+                  },
+                ),
+              ),
             ),
-            onTap: () {
-              Provider.of<BlocksToLoad>(context, listen: false).AddBlockToLoad(block);
-            },
-          )
+          ),
         );
       },
     );
-    
   }
 }

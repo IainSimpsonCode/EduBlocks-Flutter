@@ -66,12 +66,11 @@ class BlockLibrary extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setCategorySelected(String categorySelected) {
+  void setCategorySelected(String? categorySelected) {
     // If the user clicks the currently selected category a second time, set the selected category to null
     if (categorySelected == _categorySelected) {
       _categorySelected = null;
-    }
-    else {
+    } else {
       // Otherwise, set the currently selected category to be what the user has selected.
       _categorySelected = categorySelected;
     }
@@ -90,7 +89,7 @@ class BlockLibrary extends ChangeNotifier {
   void addBlock(Block newBlock) {
     _allBlocks.add(newBlock);
     notifyListeners();
-  }  
+  }
 
   /// Returns the first block in the list of all blocks where the code of the block matches the provided code string.
   Block getBlockByCode(String code) {
@@ -101,22 +100,20 @@ class BlockLibrary extends ChangeNotifier {
   List<Block> getBlocksByCategory(String? category) {
     if (category == null) {
       return _allBlocks;
-    }
-    else {
-      return _allBlocks.where((element) => element.category == category).toList();
+    } else {
+      return _allBlocks
+          .where((element) => element.category == category)
+          .toList();
     }
   }
 
   // -- Variable Names --
   List<String> get variableNames => _variableNames;
 
-  void addVariable(String variableName) {
-    
-  }
+  void addVariable(String variableName) {}
 }
 
 class BlocksToLoad extends ChangeNotifier {
-  
   List<Block> _blocksToLoad = [];
 
   void AddBlockToLoad(Block block) {
@@ -137,7 +134,6 @@ class BlocksToLoad extends ChangeNotifier {
 }
 
 class CodeTracker extends ChangeNotifier {
-
   // Variables requiered for canvas()
   List<MoveableBlock> blocks = [];
   Map<int, GlobalKey> blockKeys = {};
@@ -150,13 +146,13 @@ class CodeTracker extends ChangeNotifier {
 
   void reinitialiseCanvasVariables(BuildContext context) {
     blockKeys = {};
-    dragPositions ={};
+    dragPositions = {};
     draggedChain = [];
     selectedBlock = null;
     proximityDetectedBlock = null;
     isProximityChild = false;
     errorBlock = null;
-    
+
     blocks = [
       MoveableBlock(
         id: 0,
@@ -192,17 +188,20 @@ class CodeTracker extends ChangeNotifier {
     return totalHeight;
   }
 
-  String _codeJSONString = """{"blocks": [{"line": 1, "code": "# Start Here", "hasChildren": false}]}""";
+  String _codeJSONString =
+      """{"blocks": [{"line": 1, "code": "# Start Here", "hasChildren": false}]}""";
   String _outputString = "";
 
   String get outputString => _outputString;
   void setOutputString(String value, BuildContext context) {
     _outputString = value;
 
-    Provider.of<CodeOutputTextPanelNotifier>(context, listen: false).codeSelected = false;
+    Provider.of<CodeOutputTextPanelNotifier>(context, listen: false)
+        .codeSelected = false;
 
     notifyListeners();
   }
+
   bool outputChanged = false;
 
   /// Check and update all line numbers in the JSON string.
@@ -225,22 +224,32 @@ class CodeTracker extends ChangeNotifier {
 
   /// Insert a block (using the ```Block``` class) into the code chain at a specific line number
   int insertBlock(Block block, int line) {
-    if (line <= 1 && line != -1) {return 1;} // Line number must be positive (except -1), and cannot be 1 as this is the start block. Inserting at -1 will automatically place the block at the end of the chain.
+    if (line <= 1 && line != -1) {
+      return 1;
+    } // Line number must be positive (except -1), and cannot be 1 as this is the start block. Inserting at -1 will automatically place the block at the end of the chain.
 
     // Parse the JSON
-    Map<String, dynamic> data = jsonDecode(_codeJSONString); 
+    Map<String, dynamic> data = jsonDecode(_codeJSONString);
     List blocks = data['blocks'];
 
     // New object to insert
-    List<Map<String, dynamic>> newBlock = [{
-      "line": line,
-      "code": block.code,
-      "hasChildren": block.hasChildren,
-      "standardCodeColour": block.standardCodeColour,
-      "alternateCodeColour": block.alternateCodeColour
-    }];
+    List<Map<String, dynamic>> newBlock = [
+      {
+        "line": line,
+        "code": block.code,
+        "hasChildren": block.hasChildren,
+        "standardCodeColour": block.standardCodeColour,
+        "alternateCodeColour": block.alternateCodeColour,
+      },
+    ];
 
-    final passBlock = {"line": 0, "code": "pass", "hasChildren": false, "standardCodeColour": block.standardCodeColour, "alternateCodeColour": block.alternateCodeColour};
+    final passBlock = {
+      "line": 0,
+      "code": "pass",
+      "hasChildren": false,
+      "standardCodeColour": block.standardCodeColour,
+      "alternateCodeColour": block.alternateCodeColour,
+    };
 
     // If the block can have children nested (eg, while loops and if statements) then add a "pass" block to the chain
     if (block.hasChildren) {
@@ -250,14 +259,13 @@ class CodeTracker extends ChangeNotifier {
     if (line == -1) {
       // Add the new block to the end of the chain.
       blocks.addAll(newBlock);
-    }
-    else if (blocks.last["line"] >= line) { // If the block is being inserted between blocks
+    } else if (blocks.last["line"] >= line) {
+      // If the block is being inserted between blocks
       // Insert the new block at the specified line number.
       // Todo this, find the block, find the block at line number ```line - 1```, then insert after it.
       int insertIndex = blocks.indexWhere((block) => block['line'] == line);
       blocks.insertAll(insertIndex, newBlock);
-    }
-    else {
+    } else {
       // If the block is being added on a new line
       blocks.addAll(newBlock);
     }
@@ -272,17 +280,18 @@ class CodeTracker extends ChangeNotifier {
   }
 
   int removeBlock(int line) {
-    if (line <= 1 && line != -1) {return 1;} // Line number must be positive (except -1), and cannot be 1 as this is the start block. Removing at -1 will automatically remove the block at the end of the chain.
+    if (line <= 1 && line != -1) {
+      return 1;
+    } // Line number must be positive (except -1), and cannot be 1 as this is the start block. Removing at -1 will automatically remove the block at the end of the chain.
 
     // Parse the JSON
-    Map<String, dynamic> data = jsonDecode(_codeJSONString); 
+    Map<String, dynamic> data = jsonDecode(_codeJSONString);
     List blocks = data['blocks'];
 
     if (line == -1) {
       // If line is -1, remove the last item in the chain
       blocks.removeLast();
-    }
-    else {
+    } else {
       // If a line number is specified, remove all blocks at and below that line.
 
       // Iterate through all the blocks at and below the specified line to remove
@@ -294,19 +303,16 @@ class CodeTracker extends ChangeNotifier {
         if (block["code"] == "pass" && skipPass == 0) {
           // If you hit a pass block, and skipPass is 0, stop removing blocks as you have reached the end of the nested stack you are removing
           break;
-        }
-        else if (block["code"] == "pass" && skipPass > 0) {
+        } else if (block["code"] == "pass" && skipPass > 0) {
           // If you hit a pass block, and skipPass if greater than 0, remove the pass block and continue as you have removed a whole if/while block
           skipPass--;
-        }
-        else if (block["hasChildren"] == true) {
+        } else if (block["hasChildren"] == true) {
           // If you hit a while or if block, increase skipPass as you will need to skip the next pass block and delete the whole if/while block
           skipPass++;
         }
 
         blocksToRemove.add(block["line"]);
       }
-
 
       blocks.removeWhere((element) => blocksToRemove.contains(element["line"]));
     }
@@ -321,20 +327,24 @@ class CodeTracker extends ChangeNotifier {
   }
 
   int removeSingleBlock(int line) {
-    if (line <= 1 && line != -1) {return 1;} // Line number must be positive (except -1), and cannot be 1 as this is the start block. Removing at -1 will automatically remove the block at the end of the chain.
+    if (line <= 1 && line != -1) {
+      return 1;
+    } // Line number must be positive (except -1), and cannot be 1 as this is the start block. Removing at -1 will automatically remove the block at the end of the chain.
 
     // Parse the JSON
-    Map<String, dynamic> data = jsonDecode(_codeJSONString); 
+    Map<String, dynamic> data = jsonDecode(_codeJSONString);
     List blocks = data['blocks'];
 
     if (line == -1) {
       // If line is -1, remove the last item in the chain
       blocks.removeLast();
-    }
-    else {
-      // If a line number is specified, remove the specified block. 
+    } else {
+      // If a line number is specified, remove the specified block.
       // If the block has children, remove the nested blocks too. When removing nested blocks, use the same code as in ```removeBlock()```, but initialise skipPass as -1
-      if (blocks.firstWhere((element) => element["line"] == line)["hasChildren"] == true) {
+      if (blocks.firstWhere(
+            (element) => element["line"] == line,
+          )["hasChildren"] ==
+          true) {
         // Iterate through all the blocks at and below the specified line to remove
         // Create a list of blocks to remove after iterating through the list. Removing blocks inside the for loop will cause an error as you are changing the list you are iterating through
         List<int> blocksToRemove = [];
@@ -344,22 +354,21 @@ class CodeTracker extends ChangeNotifier {
           if (block["code"] == "pass" && skipPass <= 0) {
             // If you hit a pass block, and skipPass is 0, stop removing blocks as you have reached the end of the nested stack you are removing
             break;
-          }
-          else if (block["code"] == "pass" && skipPass > 0) {
+          } else if (block["code"] == "pass" && skipPass > 0) {
             // If you hit a pass block, and skipPass if greater than 0, remove the pass block and continue as you have removed a whole if/while block
             skipPass--;
-          }
-          else if (block["hasChildren"] == true) {
+          } else if (block["hasChildren"] == true) {
             // If you hit a while or if block, increase skipPass as you will need to skip the next pass block and delete the whole if/while block
             skipPass++;
           }
 
-          blocksToRemove.add(block["line"]);        
+          blocksToRemove.add(block["line"]);
         }
 
-        blocks.removeWhere((element) => blocksToRemove.contains(element["line"]));
-      }
-      else {
+        blocks.removeWhere(
+          (element) => blocksToRemove.contains(element["line"]),
+        );
+      } else {
         // If the specified block did not have children or nested blocks, remove the block
         blocks.removeWhere((element) => element["line"] == line);
       }
@@ -414,10 +423,7 @@ class CodeTracker extends ChangeNotifier {
   /// Replaces instances of "while True" with "for i in range(100)".
   /// Takes the raw python code as a parameter, and returns the cleaned code
   String cleanPythonCode(String rawCode) {
-
-    Map<String, String> replacements = {
-      "while True": "for i in range(100)"
-    };
+    Map<String, String> replacements = {"while True": "for i in range(100)"};
 
     print("Raw code: $rawCode");
 
@@ -451,16 +457,27 @@ class CodeTracker extends ChangeNotifier {
     }
 
     for (var block in blocks) {
+      List<TextSpan> formattedText = [
+        TextSpan(
+          text: "${block["line"] < 10 ? 0 : ""}${block["line"]}: ",
+          style: codeTextStyle,
+        ),
+      ];
 
-      List<TextSpan> formattedText = [TextSpan(
-        text: "${block["line"] < 10 ? 0 : ""}${block["line"]}: ",
-        style: codeTextStyle
-      )];
+      formattedText.addAll(
+        TextFormatter.formatCodeLine(
+          context,
+          "${actualIndent()}${block["code"]}",
+          Color(
+            (altColours(context)
+                    ? block["alternateCodeColour"]
+                    : block["standardCodeColour"]) ??
+                0xFFffffff,
+          ),
+        ),
+      );
 
-      formattedText.addAll(TextFormatter.formatCodeLine(context, "${actualIndent()}${block["code"]}", Color((altColours(context) ? block["alternateCodeColour"] : block["standardCodeColour"]) ?? 0xFFffffff)));
-      
-
-      returnWidgets.add(Text.rich(TextSpan( children: formattedText)));
+      returnWidgets.add(Text.rich(TextSpan(children: formattedText)));
 
       // If the block has nested blocks (Eg while loops and if statements), increase the indent
       if (block["hasChildren"] == true) {
@@ -477,56 +494,97 @@ class CodeTracker extends ChangeNotifier {
 
   /// Will send the code currently stored in the CodeTracker notifier to a python compiler server. Returns the output as a string to be shown on the output pane.
   Future<String> run(BuildContext context) async {
-
     // Check if the code matches the desired solution
-    if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant != null) {
-
+    if (Provider.of<ParticipantInformation>(
+          context,
+          listen: false,
+        ).currentParticipant !=
+        null) {
       // Record that the run button has been pressed
-      Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.runButtonPressed++;
+      Provider.of<ParticipantInformation>(
+        context,
+        listen: false,
+      ).currentParticipant!.runButtonPressed++;
 
       // Define what the popup should say after run is clicked
       String correctAnswerText = "";
       String incorrectAnswerText = "";
-      if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.currentProgress == 0) { // If they are at the start of the task
-        correctAnswerText = "You've correcly put together the code from the workbook. However, this code is broken and has an error. We have added a new feature to the app to help you try and fix the error. Read through the error message provided on the output panel and see if you can fix the error.";
-        incorrectAnswerText = "That wasnt quite right. Your code doesn't match with what is in your workbook. Reread the task and try again.";
-      }
-      else if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.currentProgress == 1) { // If they have the new feature and are debugging
-        correctAnswerText = "Correct! You've found what was causing the problem and successfully fixed it. \nNow you can work on making the code even better. Try the extention activity in your workbook.";
-        incorrectAnswerText = "That wasnt quite right. The original error hasn't been fixed. Try again.";
-      }
-      else if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.currentProgress == 2) { // If they are doing the extention activity
-        correctAnswerText = "Well done! You've completed the task, and made it even better through the extention acitvity. Now you can start your next task.";
-        incorrectAnswerText = "That wasnt quite right. Your code doesn't match with what is in your workbook. Reread the task and try again.";
+      if (Provider.of<ParticipantInformation>(
+            context,
+            listen: false,
+          ).currentParticipant!.currentProgress ==
+          0) {
+        // If they are at the start of the task
+        correctAnswerText =
+            "You've correcly put together the code from the workbook. However, this code is broken and has an error. We have added a new feature to the app to help you try and fix the error. Read through the error message provided on the output panel and see if you can fix the error.";
+        incorrectAnswerText =
+            "That wasnt quite right. Your code doesn't match with what is in your workbook. Reread the task and try again.";
+      } else if (Provider.of<ParticipantInformation>(
+            context,
+            listen: false,
+          ).currentParticipant!.currentProgress ==
+          1) {
+        // If they have the new feature and are debugging
+        correctAnswerText =
+            "Correct! You've found what was causing the problem and successfully fixed it. \nNow you can work on making the code even better. Try the extention activity in your workbook.";
+        incorrectAnswerText =
+            "That wasnt quite right. The original error hasn't been fixed. Try again.";
+      } else if (Provider.of<ParticipantInformation>(
+            context,
+            listen: false,
+          ).currentParticipant!.currentProgress ==
+          2) {
+        // If they are doing the extention activity
+        correctAnswerText =
+            "Well done! You've completed the task, and made it even better through the extention acitvity. Now you can start your next task.";
+        incorrectAnswerText =
+            "That wasnt quite right. Your code doesn't match with what is in your workbook. Reread the task and try again.";
       }
 
-      final isSolutionCorrect = await Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.checkSolution(context, JSONToPythonCode());
+      final isSolutionCorrect = await Provider.of<ParticipantInformation>(
+        context,
+        listen: false,
+      ).currentParticipant!.checkSolution(context, JSONToPythonCode());
       print("Correct Solution?: $isSolutionCorrect");
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        final text = isSolutionCorrect ? correctAnswerText : incorrectAnswerText;
-        final icon = isSolutionCorrect ? Icons.check_circle : Icons.warning_amber;
+        final text =
+            isSolutionCorrect ? correctAnswerText : incorrectAnswerText;
+        final icon =
+            isSolutionCorrect ? Icons.check_circle : Icons.warning_amber;
         final color = isSolutionCorrect ? Colors.green : Colors.amber;
-        final time = isSolutionCorrect ? 10 : 5; // If correct, give more time to read the longer notification
+        final time =
+            isSolutionCorrect
+                ? 10
+                : 5; // If correct, give more time to read the longer notification
 
         showToastWithIcon(context, text, icon, color, time);
       });
 
-    
       // Get the relevant detailed error message
-      final String response = await rootBundle.loadString('assets/solutions.json'); // Get the solutions from a json file
+      final String response = await rootBundle.loadString(
+        'assets/solutions.json',
+      ); // Get the solutions from a json file
       final data = json.decode(response);
-      int currentTask = Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.getTask() ?? 0;
-      if (data["$currentTask"] == JSONToPythonCode() && detailedErrorMessages(context)) { // if the code given matches what the task requires, and the feature is detailed error messages
+      int currentTask =
+          Provider.of<ParticipantInformation>(
+            context,
+            listen: false,
+          ).currentParticipant!.getTask() ??
+          0;
+      if (data["$currentTask"] == JSONToPythonCode() &&
+          detailedErrorMessages(context)) {
+        // if the code given matches what the task requires, and the feature is detailed error messages
         // Return the detailed error message
-        String detailedErrorMessage = data["${currentTask}detailedErrorMessage"] ?? "Task $currentTask: Error message not found";
+        String detailedErrorMessage =
+            data["${currentTask}detailedErrorMessage"] ??
+            "Task $currentTask: Error message not found";
         setOutputString(detailedErrorMessage, context);
         return detailedErrorMessage;
       }
     }
 
     String output = "";
-
 
     try {
       final url = Uri.parse("https://marklochrie.co.uk/edublocks/run");
@@ -539,7 +597,7 @@ class CodeTracker extends ChangeNotifier {
       output = data["output"] ?? data["error"] ?? "Unknown response";
     } catch (e) {
       output = "Error: ${e.toString()}";
-    }    
+    }
 
     setOutputString(output, context);
     return output;
@@ -550,7 +608,7 @@ class CodeOutputTextPanelNotifier extends ChangeNotifier {
   bool _codeSelected = true; // Is the code panel selected or the output panel
 
   bool get codeSelected => _codeSelected;
-  set codeSelected (value) {
+  set codeSelected(value) {
     _codeSelected = value;
     notifyListeners();
   }
@@ -562,7 +620,7 @@ class TaskTracker extends ChangeNotifier {
   void taskUpdate() {
     notifyListeners();
   }
-  
+
   bool _featureVisible = false;
 
   bool get isFeatureVisible => _featureVisible;
@@ -580,10 +638,10 @@ class TaskTracker extends ChangeNotifier {
 
 class DeleteAll extends ChangeNotifier {
   void deleteAll(BuildContext context) {
-
     // Check they really want to delete all the blocks
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final text = "Are you sure you want to delete all the blocks you have placed?";
+      final text =
+          "Are you sure you want to delete all the blocks you have placed?";
       showDialog(
         barrierDismissible: false, // User must click a button to proceed
         context: context,
@@ -596,7 +654,10 @@ class DeleteAll extends ChangeNotifier {
                 child: Text('Yes'),
                 onPressed: () {
                   Navigator.of(context).pop();
-                  Provider.of<CodeTracker>(context, listen: false).reinitialiseCanvasVariables(context);
+                  Provider.of<CodeTracker>(
+                    context,
+                    listen: false,
+                  ).reinitialiseCanvasVariables(context);
                   notifyListeners();
                 },
               ),

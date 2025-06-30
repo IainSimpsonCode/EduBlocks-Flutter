@@ -27,12 +27,11 @@ class canvasWidget extends StatefulWidget {
 }
 
 class _canvasWidgetState extends State<canvasWidget> {
-
   late CodeTracker _codeTracker;
 
   final double snapThreshold = 20;
   final double snapThresholdNested = 15;
-  
+
   final player = AudioPlayer();
   FocusNode _focusNode = FocusNode();
 
@@ -63,8 +62,7 @@ class _canvasWidgetState extends State<canvasWidget> {
             ),
           );
         });
-        for (var block
-            in _codeTracker.blocks) {
+        for (var block in _codeTracker.blocks) {
           if (!_codeTracker.blockKeys.containsKey(block.id)) {
             _codeTracker.blockKeys[block.id] = GlobalKey();
           }
@@ -301,8 +299,7 @@ class _canvasWidgetState extends State<canvasWidget> {
         _codeTracker.dragPositions[block.id] = block.position;
       }
     });
-    for (var target
-        in _codeTracker.blocks) {
+    for (var target in _codeTracker.blocks) {
       final dragged = Provider.of<CodeTracker>(
         context,
         listen: false,
@@ -358,7 +355,7 @@ class _canvasWidgetState extends State<canvasWidget> {
           listen: false,
         ).blocks.firstWhere((b) => b.id == target.id);
         _codeTracker.isProximityChild = false;
-        print( _codeTracker.proximityDetectedBlock!.id);
+        print(_codeTracker.proximityDetectedBlock!.id);
       } else if (_codeTracker.proximityDetectedBlock?.id == target.id) {
         _codeTracker.proximityDetectedBlock = null;
       }
@@ -383,8 +380,7 @@ class _canvasWidgetState extends State<canvasWidget> {
     bool newSnap =
         false; //Used for calling the insertBlock function in the provider. is made true only if a block is snapped for the first time.
     //iterate through all blocks
-    for (var target
-        in _codeTracker.blocks) {
+    for (var target in _codeTracker.blocks) {
       newSnap = false;
       if (target.id == dragged.id) continue;
 
@@ -979,8 +975,20 @@ class _canvasWidgetState extends State<canvasWidget> {
 
                     ColorFiltered(
                       colorFilter:
-                          (getBlockLineNumber(block.id, _codeTracker.blocks.firstWhere((b) => b.id == 0),
-                                  ) == null) || (greyscaleHighlight(context) && block.type.code != Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getErrorLine()) // If the block is not connected, OR, if the greyscale feature is active and this block does not match the error line
+                          (getBlockLineNumber(
+                                        block.id,
+                                        _codeTracker.blocks.firstWhere(
+                                          (b) => b.id == 0,
+                                        ),
+                                      ) ==
+                                      null) ||
+                                  (greyscaleHighlight(context) &&
+                                      block.type.code !=
+                                          Provider.of<ParticipantInformation>(
+                                                context,
+                                                listen: false,
+                                              ).currentParticipant
+                                              ?.getErrorLine()) // If the block is not connected, OR, if the greyscale feature is active and this block does not match the error line
                               ? const ColorFilter.matrix([
                                 0.2126,
                                 0.7152,
@@ -1131,7 +1139,6 @@ class _canvasWidgetState extends State<canvasWidget> {
   }
 
   void _handleKeyEvent(KeyEvent event) {
-
     // If the delete key is pressed
     if (event is KeyDownEvent &&
         event.logicalKey == LogicalKeyboardKey.delete) {
@@ -1171,48 +1178,84 @@ class _canvasWidgetState extends State<canvasWidget> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: SingleChildScrollView(child: SizedBox(
-        height: MediaQuery.sizeOf(context).height + (_codeTracker.getHeightOfBlockChain() * 2),
-        child: KeyboardListener(
-          focusNode: _focusNode,
-          autofocus: true,
-          onKeyEvent: _handleKeyEvent,
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              return Stack(
-                children: [
-                  // Paint background
-                  isProduction
-                      ? CustomPaint(
-                        size: Size(constraints.maxWidth, constraints.maxHeight),
-                      )
-                      : CustomPaint(
-                        size: Size(constraints.maxWidth, constraints.maxHeight),
-                        painter: GridPainter(gridSpacing: 100),
-                      ),
-                  // Render any blocks that have priorityBuild first
-                  ..._codeTracker.blocks
-                      .where(
-                        (b) => b.type.priorityBuild == true,
-                      )
-                      .map(buildBlock)
-                      ,
-                  // Render the remaining blocks
-                  ..._codeTracker.blocks
-                      .where((b) => b.type.priorityBuild != true && b.priority == false)
-                      .map(buildBlock)
-                      ,
-                  // Render the remaining blocks
-                  ..._codeTracker.blocks
-                      .where((b) => b.priority == true)
-                      .map(buildBlock)
-                      ,
-                ],
-              );
-            },
+      child: SingleChildScrollView(
+        child: SizedBox(
+          height:
+              MediaQuery.sizeOf(context).height +
+              (_codeTracker.getHeightOfBlockChain() * 2),
+          child: KeyboardListener(
+            focusNode: _focusNode,
+            autofocus: true,
+            onKeyEvent: _handleKeyEvent,
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return Stack(
+                  children: [
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque, // Add this line
+                      onTapDown: (details) {
+                        setState(() {
+                          _codeTracker.selectedBlock = null;
+                          Provider.of<BlockLibrary>(
+                            context,
+                            listen: false,
+                          ).setCategorySelected(null);
+                        });
+                      },
+                      child:
+                          isProduction
+                              ? CustomPaint(
+                                size: Size(
+                                  constraints.maxWidth,
+                                  constraints.maxHeight,
+                                ),
+                              )
+                              : CustomPaint(
+                                size: Size(
+                                  constraints.maxWidth,
+                                  constraints.maxHeight,
+                                ),
+                                painter: GridPainter(gridSpacing: 100),
+                              ),
+                    ),
+                    // Paint background
+                    isProduction
+                        ? CustomPaint(
+                          size: Size(
+                            constraints.maxWidth,
+                            constraints.maxHeight,
+                          ),
+                        )
+                        : CustomPaint(
+                          size: Size(
+                            constraints.maxWidth,
+                            constraints.maxHeight,
+                          ),
+                          painter: GridPainter(gridSpacing: 100),
+                        ),
+                    // Render any blocks that have priorityBuild first
+                    ..._codeTracker.blocks
+                        .where((b) => b.type.priorityBuild == true)
+                        .map(buildBlock),
+                    // Render the remaining blocks
+                    ..._codeTracker.blocks
+                        .where(
+                          (b) =>
+                              b.type.priorityBuild != true &&
+                              b.priority == false,
+                        )
+                        .map(buildBlock),
+                    // Render the remaining blocks
+                    ..._codeTracker.blocks
+                        .where((b) => b.priority == true)
+                        .map(buildBlock),
+                  ],
+                );
+              },
+            ),
           ),
         ),
-      )),
+      ),
     );
   }
 
@@ -1265,7 +1308,7 @@ class NestedOutlinePainter extends CustomPainter {
     final path = Path();
 
     double notchEndX = 20;
-    double height = size.height/2;
+    double height = size.height / 2;
 
     path.moveTo(notchEndX, height); // start just after notch
     path.lineTo(size.width, height); // go to bottom-right
