@@ -15,8 +15,6 @@ Future<List<int>> loadAllResources(BuildContext context) async {
     loadBlocks(context)
   ]).then((successCodes) async {
 
-    getData();
-
     List<int> additionalSuccessCodes = [];
 
     // Ensure the widget is still in the widget tree before accessing context to prevent using a BuildContext after an async gap.

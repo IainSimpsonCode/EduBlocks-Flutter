@@ -19,16 +19,18 @@ class Participant {
   bool task3;
   bool task4;
   bool task5;
+  bool task6;
   bool featureA;
   bool featureB;
   bool featureC;
   bool featureD;
   bool featureE;
+  bool featureF;
   bool seenGavin;
 
   // What task and feature are they currently working on
-  int? _currentTask;
-  String? _currentFeature;
+  int? currentTask;
+  String? currentFeature;
 
   /// For each task, what is their progress through the task. A number between 0 and 3.
   /// 0 = they are at the start; 1 = they have completed the task up to the first error; 2 = they have used the feature to fix the error; 3 = they have completed the extention
@@ -88,12 +90,16 @@ class Participant {
     this.task3 = false,
     this.task4 = false,
     this.task5 = false,
+    this.task6 = false,
     this.featureA = false,
     this.featureB = false,
     this.featureC = false,
     this.featureD = false,
     this.featureE = false,
-    this.seenGavin = false
+    this.featureF = false,
+    this.seenGavin = false,
+    this.currentTask,
+    this.currentFeature,
   });
 
   factory Participant.fromJson(String classid, String id, Map<String, dynamic> json) {
@@ -105,12 +111,17 @@ class Participant {
       task3: json["task3"] ?? false,
       task4: json["task4"] ?? false,
       task5: json["task5"] ?? false,
+      task6: json["task6"] ?? false,
       featureA: json["featureA"] ?? false,
       featureB: json["featureB"] ?? false,
       featureC: json["featureC"] ?? false,
       featureD: json["featureD"] ?? false,
       featureE: json["featureE"] ?? false,
-      seenGavin: json["seenGavin"] ?? false
+      featureF: json["featureF"] ?? false,
+      seenGavin: json["seenGavin"] ?? false,
+
+      currentTask: json['currentTask'],
+      currentFeature: json['currentFeature']
     );
   }
 
@@ -122,18 +133,18 @@ class Participant {
   /// If all tasks have been completed, function will return ```null```
   int? getTask() {
     // If the current task is null, assign it a new task
-    _currentTask ??= assignTask();
+    currentTask ??= assignTask();
 
-    return _currentTask;
+    return currentTask;
   }
 
   /// Returns the value of the current feature to complete
   /// If all features have been used, function will return ```null```
   String? getFeature() {
     // If the current feature is null, assign it a new feature
-    _currentFeature ??= assignFeature();
+    currentFeature ??= assignFeature();
 
-    return _currentFeature;
+    return currentFeature;
   }
   
   /// Returns the number of task to complete next (```int?``` between 1 and 5, inclusive). The next task is selected randomly from the pool of tasks that have not already been completed.
@@ -142,7 +153,7 @@ class Participant {
     final random = Random();
 
     // If all tasks have been completed, return null
-    if (task1 && task2 && task3 && task4 && task5) {
+    if (task1 && task2 && task3 && task4 && task5 && task6) {
       return null;
     }
 
@@ -163,6 +174,9 @@ class Participant {
     if (!task5) {
       incompleteTasks.add(5);
     }
+    if (!task6) {
+      incompleteTasks.add(6);
+    }
 
     return incompleteTasks[random.nextInt(incompleteTasks.length)];
   }
@@ -173,7 +187,7 @@ class Participant {
     final random = Random();
 
     // If all tasks have been completed, return null
-    if (featureA && featureA && featureC && featureD && featureE) {
+    if (featureA && featureA && featureC && featureD && featureE && featureF) {
       return null;
     }
 
@@ -194,47 +208,58 @@ class Participant {
     if (!featureE) {
       incompleteTasks.add('E');
     }
+    if (!featureF) {
+      incompleteTasks.add('F');
+    }
 
     return incompleteTasks[random.nextInt(incompleteTasks.length)];
   }
 
   void taskComplete() {
-    if (_currentTask == 1) {
+    if (currentTask == 1) {
       task1 = true;
     } 
-    else if (_currentTask == 2) {
+    else if (currentTask == 2) {
       task2 = true;
     } 
-    else if (_currentTask == 3) {
+    else if (currentTask == 3) {
       task3 = true;
     } 
-    else if (_currentTask == 4) {
+    else if (currentTask == 4) {
       task4 = true;
     } 
-    else if (_currentTask == 5) {
+    else if (currentTask == 5) {
       task5 = true;
     } 
+    else if (currentTask == 6) {
+      task6 = true;
+    }
 
-    if (_currentFeature == "A") {
+    if (currentFeature == "A") {
       featureA = true;
     }
-    else if (_currentFeature == "B") {
+    else if (currentFeature == "B") {
       featureB = true;
     }
-    else if (_currentFeature == "C") {
+    else if (currentFeature == "C") {
       featureC = true;
     }
-    else if (_currentFeature == "D") {
+    else if (currentFeature == "D") {
       featureD = true;
     }
-    else if (_currentFeature == "E") {
+    else if (currentFeature == "E") {
       featureE = true;
     }
+    else if (currentFeature == 'F') {
+      featureF = true;
+    }
 
-    _currentTask = null;
-    _currentFeature = null;
+    currentTask = null;
+    currentFeature = null;
     _currentProgress = 0;
     runButtonPressed = 0;
+
+    clearCurrentTask(this);
 
     saveParticipantData(this);
   }
@@ -243,14 +268,14 @@ class Participant {
     final String response = await rootBundle.loadString('assets/solutions.json'); // Get the solutions from a json file
     final data = json.decode(response);
 
-    _errorLine = data["${_currentTask}ErrorCode"] ?? "# Start Here";
-    _taskCodeUpToError = data["$_currentTask"] ?? "# Start Here";
+    _errorLine = data["${currentTask}ErrorCode"] ?? "# Start Here";
+    _taskCodeUpToError = data["$currentTask"] ?? "# Start Here";
 
 
     print("Solution: $solution");
-    print("Answer ($_currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}): ${data["$_currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}"]}");
+    print("Answer ($currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}): ${data["$currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}"]}");
 
-    if (solution == data["$_currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}"]) { // If the solution given matches the solution for the currentTask
+    if (solution == data["$currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}"]) { // If the solution given matches the solution for the currentTask
       _currentProgress++; // If the solution was correct, increase thier progress
       if (_currentProgress == 1) { // If they have completed up to the first error
         Provider.of<TaskTracker>(context, listen: false).activateFeature(); // Show the new feature

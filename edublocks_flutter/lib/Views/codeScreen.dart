@@ -2,6 +2,7 @@ import 'package:edublocks_flutter/Page%20Sections/canvas.dart';
 import 'package:edublocks_flutter/Page%20Sections/codeBar.dart';
 import 'package:edublocks_flutter/Page%20Sections/sideBar.dart';
 import 'package:edublocks_flutter/Page%20Sections/topBar.dart';
+import 'package:edublocks_flutter/Services/firestore.dart';
 import 'package:edublocks_flutter/Services/providers.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,10 @@ class _CodeScreenState extends State<CodeScreen> {
   late DeleteAll _deleteAllButton;
 
   void _showTaskPopUpMessage() {
+
+    saveCurrentTask(Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!);
+    saveCurrentFeature(Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!);
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final taskNumber = Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getTask();
       if (taskNumber == null) {
