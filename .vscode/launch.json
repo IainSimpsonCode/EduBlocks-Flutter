@@ -1,0 +1,28 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "edublocks_flutter",
+            "cwd": "edublocks_flutter",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "edublocks_flutter (profile mode)",
+            "cwd": "edublocks_flutter",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "edublocks_flutter (release mode)",
+            "cwd": "edublocks_flutter",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}

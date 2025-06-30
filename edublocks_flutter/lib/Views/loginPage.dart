@@ -1,6 +1,7 @@
 import 'package:edublocks_flutter/Classes/Participant.dart';
 import 'package:edublocks_flutter/Services/firestore.dart';
 import 'package:edublocks_flutter/Services/providers.dart';
+import 'package:edublocks_flutter/Views/PIDScreen.dart';
 import 'package:edublocks_flutter/Views/codeScreen.dart';
 import 'package:edublocks_flutter/Widgets/buttonWithIcon.dart';
 import 'package:edublocks_flutter/style.dart';
@@ -54,7 +55,7 @@ class _loginPageState extends State<loginPage> {
           Provider.of<ParticipantInformation>(context, listen: false).login(user);
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => Material( child: CodeScreen()),
+              builder: (context) => Material( child: PIDScreen()),
             ),
           );
         }

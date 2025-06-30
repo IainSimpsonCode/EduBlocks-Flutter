@@ -3,6 +3,10 @@ import 'dart:math';
 
 import 'package:edublocks_flutter/Services/firestore.dart';
 import 'package:edublocks_flutter/Services/providers.dart';
+import 'package:edublocks_flutter/Services/supervisorCodePopup.dart';
+import 'package:edublocks_flutter/Services/toastNotifications.dart';
+import 'package:edublocks_flutter/features.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +33,49 @@ class Participant {
   /// For each task, what is their progress through the task. A number between 0 and 3.
   /// 0 = they are at the start; 1 = they have completed the task up to the first error; 2 = they have used the feature to fix the error; 3 = they have completed the extention
   int _currentProgress = 0; 
+
+  /// How many times has the run button been pressed for the current activity
+  int runButtonPressed = 0;
+
+  /// bool to show when the next task button has been pressed, and the conditions have been met to show the next task
+  bool _nextTask = false;
+  bool showNextTask() {
+    if (_nextTask) {
+      _nextTask = false;
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+  void nextTaskPressed(BuildContext context) {
+    if (runButtonPressed < 2 && _currentProgress < 2) { // If they have attempted the task less than twice, and not yet completed the activbity
+      // Show toast pop up saying to attempt the task at least twice before moving on
+      showToastWithIcon(context, "You need to complete the current task before moving to the next task. If you can't figure it out, raise your hand and someone will come help", Icons.front_hand, Colors.blue[400]!, 10);
+    }
+    else if (_currentProgress >= 2) { // If they have completed the main task, but may or may not have completed the extention, allow them to move on
+      _nextTask = true;
+      Provider.of<TaskTracker>(context, listen: false).taskUpdate();
+    }
+    else if (runButtonPressed >= 2 && _currentProgress < 2) { // If they have attempted the task at least twice, but not been able to complete the task
+      // Show a popup with a textbox
+      // The user must input a 4 digit code. If the code matches the value of supervisorCode, set _nextTask to true
+      showCodePopup(context, supervisorCode).then((authorized) {
+        if (authorized) {
+          _nextTask = true;
+        } else {
+          showToastWithIcon(
+            context,
+            "Incorrect code. Please ask a supervisor for assistance.",
+            Icons.lock,
+            Colors.red[400]!,
+            5,
+          );
+        }
+        Provider.of<TaskTracker>(context, listen: false).taskUpdate();
+      });
+    }
+  }
 
   String _errorLine = "# Start Here";
   String _taskCodeUpToError = "";
@@ -187,6 +234,7 @@ class Participant {
     _currentTask = null;
     _currentFeature = null;
     _currentProgress = 0;
+    runButtonPressed = 0;
 
     saveParticipantData(this);
   }

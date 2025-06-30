@@ -480,6 +480,10 @@ class CodeTracker extends ChangeNotifier {
 
     // Check if the code matches the desired solution
     if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant != null) {
+
+      // Record that the run button has been pressed
+      Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.runButtonPressed++;
+
       // Define what the popup should say after run is clicked
       String correctAnswerText = "";
       String incorrectAnswerText = "";

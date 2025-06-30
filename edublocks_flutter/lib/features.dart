@@ -6,6 +6,8 @@ import 'package:provider/provider.dart';
 const bool isProduction = true;     // Is the code in production or debug mode
 const bool requireLogin = true;     // Should the app load a login screen on start, or go straight to the codeScreen
 
+const supervisorCode = "1450";      // Code required to allow users to finish thier tasks early without figuring out the answer.
+
 bool lineNumbering(BuildContext context) {
   return (
     Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getFeature() == "A" 

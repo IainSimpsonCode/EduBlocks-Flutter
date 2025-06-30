@@ -76,7 +76,7 @@ class _topBarWidgetState extends State<topBarWidget> {
             backgroundColor: Colors.green[400]!,
             text: "Next Task",
             onTap: () {
-              
+              Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.nextTaskPressed(context);
             },
           ),
         ],

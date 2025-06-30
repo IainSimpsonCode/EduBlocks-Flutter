@@ -48,7 +48,7 @@ class _CodeScreenState extends State<CodeScreen> {
 
   void _onTaskUpdate() {
     setState(() {
-      if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.currentProgress == 0) { // If a new task is started
+      if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.showNextTask() ?? false) { // If a new task is started
         _showTaskPopUpMessage(); // Notify the user which task they are on
       }
     });

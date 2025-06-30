@@ -1022,114 +1022,115 @@ class _canvasWidgetState extends State<canvasWidget> {
     );
   }
 
-  void _handleKeyEvent(KeyEvent event) {
-    void detatch(MoveableBlock block, bool? removeDecendants) {
-      if (removeDecendants == true) {
-        int? blockLineNumber = getBlockLineNumber(
-          block.id,
+  void detatch(MoveableBlock block, bool? removeDecendants) {
+    if (removeDecendants == true) {
+      int? blockLineNumber = getBlockLineNumber(
+        block.id,
+        Provider.of<CodeTracker>(
+          context,
+          listen: false,
+        ).blocks.firstWhere((b) => b.id == 0),
+      );
+
+      // If the block is attached to another block
+      if (block.snappedTo != null) {
+        // Find the parent block it is snapped to
+        final parent = Provider.of<CodeTracker>(
+          context,
+          listen: false,
+        ).blocks.firstWhere((b) => b.id == block.snappedTo);
+
+        // If the parent has nested blocks
+        if (parent.nestedBlocks != null && parent.nestedBlocks!.isNotEmpty) {
+          // And if the block is the nested block, remove nested blocks from the parent
+          if (parent.nestedBlocks?[0].id == block.id) {
+            parent.nestedBlocks = [];
+          }
+        }
+        // Remove the child block from the parent
+        if (parent.childId == block.id) {
+          parent.childId = null;
+        }
+
+        // The block is now not snapped to another block
+        block.snappedTo = null;
+
+        // If the block line number was found in the chain using the getBlockLineNumber() function, remove the block from the JSON string at the specified line number
+        if (blockLineNumber != null) {
           Provider.of<CodeTracker>(
             context,
             listen: false,
-          ).blocks.firstWhere((b) => b.id == 0),
-        );
-
-        // If the block is attached to another block
-        if (block.snappedTo != null) {
-          // Find the parent block it is snapped to
-          final parent = Provider.of<CodeTracker>(
-            context,
-            listen: false,
-          ).blocks.firstWhere((b) => b.id == block.snappedTo);
-
-          // If the parent has nested blocks
-          if (parent.nestedBlocks != null && parent.nestedBlocks!.isNotEmpty) {
-            // And if the block is the nested block, remove nested blocks from the parent
-            if (parent.nestedBlocks?[0].id == block.id) {
-              parent.nestedBlocks = [];
-            }
-          }
-          // Remove the child block from the parent
-          if (parent.childId == block.id) {
-            parent.childId = null;
-          }
-
-          // The block is now not snapped to another block
-          block.snappedTo = null;
-
-          // If the block line number was found in the chain using the getBlockLineNumber() function, remove the block from the JSON string at the specified line number
-          if (blockLineNumber != null) {
-            Provider.of<CodeTracker>(
-              context,
-              listen: false,
-            ).removeBlock(blockLineNumber);
-          }
-        }
-      } else if (removeDecendants == false) {
-        int? blockLineNumber = getBlockLineNumber(
-          block.id,
-          Provider.of<CodeTracker>(
-            context,
-            listen: false,
-          ).blocks.firstWhere((b) => b.id == 0),
-        );
-
-        // If the block is attached to another block
-        if (block.snappedTo != null) {
-          // Find the parent block it is snapped to
-          final parent = Provider.of<CodeTracker>(
-            context,
-            listen: false,
-          ).blocks.firstWhere((b) => b.id == block.snappedTo);
-
-          // If the parent has nested blocks
-          if (parent.nestedBlocks != null && parent.nestedBlocks!.isNotEmpty) {
-            // And if the block is the nested block, remove nested blocks from the parent
-            if (parent.nestedBlocks?[0].id == block.id) {
-              parent.nestedBlocks = [];
-            }
-          }
-          // Remove the child block from the parent
-          if (parent.childId == block.id) {
-            parent.childId = null;
-          }
-
-          // The block is now not snapped to another block
-          block.snappedTo = null;
-
-          // If the block line number was found in the chain using the getBlockLineNumber() function, remove the block from the JSON string at the specified line number
-          if (blockLineNumber != null) {
-            Provider.of<CodeTracker>(
-              context,
-              listen: false,
-            ).removeSingleBlock(blockLineNumber);
-          }
-        }
-      } else if (removeDecendants == null) {
-        // If the block is attached to another block
-        if (block.snappedTo != null) {
-          // Find the parent block it is snapped to
-          final parent = Provider.of<CodeTracker>(
-            context,
-            listen: false,
-          ).blocks.firstWhere((b) => b.id == block.snappedTo);
-
-          // If the parent has nested blocks
-          if (parent.nestedBlocks != null && parent.nestedBlocks!.isNotEmpty) {
-            // And if the block is the nested block, remove nested blocks from the parent
-            if (parent.nestedBlocks?[0].id == block.id) {
-              parent.nestedBlocks = [];
-            }
-          }
-          // Remove the child block from the parent
-          if (parent.childId == block.id) {
-            parent.childId = null;
-          }
-
-          // The block is now not snapped to another block
-          block.snappedTo = null;
+          ).removeBlock(blockLineNumber);
         }
       }
+    } else if (removeDecendants == false) {
+      int? blockLineNumber = getBlockLineNumber(
+        block.id,
+        Provider.of<CodeTracker>(
+          context,
+          listen: false,
+        ).blocks.firstWhere((b) => b.id == 0),
+      );
+
+      // If the block is attached to another block
+      if (block.snappedTo != null) {
+        // Find the parent block it is snapped to
+        final parent = Provider.of<CodeTracker>(
+          context,
+          listen: false,
+        ).blocks.firstWhere((b) => b.id == block.snappedTo);
+
+        // If the parent has nested blocks
+        if (parent.nestedBlocks != null && parent.nestedBlocks!.isNotEmpty) {
+          // And if the block is the nested block, remove nested blocks from the parent
+          if (parent.nestedBlocks?[0].id == block.id) {
+            parent.nestedBlocks = [];
+          }
+        }
+        // Remove the child block from the parent
+        if (parent.childId == block.id) {
+          parent.childId = null;
+        }
+
+        // The block is now not snapped to another block
+        block.snappedTo = null;
+
+        // If the block line number was found in the chain using the getBlockLineNumber() function, remove the block from the JSON string at the specified line number
+        if (blockLineNumber != null) {
+          Provider.of<CodeTracker>(
+            context,
+            listen: false,
+          ).removeSingleBlock(blockLineNumber);
+        }
+      }
+    } else if (removeDecendants == null) {
+      // If the block is attached to another block
+      if (block.snappedTo != null) {
+        // Find the parent block it is snapped to
+        final parent = Provider.of<CodeTracker>(
+          context,
+          listen: false,
+        ).blocks.firstWhere((b) => b.id == block.snappedTo);
+
+        // If the parent has nested blocks
+        if (parent.nestedBlocks != null && parent.nestedBlocks!.isNotEmpty) {
+          // And if the block is the nested block, remove nested blocks from the parent
+          if (parent.nestedBlocks?[0].id == block.id) {
+            parent.nestedBlocks = [];
+          }
+        }
+        // Remove the child block from the parent
+        if (parent.childId == block.id) {
+          parent.childId = null;
+        }
+
+        // The block is now not snapped to another block
+        block.snappedTo = null;
+      }
     }
+  }
+
+  void _handleKeyEvent(KeyEvent event) {
 
     // If the delete key is pressed
     if (event is KeyDownEvent &&
@@ -1195,17 +1196,17 @@ class _canvasWidgetState extends State<canvasWidget> {
                         (b) => b.type.priorityBuild == true,
                       )
                       .map(buildBlock)
-                      .toList(),
+                      ,
                   // Render the remaining blocks
                   ..._codeTracker.blocks
                       .where((b) => b.type.priorityBuild != true && b.priority == false)
                       .map(buildBlock)
-                      .toList(),
+                      ,
                   // Render the remaining blocks
                   ..._codeTracker.blocks
                       .where((b) => b.priority == true)
                       .map(buildBlock)
-                      .toList(),
+                      ,
                 ],
               );
             },
