@@ -920,7 +920,7 @@ class _canvasWidgetState extends State<canvasWidget> {
             Provider.of<ParticipantInformation>(
               context,
               listen: false,
-            ).currentParticipant?.getErrorLine() &&
+            ).currentParticipant?.getErrorCode() &&
         redBorder(context)) {
       block.priority = true;
     }
@@ -1021,11 +1021,8 @@ class _canvasWidgetState extends State<canvasWidget> {
                         child: CustomPaint(painter: NestedOutlinePainter()),
                       ),
 
-                    if (block.type.code ==
-                            Provider.of<ParticipantInformation>(
-                              context,
-                              listen: false,
-                            ).currentParticipant?.getErrorLine() &&
+                    if (block.type.code == Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getErrorCode() &&
+                        getBlockLineNumber(block.id, _codeTracker.blocks.firstWhere((b) => b.id == 0)) == Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getErrorCode() &&
                         redBorder(context))
                       Positioned.fill(
                         child: CustomPaint(painter: ErrorOutlinePainter()),
@@ -1046,7 +1043,7 @@ class _canvasWidgetState extends State<canvasWidget> {
                                                 context,
                                                 listen: false,
                                               ).currentParticipant
-                                              ?.getErrorLine()) // If the block is not connected, OR, if the greyscale feature is active and this block does not match the error line
+                                              ?.getErrorCode()) // If the block is not connected, OR, if the greyscale feature is active and this block does not match the error line
                               ? const ColorFilter.matrix([
                                 0.2126,
                                 0.7152,

@@ -87,7 +87,8 @@ class Participant {
     }
   }
 
-  String _errorLine = "# Start Here";
+  String _errorCode = "# Start Here";
+  int _errorLine = 1;
   String _taskCodeUpToError = "";
 
   Participant({
@@ -267,7 +268,8 @@ class Participant {
     ); // Get the solutions from a json file
     final data = json.decode(response);
 
-    _errorLine = data["${currentTask}ErrorCode"] ?? "# Start Here";
+    _errorCode = data["${currentTask}ErrorCode"] ?? "# Start Here";
+    _errorLine = data["${currentTask}ErrorLine"] ?? 1;
     _taskCodeUpToError = data["$currentTask"] ?? "# Start Here";
 
     print("Solution: $solution");
@@ -297,8 +299,13 @@ class Participant {
     }
   }
 
+  /// Returns the line of code associated with the error. Or returns null if no task is selected or the task is not found
+  String getErrorCode() {
+    return _errorCode;
+  }
+
   /// Returns the line number where the error is located. Or returns null if no task is selected or the task is not found
-  String getErrorLine() {
+  int getErrorLine() {
     return _errorLine;
   }
 
