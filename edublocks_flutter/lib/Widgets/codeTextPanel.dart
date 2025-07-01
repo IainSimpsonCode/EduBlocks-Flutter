@@ -39,7 +39,7 @@ class _codeTextPanelState extends State<codeTextPanel> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      flex: 1,
+      flex: 2,
       child: Container(
         decoration: BoxDecoration(
           color: codeTextPanelColour,
