@@ -378,7 +378,7 @@
     {
       "category": "Lists",
       "code": "fruits.append('Grapes')",
-      "imageName": "block_images/lists/fruits-list-appened-grapes.png",
+      "imageName": "block_images/lists/fruits-list-append-grapes.png",
       "condition": false,
       "hasChildren": false,
       "standardCodeColour": "0xFFe06356",
@@ -442,7 +442,7 @@
       "snapXOffset": -38,
       "snapYOffset": 2,
       "standardCodeColour": "0xFF996ddd",
-      "task": 0
+      "task": 1
     },
     {
       "category": "Logic",
