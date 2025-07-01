@@ -40,10 +40,11 @@ class Participant {
   int runButtonPressed = 0;
 
   /// bool to show when the next task button has been pressed, and the conditions have been met to show the next task
-  bool _nextTask = false;
+  bool _nextTask = true; // Initialise as true so that a task starts upon the app initially starting.
   bool showNextTask() {
     if (_nextTask) {
       _nextTask = false;
+      resetProgress();
       return true;
     } else {
       return false;
@@ -86,7 +87,8 @@ class Participant {
     }
   }
 
-  String _errorLine = "# Start Here";
+  String _errorCode = "# Start Here";
+  int _errorLine = 1;
   String _taskCodeUpToError = "";
 
   Participant({
@@ -257,11 +259,6 @@ class Participant {
 
     currentTask = null;
     currentFeature = null;
-    _currentProgress = 0;
-    runButtonPressed = 0;
-
-    clearCurrentTask(this);
-
     saveParticipantData(this);
   }
 
@@ -271,7 +268,8 @@ class Participant {
     ); // Get the solutions from a json file
     final data = json.decode(response);
 
-    _errorLine = data["${currentTask}ErrorCode"] ?? "# Start Here";
+    _errorCode = data["${currentTask}ErrorCode"] ?? "# Start Here";
+    _errorLine = data["${currentTask}ErrorLine"] ?? 1;
     _taskCodeUpToError = data["$currentTask"] ?? "# Start Here";
 
     print("Solution: $solution");
@@ -301,12 +299,24 @@ class Participant {
     }
   }
 
+  /// Returns the line of code associated with the error. Or returns null if no task is selected or the task is not found
+  String getErrorCode() {
+    return _errorCode;
+  }
+
   /// Returns the line number where the error is located. Or returns null if no task is selected or the task is not found
-  String getErrorLine() {
+  int getErrorLine() {
     return _errorLine;
   }
 
   String getCodeUpToFirstError() {
     return _taskCodeUpToError;
+  }
+
+  void resetProgress() {
+    _currentProgress = 0;
+    runButtonPressed = 0;
+
+    clearCurrentTask(this);
   }
 }

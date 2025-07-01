@@ -158,7 +158,7 @@ class CodeTracker extends ChangeNotifier {
   bool isProximityChild = false;
   MoveableBlock? errorBlock;
 
-  void reinitialiseCanvasVariables(BuildContext context) {
+  void reinitialiseCanvasVariables(BuildContext context, bool notify) {
     blockKeys = {};
     dragPositions = {};
     draggedChain = [];
@@ -188,7 +188,7 @@ class CodeTracker extends ChangeNotifier {
       dragPositions[block.id] = block.position;
     }
 
-    removeBlock(2); // Remove all blocks after the start block
+    removeBlock(2, notify: notify); // Remove all blocks after the start block
   }
 
   /// Returns the total height of all the blocks within the chain of blocks
@@ -307,7 +307,7 @@ class CodeTracker extends ChangeNotifier {
     return 0;
   }
 
-  int removeBlock(int line) {
+  int removeBlock(int line, {bool notify = true}) {
     if (line <= 1 && line != -1) {
       return 1;
     } // Line number must be positive (except -1), and cannot be 1 as this is the start block. Removing at -1 will automatically remove the block at the end of the chain.
@@ -349,7 +349,9 @@ class CodeTracker extends ChangeNotifier {
     _codeJSONString = jsonEncode({"blocks": blocks});
     updateLineNumbers();
 
-    notifyListeners();
+    if (notify) {
+      notifyListeners();
+    }
 
     return 0;
   }
@@ -669,38 +671,43 @@ class TaskTracker extends ChangeNotifier {
 }
 
 class DeleteAll extends ChangeNotifier {
-  void deleteAll(BuildContext context) {
-    // Check they really want to delete all the blocks
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final text =
-          "Are you sure you want to delete all the blocks you have placed?";
-      showDialog(
-        barrierDismissible: false, // User must click a button to proceed
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Are you sure?'),
-            content: Text(text),
-            actions: [
-              TextButton(
-                child: Text('Yes'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  Provider.of<CodeTracker>(
-                    context,
-                    listen: false,
-                  ).reinitialiseCanvasVariables(context);
-                  notifyListeners();
-                },
-              ),
-              TextButton(
-                child: Text('No'),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ],
-          );
-        },
-      );
-    });
+  void deleteAll(BuildContext context, bool askAreYouSure) {
+    if (askAreYouSure) {
+      // Check they really want to delete all the blocks
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final text =
+            "Are you sure you want to delete all the blocks you have placed?";
+        showDialog(
+          barrierDismissible: false, // User must click a button to proceed
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Are you sure?'),
+              content: Text(text),
+              actions: [
+                TextButton(
+                  child: Text('Yes'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Provider.of<CodeTracker>(
+                      context,
+                      listen: false,
+                    ).reinitialiseCanvasVariables(context, false);
+                    notifyListeners();
+                  },
+                ),
+                TextButton(
+                  child: Text('No'),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ],
+            );
+          },
+        );
+      });
+    } else {
+      Provider.of<CodeTracker>(context, listen: false).reinitialiseCanvasVariables(context, false);
+      notifyListeners();
+    }
   }
 }

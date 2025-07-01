@@ -60,7 +60,7 @@ class _topBarWidgetState extends State<topBarWidget> {
             backgroundColor: Colors.red[400]!,
             text: "Delete All",
             onTap: () {
-              Provider.of<DeleteAll>(context, listen: false).deleteAll(context);
+              Provider.of<DeleteAll>(context, listen: false).deleteAll(context, true);
             },
           ),
           buttonWithIcon(

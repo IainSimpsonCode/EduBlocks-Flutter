@@ -21,10 +21,15 @@ class _CodeScreenState extends State<CodeScreen> {
   late DeleteAll _deleteAllButton;
 
   void _showTaskPopUpMessage() {
-
+    // # When starting a new task
+    // Clear the blocks on screen
+    Provider.of<CodeTracker>(context, listen: false).reinitialiseCanvasVariables(context, false);
+    // Save what task is starting
     saveCurrentTask(Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!);
+    // Save what feature is being used
     saveCurrentFeature(Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!);
 
+    // Show popup to display task
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final taskNumber = Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getTask();
       if (taskNumber == null) {
@@ -53,9 +58,7 @@ class _CodeScreenState extends State<CodeScreen> {
 
   void _onTaskUpdate() {
     setState(() {
-      if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.showNextTask() ?? false) { // If a new task is started
-        _showTaskPopUpMessage(); // Notify the user which task they are on
-      }
+      
     });
   }
 
@@ -68,9 +71,6 @@ class _CodeScreenState extends State<CodeScreen> {
   @override
   void initState() {
     super.initState();
-
-    // Show a popup to display which task they are initially working on.
-    _showTaskPopUpMessage();
     
     // Add a listener to update the widget when the state of the task changes
     _taskTracker = Provider.of<TaskTracker>(context, listen: false);
@@ -79,6 +79,9 @@ class _CodeScreenState extends State<CodeScreen> {
     // Add a listener to delete all blocks on screen when
     _deleteAllButton = Provider.of<DeleteAll>(context, listen: false);
     _deleteAllButton.addListener(_onDeleteAllPressed);
+    
+    // Show a popup to display which task they are initially working on.
+    //_showTaskPopUpMessage();
   }
 
   @override
@@ -91,6 +94,11 @@ class _CodeScreenState extends State<CodeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.showNextTask() ?? false) { // If a new task is started
+        _showTaskPopUpMessage(); // Notify the user which task they are on
+    }
+
     return Container(
       height: MediaQuery.sizeOf(context).height,
       width: MediaQuery.sizeOf(context).width,
