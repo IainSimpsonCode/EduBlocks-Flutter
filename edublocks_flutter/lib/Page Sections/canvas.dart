@@ -915,7 +915,20 @@ class _canvasWidgetState extends State<canvasWidget> {
     return blockUnits;
   }
 
+  int returnIndentation(MoveableBlock block) {
+    var nestedCount = 0;
+    if(block.isNested) {
+      nestedCount = getNumberOfNestedBlocks(Provider.of<CodeTracker>(
+        context,
+        listen: false,
+      ).blocks.firstWhere((b) => b.id == block.snappedTo));
+    }
+    
+    return nestedCount;
+  }
+
   Widget buildBlock(MoveableBlock block) {
+    double parentIndentation = 0 + returnIndentation(block) * 45;
     if (block.type.code ==
             Provider.of<ParticipantInformation>(
               context,
@@ -961,15 +974,16 @@ class _canvasWidgetState extends State<canvasWidget> {
                     padding: const EdgeInsets.all(8.0),
                     child: Container(
                       width: 75,
-                      decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 179, 179, 179),
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(8),
-                        ),
-                      ),
+                      // decoration: BoxDecoration(
+                      //   color: const Color.fromARGB( 255,229, 231, 235),
+                      //   borderRadius: const BorderRadius.all(
+                      //     Radius.circular(8),
+                      //   ),
+                      // ),
                       child: Padding(
-                        padding: const EdgeInsets.only(
+                        padding: EdgeInsets.only(
                           top: 20,
+                          right: parentIndentation,
                         ), // distance from top
                         child: Text(
                           '${getBlockLineNumber(block.id, _codeTracker.blocks.firstWhere((b) => b.id == 0)) ?? ''}',
