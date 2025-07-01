@@ -6,7 +6,7 @@
       "imageName": "block_images/startHere.png",
       "condition": false,
       "hasChildren": false,
-      "task": [1, 2, 3, 4, 5, 6]
+      "task": 0
     },
     {
       "category": "Import",
@@ -15,7 +15,7 @@
       "condition": false,
       "hasChildren": false,
       "standardCodeColour": "0xFFc678dd",
-      "task": [1, 2, 3, 4, 5, 6]
+      "task": 0
     },
     {
       "category": "Import",
@@ -24,7 +24,7 @@
       "condition": false,
       "hasChildren": false,
       "standardCodeColour": "0xFFc678dd",
-      "task": [1, 2, 3, 4, 5, 6]
+      "task": 0
     },
     {
       "category": "Import",
@@ -33,7 +33,7 @@
       "condition": false,
       "hasChildren": false,
       "standardCodeColour": "0xFFc678dd",
-      "task": [1, 2, 3, 4, 5, 6]
+      "task": 0
     },
     {
       "category": "Statements",
@@ -397,7 +397,7 @@
       "snapXOffset": -38,
       "snapYOffset": -12,
       "standardCodeColour": "0xFF996ddd",
-      "task": 5
+      "task": 1
     },
     {
       "category": "Loops",
@@ -442,7 +442,7 @@
       "snapXOffset": -38,
       "snapYOffset": 2,
       "standardCodeColour": "0xFF996ddd",
-      "task": [1, 2, 3, 4, 5, 6]
+      "task": 0
     },
     {
       "category": "Logic",
