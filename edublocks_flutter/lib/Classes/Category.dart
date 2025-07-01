@@ -10,7 +10,11 @@ class Category {
   final Color color;
   final String iconName;
 
-  Category({required this.category, required this.color, required this.iconName});
+  Category({
+    required this.category,
+    required this.color,
+    required this.iconName,
+  });
 
   factory Category.fromJson(Map<String, dynamic> json) {
     return Category(
@@ -31,7 +35,10 @@ class Category {
 Future<int> loadCategories(BuildContext context) async {
   final String response = await rootBundle.loadString('assets/categories.json');
   final data = json.decode(response);
-  List<Category> categoryList = (data['categories'] as List).map((item) => Category.fromJson(item)).toList();
+  List<Category> categoryList =
+      (data['categories'] as List)
+          .map((item) => Category.fromJson(item))
+          .toList();
 
   // Ensure the widget is still in the widget tree before accessing context to prevent using a BuildContext after an async gap.
   // If the widget is not mounted, leave unsucessfully.

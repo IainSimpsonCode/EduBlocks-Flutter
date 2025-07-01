@@ -355,7 +355,6 @@ class _canvasWidgetState extends State<canvasWidget> {
           listen: false,
         ).blocks.firstWhere((b) => b.id == target.id);
         _codeTracker.isProximityChild = false;
-        print(_codeTracker.proximityDetectedBlock!.id);
       } else if (_codeTracker.proximityDetectedBlock?.id == target.id) {
         _codeTracker.proximityDetectedBlock = null;
       }
@@ -1217,7 +1216,13 @@ class _canvasWidgetState extends State<canvasWidget> {
             ).blocks.firstWhere((element) => element.id == block.childId),
             true,
           );
-          handleDeletedParent(block);
+          // handleDeletedParent(block);
+        }
+        if (block.nestedBlocks != null) {
+          for (var nestedBlock in block.nestedBlocks!) {
+            detatch(nestedBlock, false);
+            nestedBlock.isNested = false;
+          }
         }
 
         // Then detach the block being removed
@@ -1232,19 +1237,6 @@ class _canvasWidgetState extends State<canvasWidget> {
         });
         playSound(2);
       }
-    }
-  }
-
-  void handleDeletedParent(MoveableBlock block) {
-    final child = Provider.of<CodeTracker>(
-      context,
-      listen: false,
-    ).blocks.firstWhere((b) => b.id == block.nestedBlocks![0].id);
-    child.snappedTo = null;
-    child.isNested = false;
-
-    for (block in block.nestedBlocks!) {
-      block.isNested = false;
     }
   }
 

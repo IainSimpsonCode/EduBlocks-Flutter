@@ -179,7 +179,7 @@
       "standardCodeColour": "0xFF61afef",
       "task": 5
     },
-    
+
     {
       "category": "Variables",
       "code": "count += 1",
@@ -442,7 +442,7 @@
       "snapXOffset": -38,
       "snapYOffset": 2,
       "standardCodeColour": "0xFF996ddd",
-      "task": [1,2,3,4,5,6]
+      "task": [1, 2, 3, 4, 5, 6]
     },
     {
       "category": "Logic",
