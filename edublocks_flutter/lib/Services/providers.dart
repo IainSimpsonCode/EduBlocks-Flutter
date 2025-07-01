@@ -98,12 +98,25 @@ class BlockLibrary extends ChangeNotifier {
   }
 
   /// Returns a list of blocks where block.category matches the provided category.
-  List<Block> getBlocksByCategory(String? category) {
+  List<Block> getBlocksByCategoryAndTask(
+    String? category,
+    BuildContext context,
+  ) {
     if (category == null) {
       return _allBlocks;
     } else {
+      int task =
+          (Provider.of<ParticipantInformation>(
+                context,
+                listen: false,
+              ).currentParticipant!.getTask() ??
+              0);
       return _allBlocks
-          .where((element) => element.category == category)
+          .where(
+            (element) =>
+                element.category == category &&
+                (element.task == task || element.task == 0),
+          )
           .toList();
     }
   }
@@ -189,18 +202,14 @@ class CodeTracker extends ChangeNotifier {
     return totalHeight;
   }
 
-  String _codeJSONString = """{"blocks": [{"line": 1, "code": "# Start Here", "hasChildren": false}]}""";
+  String _codeJSONString =
+      """{"blocks": [{"line": 1, "code": "# Start Here", "hasChildren": false}]}""";
   List<Widget> _outputString = [];
 
   List<Widget> get outputString => _outputString;
   void setOutputString(String value, String? imagePath, BuildContext context) {
     _outputString.clear();
-    _outputString.add(
-      Text(
-        value,
-        style: codeTextStyle,
-      )
-    );
+    _outputString.add(Text(value, style: codeTextStyle));
 
     if (imagePath != null) {
       _outputString.add(
@@ -595,8 +604,14 @@ class CodeTracker extends ChangeNotifier {
           detailedErrorMessages(context)) {
         // if the code given matches what the task requires, and the feature is detailed error messages
         // Return the detailed error message
-        String detailedErrorMessage = data["${currentTask}detailedErrorMessage"] ?? "Task $currentTask: Error message not found";
-        setOutputString(detailedErrorMessage, data["${currentTask}detailedErrorMessageImage"], context);
+        String detailedErrorMessage =
+            data["${currentTask}detailedErrorMessage"] ??
+            "Task $currentTask: Error message not found";
+        setOutputString(
+          detailedErrorMessage,
+          data["${currentTask}detailedErrorMessageImage"],
+          context,
+        );
         return detailedErrorMessage;
       }
     }
