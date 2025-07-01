@@ -10,6 +10,7 @@ import 'package:edublocks_flutter/Widgets/outputTextPanel.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:edublocks_flutter/features.dart';
@@ -193,11 +194,30 @@ class CodeTracker extends ChangeNotifier {
   }
 
   String _codeJSONString = """{"blocks": [{"line": 1, "code": "# Start Here", "hasChildren": false}]}""";
-  String _outputString = "";
+  List<Widget> _outputString = [];
 
-  String get outputString => _outputString;
-  void setOutputString(String value, BuildContext context) {
-    _outputString = value;
+  List<Widget> get outputString => _outputString;
+  void setOutputString(String value, String? imagePath, BuildContext context) {
+    _outputString.clear();
+    _outputString.add(
+      Text(
+        value,
+        style: codeTextStyle,
+      )
+    );
+
+    if (imagePath != null) {
+      _outputString.add(
+        Image.asset(
+          imagePath,
+          height: 60,
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) {
+            return const Icon(Icons.broken_image, size: 60);
+          },
+        ),
+      );
+    }
 
     Provider.of<CodeOutputTextPanelNotifier>(context, listen: false).codeSelected = false;
 
@@ -520,7 +540,7 @@ class CodeTracker extends ChangeNotifier {
       if (data["$currentTask"] == JSONToPythonCode() && detailedErrorMessages(context)) { // if the code given matches what the task requires, and the feature is detailed error messages
         // Return the detailed error message
         String detailedErrorMessage = data["${currentTask}detailedErrorMessage"] ?? "Task $currentTask: Error message not found";
-        setOutputString(detailedErrorMessage, context);
+        setOutputString(detailedErrorMessage, data["${currentTask}detailedErrorMessageImage"], context);
         return detailedErrorMessage;
       }
     }
@@ -541,7 +561,7 @@ class CodeTracker extends ChangeNotifier {
       output = "Error: ${e.toString()}";
     }    
 
-    setOutputString(output, context);
+    setOutputString(output, null, context);
     return output;
   }
 }

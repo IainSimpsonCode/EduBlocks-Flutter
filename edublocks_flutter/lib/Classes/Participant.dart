@@ -51,13 +51,13 @@ class Participant {
     }
   }
   void nextTaskPressed(BuildContext context) {
-    if (runButtonPressed < 2 && _currentProgress < 2) { // If they have attempted the task less than twice, and not yet completed the activbity
-      // Show toast pop up saying to attempt the task at least twice before moving on
-      showToastWithIcon(context, "You need to complete the current task before moving to the next task. If you can't figure it out, raise your hand and someone will come help", Icons.front_hand, Colors.blue[400]!, 10);
-    }
-    else if (_currentProgress >= 2) { // If they have completed the main task, but may or may not have completed the extention, allow them to move on
+    if (_currentProgress >= 2) { // If they have completed the main task, but may or may not have completed the extention, allow them to move on
       _nextTask = true;
       Provider.of<TaskTracker>(context, listen: false).taskUpdate();
+    }
+    else if (runButtonPressed < 2 && _currentProgress <= 2) { // If they have attempted the task less than twice, and not yet completed the activity
+      // Show toast pop up saying to attempt the task at least twice before moving on
+      showToastWithIcon(context, "You need to complete the current task before moving to the next task. If you can't figure it out, raise your hand and someone will come help", Icons.front_hand, Colors.blue[400]!, 10);
     }
     else if (runButtonPressed >= 2 && _currentProgress < 2) { // If they have attempted the task at least twice, but not been able to complete the task
       // Show a popup with a textbox
@@ -280,12 +280,9 @@ class Participant {
       if (_currentProgress == 1) { // If they have completed up to the first error
         Provider.of<TaskTracker>(context, listen: false).activateFeature(); // Show the new feature
       }
-      else if (_currentProgress == 2) { // If they have successfully fixed the error
-        Provider.of<TaskTracker>(context, listen: false).taskUpdate(); // Notify listeners that the task has been updated
-      }
-      else if (_currentProgress == 3) { // If they have completed the task (including the extention)
+      else if (_currentProgress >= 2) { // If they have successfully fixed the error and finished the main tasks
         taskComplete(); // Mark the task as complete
-        Provider.of<TaskTracker>(context, listen: false).deactivateFeature(); // Hide the feature
+        Provider.of<TaskTracker>(context, listen: false).taskUpdate();
       }
 
       return true;

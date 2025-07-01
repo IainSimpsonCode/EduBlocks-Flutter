@@ -45,16 +45,7 @@ class _outputTextPanelState extends State<outputTextPanel> {
         ),
         padding: EdgeInsets.all(8),
         child: ListView(
-          children: [
-            Text(
-              Provider.of<CodeTracker>(context, listen: false).outputString,
-              style: GoogleFonts.firaCode(
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-                color: codeTextColour
-              ),
-            )
-          ],
+          children: Provider.of<CodeTracker>(context, listen: false).outputString,
         ),
       ),
     );
