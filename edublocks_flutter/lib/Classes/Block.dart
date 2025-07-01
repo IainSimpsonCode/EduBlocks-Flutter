@@ -18,6 +18,7 @@ class Block {
   final double displayImageHeight;
   final int standardCodeColour;
   int? alternateCodeColour;
+  int task;
 
   int snapXOffset;
   int snapYOffset;
@@ -35,6 +36,7 @@ class Block {
     required this.displayImageHeight,
     this.snapXOffset = 0,
     this.snapYOffset = 0,
+    required this.task,
   });
 
   factory Block.fromJson(Map<String, dynamic> json) {
@@ -52,6 +54,7 @@ class Block {
       displayImageHeight: json['displayImageHeight'] ?? json['height'] ?? 80,
       snapXOffset: json['snapXOffset'] ?? 0,
       snapYOffset: json['snapYOffset'] ?? 0,
+      task: json['task'] ?? 0,
     );
   }
 }
