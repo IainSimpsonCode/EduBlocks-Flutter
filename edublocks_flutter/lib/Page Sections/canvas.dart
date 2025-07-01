@@ -660,33 +660,33 @@ class _canvasWidgetState extends State<canvasWidget> {
         switch (parentNestedBlocks) {
           case 0:
             parent.type.imageName =
-                "block_images/whileTrue/whileTrueSmallV1.png";
+                "block_images/loops/whileTrue/whileTrueSmallV1.png";
             parent.height = 150.0;
 
             break;
           case 1:
             parent.type.imageName =
-                "block_images/whileTrue/whileTrueSmallV2.png";
+                "block_images/loops/whileTrue/whileTrueSmallV2.png";
             parent.height = 190.0;
             break;
           case 2:
             parent.type.imageName =
-                "block_images/whileTrue/whileTrue2Blocks.png";
+                "block_images/loops/whileTrue/whileTrue2Blocks.png";
             parent.height = 190.0 + (70 * (parentNestedBlocks - 1));
             break;
           case 3:
             parent.type.imageName =
-                "block_images/whileTrue/whileTrue3Blocks.png";
+                "block_images/loops/whileTrue/whileTrue3Blocks.png";
             parent.height = 190.0 + (70 * (parentNestedBlocks - 1));
             break;
           case 4:
             parent.type.imageName =
-                "block_images/whileTrue/whileTrue4Blocks.png";
+                "block_images/loops/whileTrue/whileTrue4Blocks.png";
             parent.height = 190.0 + (70 * (parentNestedBlocks - 1));
             break;
           default:
             parent.type.imageName =
-                "block_images/whileTrue/whileTrue4Blocks.png";
+                "block_images/loops00/whileTrue/whileTrue4Blocks.png";
             parent.height = 190.0 + (70 * (parentNestedBlocks - 1));
             break;
         }
@@ -801,6 +801,60 @@ class _canvasWidgetState extends State<canvasWidget> {
             break;
         }
         break;
+
+      case "while i < len(my_grades):":
+        switch (parentNestedBlocks) {
+          case 0:
+            parent.type.imageName =
+                "block_images/loops/whileGrades/whileGradeSmall.png";
+            parent.height = 150.0;
+            break;
+          case 1:
+            parent.type.imageName =
+                "block_images/loops/whileGrades/whileGrade_1Block.png";
+            parent.height = 185.0;
+            break;
+          case 2:
+            parent.type.imageName =
+                "block_images/loops/whileGrades/whileGrade_2Blocks.png";
+            parent.height = 185.0 + (70 * (parentNestedBlocks - 1));
+            break;
+          case 3:
+            parent.type.imageName =
+                "block_images/loops/whileGrades/whileGrade_3Blocks.png";
+            parent.height = 185.0 + (70 * (parentNestedBlocks - 1));
+            break;
+          default:
+            parent.type.imageName =
+                "block_images/loops/whileGrades/whileGrade_2Blocks.png";
+            parent.height = 185.0 + (70 * (parentNestedBlocks - 1));
+            break;
+        }
+
+      case "for i in range(len(my_grades)):":
+        switch (parentNestedBlocks) {
+          case 0:
+            parent.type.imageName =
+                "block_images/loops/for_i_inRange/for-loopSmall.png";
+            parent.height = 150.0;
+            break;
+          case 1:
+            parent.type.imageName =
+                "block_images/loops/for_i_inRange/for-loop_1Block.png";
+            parent.height = 185.0;
+            break;
+          case 2:
+            parent.type.imageName =
+                "block_images/loops/for_i_inRange/for-loop_2Blocks.png";
+            parent.height = 185.0 + (70 * (parentNestedBlocks - 1));
+            break;
+          case 3:
+            parent.type.imageName =
+                "block_images/loops/for_i_inRange/for-loop_3Blocks.png";
+            parent.height = 185.0 + (70 * (parentNestedBlocks - 1));
+            break;
+        }
+        break;
     }
 
     buildBlock(parent);
@@ -826,7 +880,10 @@ class _canvasWidgetState extends State<canvasWidget> {
               snappedTo.type.code == 'if (count <= 10):' ||
               snappedTo.type.code == 'if (age <= 11):') ||
           snappedTo.type.code == 'elif (age <= 16):' ||
-          snappedTo.type.code == 'else:' && snappedTo.id != block.id) {
+          snappedTo.type.code == 'else:' ||
+          snappedTo.type.code == 'while i < len(my_grades):' ||
+          snappedTo.type.code == 'for i in range(len(my_grades)):' &&
+              snappedTo.id != block.id) {
         return snappedTo;
       }
 
@@ -843,7 +900,9 @@ class _canvasWidgetState extends State<canvasWidget> {
           currentBlock.type.code == "while True:" ||
           currentBlock.type.code == "if (age <= 11):" ||
           currentBlock.type.code == "elif (age <= 16):" ||
-          currentBlock.type.code == "else:") {
+          currentBlock.type.code == "else:" ||
+          currentBlock.type.code == "while i < len(my_grades):" ||
+          currentBlock.type.code == "for i in range(len(my_grades)):") {
         if (currentBlock.nestedBlocks!.isNotEmpty) {
           blockUnits += getNumberOfNestedBlocks(currentBlock);
           blockUnits = blockUnits + 2;
@@ -1158,6 +1217,7 @@ class _canvasWidgetState extends State<canvasWidget> {
             ).blocks.firstWhere((element) => element.id == block.childId),
             true,
           );
+          handleDeletedParent(block);
         }
 
         // Then detach the block being removed
@@ -1172,6 +1232,19 @@ class _canvasWidgetState extends State<canvasWidget> {
         });
         playSound(2);
       }
+    }
+  }
+
+  void handleDeletedParent(MoveableBlock block) {
+    final child = Provider.of<CodeTracker>(
+      context,
+      listen: false,
+    ).blocks.firstWhere((b) => b.id == block.nestedBlocks![0].id);
+    child.snappedTo = null;
+    child.isNested = false;
+
+    for (block in block.nestedBlocks!) {
+      block.isNested = false;
     }
   }
 
