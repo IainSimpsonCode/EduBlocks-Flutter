@@ -40,10 +40,11 @@ class Participant {
   int runButtonPressed = 0;
 
   /// bool to show when the next task button has been pressed, and the conditions have been met to show the next task
-  bool _nextTask = false;
+  bool _nextTask = true; // Initialise as true so that a task starts upon the app initially starting.
   bool showNextTask() {
     if (_nextTask) {
       _nextTask = false;
+      resetProgress();
       return true;
     }
     else {
@@ -256,11 +257,6 @@ class Participant {
 
     currentTask = null;
     currentFeature = null;
-    _currentProgress = 0;
-    runButtonPressed = 0;
-
-    clearCurrentTask(this);
-
     saveParticipantData(this);
   }
 
@@ -299,5 +295,12 @@ class Participant {
 
   String getCodeUpToFirstError() {
     return _taskCodeUpToError;
+  }
+
+  void resetProgress() {
+    _currentProgress = 0;
+    runButtonPressed = 0;
+
+    clearCurrentTask(this);
   }
 }
