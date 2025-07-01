@@ -54,6 +54,7 @@ class _codeBarWidgetState extends State<codeBarWidget> {
         [
           Text("Code: ", style: bodyMedium),
           codeTextPanel(),
+          Divider(),
           Text("Output: ", style: bodyMedium),
           outputTextPanel(),
         ] : [
