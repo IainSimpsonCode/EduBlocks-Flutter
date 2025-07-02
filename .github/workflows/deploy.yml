@@ -19,9 +19,11 @@ jobs:
           flutter-version: '3.22.0'  # use your project's Flutter version
 
       - name: Install dependencies
+        working-directory: ./edublocks_flutter
         run: flutter pub get
 
       - name: Build web
+        working-directory: ./edublocks_flutter
         run: flutter build web --release
 
       - name: Deploy to GitHub Pages
