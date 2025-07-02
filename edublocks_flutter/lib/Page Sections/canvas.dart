@@ -918,7 +918,7 @@ class _canvasWidgetState extends State<canvasWidget> {
   int returnIndentation(MoveableBlock block) {
     var nestedCount = 0;
     if(block.isNested) {
-      nestedCount = getNumberOfNestedBlocks(Provider.of<CodeTracker>(
+      nestedCount += getNumberOfNestedBlocks(Provider.of<CodeTracker>(
         context,
         listen: false,
       ).blocks.firstWhere((b) => b.id == block.snappedTo));

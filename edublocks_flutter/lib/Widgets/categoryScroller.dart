@@ -19,6 +19,7 @@ class _categoryScrollerState extends State<categoryScroller> {
   Widget build(BuildContext context) {
     final categories =
         Provider.of<BlockLibrary>(context, listen: false).categories;
+    final _codeTracker = Provider.of<CodeTracker>(context, listen: false);
 
     return ListView.builder(
       itemCount: categories.length,
