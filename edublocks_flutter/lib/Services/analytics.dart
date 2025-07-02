@@ -2,44 +2,36 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-Future<bool> logAnalytics(String PID, String activity) async {
+Future<bool> logAnalytics(int PID, String AID, String FID, int version, String action_type, dynamic value) async {
+  //https://mongodbserver-h5f1.onrender.com
 
-  const endpoint = 'https://data.mongodb-api.com/app/<your-app-id>/endpoint/data/v1/action/insertOne';
-  const apiKey = '<your-api-key>'; // Keep this secret in real apps
-
-  final time = DateTime.now().toIso8601String();
-
-  final body = {
-    "dataSource": "EduBlocks-Flutter",
-    "database": "analytics",
-    "collection": "logs",
-    "document": {
-      "PID": PID,
-      "Activity": activity,
-      "Time": time,
-    }
-  };
-
-  final headers = {
-    'Content-Type': 'application/json',
-    'api-key': apiKey,
+  final jsonBody = {
+    "PID": PID,
+    "AID": AID,
+    "FID": FID,
+    "VID": version,
+    "activity": action_type,
+    "value": value,
+    "timestamp": DateTime.now()
   };
 
   try {
-    final response = await http.post(
-      Uri.parse(endpoint),
-      headers: headers,
-      body: jsonEncode(body),
-    );
+    final url = Uri.parse("https://mongodbserver-h5f1.onrender.com/log");
+    final headers = {"Content-Type": "application/json"};
+    final body = jsonEncode(jsonBody);
 
+    final response = await http.post(url, headers: headers, body: body);
+    
     if (response.statusCode == 200) {
+      print("Activity logged successfully");
       return true;
-    } else {
-      print('Error uploading analytics: ${response.statusCode} - ${response.body}');
+    }
+    else {
+      print("Log failed for $action_type: ${response.body}");
       return false;
     }
   } catch (e) {
-    print('Exception uploading analytics: $e');
+    print("Error: ${e.toString()}");
     return false;
   }
 }
