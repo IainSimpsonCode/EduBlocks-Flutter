@@ -1,0 +1,485 @@
+{
+  "blocks": [
+    {
+      "category": "Special",
+      "code": "# Start Here",
+      "imageName": "block_images/startHere.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 0
+    },
+    {
+      "category": "Import",
+      "code": "import time",
+      "imageName": "block_images/import/time.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFFc678dd",
+      "task": 0
+    },
+    {
+      "category": "Import",
+      "code": "import random",
+      "imageName": "block_images/import/random.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFFc678dd",
+      "task": 0
+    },
+    {
+      "category": "Import",
+      "code": "import math",
+      "imageName": "block_images/import/math.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFFc678dd",
+      "task": 0
+    },
+    {
+      "category": "Statements",
+      "code": "print(count)",
+      "imageName": "block_images/statements/print.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 1
+    },
+    {
+      "category": "Statements",
+      "code": "print('You are in Primary School')",
+      "imageName": "block_images/statements/print_primary-school.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 2
+    },
+    {
+      "category": "Statements",
+      "code": "print('You are in High School')",
+      "imageName": "block_images/statements/print_high-school.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 2
+    },
+    {
+      "category": "Statements",
+      "code": "print('You are old')",
+      "imageName": "block_images/statements/print_you-are-old.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 2
+    },
+    {
+      "category": "Statements",
+      "code": "print('My friend is')",
+      "imageName": "block_images/statements/print_my-friend-string.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 3
+    },
+    {
+      "category": "Statements",
+      "code": "print(friends[0])",
+      "imageName": "block_images/statements/print_friends_0.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 3
+    },
+    {
+      "category": "Statements",
+      "code": "print(number1 + number2)",
+      "imageName": "block_images/statements/print_number1+number2.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 4
+    },
+    {
+      "category": "Statements",
+      "code": "print('My favourite fruit is ...')",
+      "imageName": "block_images/statements/print_favourite-fruit.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 5
+    },
+    {
+      "category": "Statements",
+      "code": "print(fruits[3])",
+      "imageName": "block_images/statements/print_fruit-3.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 5
+    },
+    {
+      "category": "Statements",
+      "code": "print(fruits)",
+      "imageName": "block_images/statements/print_fruits.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 5
+    },
+    {
+      "category": "Statements",
+      "code": "print(my_grades)",
+      "imageName": "block_images/statements/print_my-grades.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 6
+    },
+    {
+      "category": "Statements",
+      "code": "print(random.choice(friends))",
+      "imageName": "block_images/statements/print_random-choice.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 3
+    },
+    {
+      "category": "Statements",
+      "code": "print('All my grades')",
+      "imageName": "block_images/statements/print_string.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 6
+    },
+    {
+      "category": "Statements",
+      "code": "print(total_grades)",
+      "imageName": "block_images/statements/print_total-grades.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 6
+    },
+    {
+      "category": "Statements",
+      "code": "print(fruits[2])",
+      "imageName": "block_images/statements/print_fruit-2.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 5
+    },
+    {
+      "category": "Statements",
+      "code": "print(random.choice(fruits))",
+      "imageName": "block_images/statements/print_random-fruits.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 5
+    },
+
+    {
+      "category": "Variables",
+      "code": "count += 1",
+      "imageName": "block_images/variables/count+=1.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 1
+    },
+    {
+      "category": "Variables",
+      "code": "count = 0",
+      "imageName": "block_images/variables/count=0.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 1
+    },
+    {
+      "category": "Variables",
+      "code": "number1 = int(5)",
+      "imageName": "block_images/variables/number1_variable.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 4
+    },
+    {
+      "category": "Variables",
+      "code": "number2 = '2'",
+      "imageName": "block_images/variables/number2_variable.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 4
+    },
+    {
+      "category": "Variables",
+      "code": "number2 = 2",
+      "imageName": "block_images/variables/number2_variable.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 4
+    },
+    {
+      "category": "Variables",
+      "code": "age = input('How old are you')",
+      "imageName": "block_images/variables/age-variable_input.png",
+      "condition": false,
+      "hasChildren": false,
+      "height": 95,
+      "task": 2
+    },
+    {
+      "category": "Variables",
+      "code": "friends = 'Bob'",
+      "imageName": "block_images/variables/friends-variable.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 3
+    },
+    {
+      "category": "Variables",
+      "code": "age = 10",
+      "imageName": "block_images/variables/age10.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 2
+    },
+    {
+      "category": "Variables",
+      "code": "age = 14",
+      "imageName": "block_images/variables/age14.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 2
+    },
+    {
+      "category": "Variables",
+      "code": "age = 22",
+      "imageName": "block_images/variables/age22.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 2
+    },
+    {
+      "category": "Variables",
+      "code": "friends = ['Bob', 'Charles']",
+      "imageName": "block_images/variables/friends-list.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 3
+    },
+    {
+      "category": "Variables",
+      "code": "fruits = ['Orange', 'Apple', 'Mango', 'Banana']",
+      "imageName": "block_images/variables/fruits-list.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 5
+    },
+    {
+      "category": "Variables",
+      "code": "grade = 9",
+      "imageName": "block_images/variables/grade1.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 6
+    },
+    {
+      "category": "Variables",
+      "code": "grade = 'six'",
+      "imageName": "block_images/variables/grade2.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 6
+    },
+    {
+      "category": "Variables",
+      "code": "grade = 4",
+      "imageName": "block_images/variables/grade3.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 6
+    },
+    {
+      "category": "Variables",
+      "code": "grade = 7",
+      "imageName": "block_images/variables/grade4.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 6
+    },
+    {
+      "category": "Variables",
+      "code": "i += 1",
+      "imageName": "block_images/variables/i_variable-plus-1.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 6
+    },
+    {
+      "category": "Variables",
+      "code": "i = 0",
+      "imageName": "block_images/variables/i_variable.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 6
+    },
+    {
+      "category": "Variables",
+      "code": "my_grades = [grade1, grade2, grade3, grade4]",
+      "imageName": "block_images/variables/my-grades_list.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 6
+    },
+    {
+      "category": "Variables",
+      "code": "total_grades += int(my_grades[i])",
+      "imageName": "block_images/variables/total-grades_to-int.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 6
+    },
+    {
+      "category": "Variables",
+      "code": "total_grades = 0",
+      "imageName": "block_images/variables/total-grades.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 6
+    },
+    {
+      "category": "Lists",
+      "code": "friends.append('Ann')",
+      "imageName": "block_images/lists/friends-append.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFFe06356",
+      "task": 0
+    },
+    {
+      "category": "Lists",
+      "code": "fruits.remove(fruits[3])",
+      "imageName": "block_images/lists/fruits-list-remove_item3.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFFe06356",
+      "task": 0
+    },
+    {
+      "category": "Lists",
+      "code": "fruits.append('Grapes')",
+      "imageName": "block_images/lists/fruits-list-append-grapes.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFFe06356",
+      "task": 0
+    },
+    {
+      "category": "Loops",
+      "code": "while True:",
+      "imageName": "block_images/loops/whileTrue/whileTrueSmallV1.png",
+      "displayImageName": "block_images/loops/whileTrue/whileTrueSmallV1.png",
+      "condition": false,
+      "hasChildren": true,
+      "priorityBuild": true,
+      "height": 150,
+      "displayImageHeight": 150,
+      "snapXOffset": -38,
+      "snapYOffset": -12,
+      "standardCodeColour": "0xFF996ddd",
+      "task": 0
+    },
+    {
+      "category": "Loops",
+      "code": "while i < len(my_grades):",
+      "imageName": "block_images/loops/whileGrades/whileGradeSmall.png",
+      "displayImageName": "block_images/loops/whileGrades/whileGradeSmall.png",
+      "condition": false,
+      "hasChildren": true,
+      "priorityBuild": true,
+      "height": 150,
+      "displayImageHeight": 150,
+      "snapXOffset": -38,
+      "snapYOffset": -8,
+      "standardCodeColour": "0xFF996ddd",
+      "task": 0
+    },
+    {
+      "category": "Loops",
+      "code": "for i in range(len(my_grades)):",
+      "imageName": "block_images/loops/for_i_inRange/for-loopSmall.png",
+      "displayImageName": "block_images/loops/for_i_inRange/for-loopSmall.png",
+      "condition": false,
+      "hasChildren": true,
+      "priorityBuild": true,
+      "height": 150,
+      "displayImageHeight": 150,
+      "snapXOffset": -40,
+      "snapYOffset": -8,
+      "standardCodeColour": "0xFF996ddd",
+      "task": 0
+    },
+    {
+      "category": "Logic",
+      "code": "if (count <= 10):",
+      "imageName": "block_images/logic/countLessThan10/ifCountLessThan10_Small.png",
+      "displayImageName": "block_images/logic/countLessThan10/ifCountLessThan10_Small.png",
+      "condition": false,
+      "hasChildren": true,
+      "priorityBuild": true,
+      "height": 165,
+      "displayImageHeight": 150,
+      "snapXOffset": -38,
+      "snapYOffset": 2,
+      "standardCodeColour": "0xFF996ddd",
+      "task": 0
+    },
+    {
+      "category": "Logic",
+      "code": "if (age <= 11):",
+      "imageName": "block_images/logic/ageLessThan11/ifAgeLessThan11Small.png",
+      "displayImageName": "block_images/logic/ageLessThan11/ifAgeLessThan11Small.png",
+      "condition": false,
+      "hasChildren": true,
+      "priorityBuild": true,
+      "height": 165,
+      "displayImageHeight": 150,
+      "snapXOffset": -38,
+      "snapYOffset": 3,
+      "standardCodeColour": "0xFF996ddd",
+      "task": 0
+    },
+    {
+      "category": "Logic",
+      "code": "elif (age <= 16):",
+      "imageName": "block_images/logic/elseIfAgeLessThan16/elseIfAgeLessThan16Small.png",
+      "displayImageName": "block_images/logic/elseIfAgeLessThan16/elseIfAgeLessThan16Small.png",
+      "condition": false,
+      "hasChildren": true,
+      "priorityBuild": true,
+      "height": 160,
+      "displayImageHeight": 150,
+      "snapXOffset": -38,
+      "snapYOffset": 3,
+      "standardCodeColour": "0xFF996ddd",
+      "task": 0
+    },
+    {
+      "category": "Logic",
+      "code": "else:",
+      "imageName": "block_images/logic/else/elseSmall.png",
+      "displayImageName": "block_images/logic/else/elseSmall.png",
+      "condition": false,
+      "hasChildren": true,
+      "priorityBuild": true,
+      "height": 145,
+      "displayImageHeight": 150,
+      "snapXOffset": -38,
+      "snapYOffset": -8,
+      "standardCodeColour": "0xFF996ddd",
+      "task": 0
+    }
+  ]
+}
