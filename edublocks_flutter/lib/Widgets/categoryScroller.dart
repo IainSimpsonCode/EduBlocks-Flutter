@@ -19,7 +19,8 @@ class _categoryScrollerState extends State<categoryScroller> {
   Widget build(BuildContext context) {
     final categories =
         Provider.of<BlockLibrary>(context, listen: false).categories;
-    final _codeTracker = Provider.of<CodeTracker>(context, listen: false);
+    final isCategorySelected =
+        Provider.of<BlockLibrary>(context).hasCategorySelected();
 
     return ListView.builder(
       itemCount: categories.length,
@@ -35,7 +36,9 @@ class _categoryScrollerState extends State<categoryScroller> {
               onExit: (_) => setState(() => isHovered = false),
               child: AnimatedPadding(
                 duration: const Duration(milliseconds: 200),
-                padding: EdgeInsets.all(isHovered || isSelected ? 3.0 : 0.0),
+                padding: EdgeInsets.all(
+                  isHovered || (isSelected && isCategorySelected) ? 3.0 : 0.0,
+                ),
                 child: GestureDetector(
                   onTap: () {
                     setState(() {
@@ -49,7 +52,7 @@ class _categoryScrollerState extends State<categoryScroller> {
                   child: Container(
                     decoration: BoxDecoration(
                       color:
-                          isSelected
+                          isSelected && isCategorySelected
                               ? category.color.withOpacity(1)
                               : (isHovered ? buttonGreyColour : null),
                       borderRadius: BorderRadius.circular(8),
@@ -88,9 +91,14 @@ class _categoryScrollerState extends State<categoryScroller> {
                       title: Text(
                         category.category,
                         style: bodyMedium.copyWith(
-                          color: isSelected ? Colors.white : buttonTextColour,
+                          color:
+                              isSelected && isCategorySelected
+                                  ? Colors.white
+                                  : buttonTextColour,
                           fontWeight:
-                              isSelected ? FontWeight.bold : FontWeight.normal,
+                              isSelected && isCategorySelected
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
                         ),
                       ),
                     ),

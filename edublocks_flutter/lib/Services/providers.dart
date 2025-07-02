@@ -79,6 +79,14 @@ class BlockLibrary extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool hasCategorySelected() {
+    if (_categorySelected == null) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   // -- Blocks --
   List<Block> get blocks => _allBlocks;
 
@@ -706,7 +714,10 @@ class DeleteAll extends ChangeNotifier {
         );
       });
     } else {
-      Provider.of<CodeTracker>(context, listen: false).reinitialiseCanvasVariables(context, false);
+      Provider.of<CodeTracker>(
+        context,
+        listen: false,
+      ).reinitialiseCanvasVariables(context, false);
       notifyListeners();
     }
   }

@@ -1,4 +1,5 @@
 import 'package:edublocks_flutter/Services/providers.dart';
+import 'package:edublocks_flutter/features.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,17 +17,19 @@ class _codeTextPanelState extends State<codeTextPanel> {
   Color _borderColor = Colors.transparent;
 
   void _handleCodeTrackerUpdates() {
-    setState(() {
-      _borderColor = Colors.green[400]!; // Flash green
-    });
-    // Revert back
-    Timer(Duration(milliseconds: 500), () {
-      if (mounted) {
-        setState(() {
-          _borderColor = Colors.transparent;
-        });
-      }
-    });
+    if (highlightCodePanelGreen(context)) {
+      setState(() {
+        _borderColor = Colors.green[400]!; // Flash green
+      });
+      // Revert back
+      Timer(Duration(milliseconds: 500), () {
+        if (mounted) {
+          setState(() {
+            _borderColor = Colors.transparent;
+          });
+        }
+      });
+    }
   }
 
   @override
