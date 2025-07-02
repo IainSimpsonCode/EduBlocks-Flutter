@@ -40,5 +40,12 @@
     "6ErrorCode": "total_grades += int(my_grades[i])",
     "6ErrorLine": 12,
     "6detailedErrorMessage": "6 Error",
-    "6detailedErrorMessageImage": "block_images/import/math.png"
+    "6detailedErrorMessageImage": "block_images/import/math.png",
+    "7": "\n# Start Here\nnumber1 = 10\nnumber2 = 0\nwhile True:\n print(number1 / number2)\n number2 += 1\n pass",
+    "7fixed": "\n# Start Here\nnumber1 = 10\nnumber2 = 1\nwhile True:\n print(number1 / number2)\n number2 += 1\n pass",
+    "7extention": "\n# Start Here\nnumber1 = 10\nnumber2 = 0\nwhile True:\n number2 += 1\n print(number1 / number2)\n pass",
+    "7ErrorCode": "print(number1 / number2)",
+    "7ErrorLine": 5,
+    "7detailedErrorMessage": "7 Error",
+    "7detailedErrorMessageImage": "block_images/variables/count=0.png"
 }

@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 Future<bool> logAnalytics(int PID, String AID, String FID, int version, String action_type, dynamic value) async {
-  //https://mongodbserver-h5f1.onrender.com
 
   final jsonBody = {
     "PID": PID,
