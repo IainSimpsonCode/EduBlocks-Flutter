@@ -20,12 +20,14 @@ class Participant {
   bool task4;
   bool task5;
   bool task6;
+  bool task7;
   bool featureA;
   bool featureB;
   bool featureC;
   bool featureD;
   bool featureE;
   bool featureF;
+  bool featureG;
   bool seenGavin;
 
   // What task and feature are they currently working on
@@ -100,12 +102,15 @@ class Participant {
     this.task4 = false,
     this.task5 = false,
     this.task6 = false,
+    this.task7 = false,
     this.featureA = false,
     this.featureB = false,
     this.featureC = false,
     this.featureD = false,
     this.featureE = false,
     this.featureF = false,
+    this.featureG = false,
+
     this.seenGavin = false,
     this.currentTask,
     this.currentFeature,
@@ -125,12 +130,14 @@ class Participant {
       task4: json["task4"] ?? false,
       task5: json["task5"] ?? false,
       task6: json["task6"] ?? false,
+      task7: json["task7"] ?? false,
       featureA: json["featureA"] ?? false,
       featureB: json["featureB"] ?? false,
       featureC: json["featureC"] ?? false,
       featureD: json["featureD"] ?? false,
       featureE: json["featureE"] ?? false,
       featureF: json["featureF"] ?? false,
+      featureG: json["featureG"] ?? false,
       seenGavin: json["seenGavin"] ?? false,
 
       currentTask: json['currentTask'],
@@ -166,7 +173,7 @@ class Participant {
     final random = Random();
 
     // If all tasks have been completed, return null
-    if (task1 && task2 && task3 && task4 && task5 && task6) {
+    if (task1 && task2 && task3 && task4 && task5 && task6 && task7) {
       return null;
     }
 
@@ -190,6 +197,9 @@ class Participant {
     if (!task6) {
       incompleteTasks.add(6);
     }
+    if (!task7) {
+      incompleteTasks.add(7);
+    }
 
     return incompleteTasks[random.nextInt(incompleteTasks.length)];
   }
@@ -200,7 +210,7 @@ class Participant {
     final random = Random();
 
     // If all tasks have been completed, return null
-    if (featureA && featureA && featureC && featureD && featureE && featureF) {
+    if (featureA && featureA && featureC && featureD && featureE && featureF && featureG) {
       return null;
     }
 
@@ -223,6 +233,9 @@ class Participant {
     }
     if (!featureF) {
       incompleteTasks.add('F');
+    } 
+    if (!featureG) {
+      incompleteTasks.add('G');
     }
 
     return incompleteTasks[random.nextInt(incompleteTasks.length)];
@@ -241,7 +254,10 @@ class Participant {
       task5 = true;
     } else if (currentTask == 6) {
       task6 = true;
+    } else if (currentTask == 7) {
+      task7 = true;
     }
+    
 
     if (currentFeature == "A") {
       featureA = true;
@@ -255,7 +271,10 @@ class Participant {
       featureE = true;
     } else if (currentFeature == 'F') {
       featureF = true;
+    } else if (currentFeature == 'G') {
+      featureG = true;
     }
+    
 
     currentTask = null;
     currentFeature = null;

@@ -51,3 +51,8 @@ bool showCodeAndOutputSimultaniously(BuildContext context) {
     Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getFeature() == "F"
   );
 }
+ bool highlightCodePanelGreen(BuildContext context) {
+  return (
+    Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getFeature() == "G"
+  );
+}
