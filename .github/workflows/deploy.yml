@@ -16,7 +16,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.0'  # use your project's Flutter version
+          flutter-version: ^3.7.0
 
       - name: Install dependencies
         working-directory: ./edublocks_flutter
