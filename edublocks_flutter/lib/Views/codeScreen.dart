@@ -2,6 +2,7 @@ import 'package:edublocks_flutter/Page%20Sections/canvas.dart';
 import 'package:edublocks_flutter/Page%20Sections/codeBar.dart';
 import 'package:edublocks_flutter/Page%20Sections/sideBar.dart';
 import 'package:edublocks_flutter/Page%20Sections/topBar.dart';
+import 'package:edublocks_flutter/Services/analytics.dart';
 import 'package:edublocks_flutter/Services/firestore.dart';
 import 'package:edublocks_flutter/Services/providers.dart';
 import 'package:edublocks_flutter/style.dart';
@@ -28,6 +29,9 @@ class _CodeScreenState extends State<CodeScreen> {
     saveCurrentTask(Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!);
     // Save what feature is being used
     saveCurrentFeature(Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!);
+
+    // log analytics information to MongoDB
+    logAnalytics(context, "start_activity", true);
 
     // Show popup to display task
     WidgetsBinding.instance.addPostFrameCallback((_) {

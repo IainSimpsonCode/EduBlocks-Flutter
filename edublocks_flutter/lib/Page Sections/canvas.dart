@@ -1,4 +1,5 @@
 import 'package:edublocks_flutter/Classes/Block.dart';
+import 'package:edublocks_flutter/Services/analytics.dart';
 import 'package:edublocks_flutter/Services/providers.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
@@ -45,11 +46,15 @@ class _canvasWidgetState extends State<canvasWidget> {
       // Get the next block from the queue
       Block? block = _blocksToLoad.getBlockToLoad();
 
+
       if (block == null) {
         // If there was no block left in the queue (queue is empty), leave the loop
         run = false;
         break;
       } else {
+        // Log a block being loaded to MongoDB analytics
+        logAnalytics(context, "load_block", block.code);
+        
         setState(() {
           // Load next block in the queue
           _codeTracker.blocks.add(
@@ -273,7 +278,7 @@ class _canvasWidgetState extends State<canvasWidget> {
         Provider.of<CodeTracker>(
           context,
           listen: false,
-        ).removeBlock(blockLineNumber);
+        ).removeBlock(context, blockLineNumber);
       }
     }
 
@@ -607,11 +612,12 @@ class _canvasWidgetState extends State<canvasWidget> {
       Provider.of<CodeTracker>(
         context,
         listen: false,
-      ).insertBlock(block.type, -1);
+      ).insertBlock(context, block.type, -1);
     }
     //1.2 this is called when the block is nested but without children
     else if (block.childId == null && block.nestedBlocks!.isEmpty) {
       _codeTracker.insertBlock(
+        context, 
         block.type,
         getBlockLineNumber(
           block.id,
@@ -636,6 +642,7 @@ class _canvasWidgetState extends State<canvasWidget> {
       //nested blocks are handled in getBlockLineNumber
       for (int i = 0; i < chain.length; i++) {
         _codeTracker.insertBlock(
+          context, 
           chain[i].type,
           getBlockLineNumber(
             chain[i].id,
@@ -1137,7 +1144,7 @@ class _canvasWidgetState extends State<canvasWidget> {
           Provider.of<CodeTracker>(
             context,
             listen: false,
-          ).removeBlock(blockLineNumber);
+          ).removeBlock(context, blockLineNumber);
         }
       }
     } else if (removeDecendants == false) {

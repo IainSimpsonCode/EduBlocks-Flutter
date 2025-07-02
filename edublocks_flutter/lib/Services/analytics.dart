@@ -1,8 +1,21 @@
 import 'dart:convert';
 
+import 'package:edublocks_flutter/Services/providers.dart';
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
-Future<bool> logAnalytics(int PID, String AID, String FID, int version, String action_type, dynamic value) async {
+Future<bool>logAnalytics(BuildContext context, String action_type, dynamic value) async {
+  String PID = Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getPID() ?? "0000";
+  int AID = Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getTask() ?? 0;
+  String FID = Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getFeature() ?? "X";
+  int VID = 2;
+
+  final result = await sendAnalyticsToMongo(PID, AID, FID, VID, action_type, value);
+  return result;
+}
+
+Future<bool> sendAnalyticsToMongo(String PID, int AID, String FID, int version, String action_type, dynamic value) async {
 
   final jsonBody = {
     "PID": PID,
