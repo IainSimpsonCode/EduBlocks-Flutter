@@ -1,6 +1,7 @@
 import 'package:edublocks_flutter/Services/providers.dart';
 import 'package:edublocks_flutter/Widgets/blockLibraryScroller.dart';
 import 'package:edublocks_flutter/Widgets/categoryScroller.dart';
+import 'package:edublocks_flutter/features.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,10 +17,19 @@ class _sideBarWidgetState extends State<sideBarWidget> {
 
   bool minimised = true;
   late BlockLibrary _blockLibrary;
+  late CodeTracker _codeTracker;
 
   void _handleBlockLibraryUpdates() {
     setState(() {
       
+    });
+  }
+
+  void _handleCodeTrackerUpdates() {
+    setState(() {
+      if (highlightCodePanelGreen(context)) {
+        
+      }
     });
   }
 
@@ -29,12 +39,16 @@ class _sideBarWidgetState extends State<sideBarWidget> {
 
     _blockLibrary = Provider.of<BlockLibrary>(context, listen: false);
     _blockLibrary.addListener(_handleBlockLibraryUpdates);
+
+    _codeTracker = Provider.of<CodeTracker>(context, listen: false);
+    _codeTracker.addListener(_handleCodeTrackerUpdates);
   }
 
   @override
   void dispose() {
     // Safely remove provider listener
     _blockLibrary.removeListener(_handleBlockLibraryUpdates);
+    _codeTracker.removeListener(_handleCodeTrackerUpdates);
     super.dispose();
   }
 

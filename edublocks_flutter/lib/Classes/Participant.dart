@@ -20,12 +20,14 @@ class Participant {
   bool task4;
   bool task5;
   bool task6;
+  bool task7;
   bool featureA;
   bool featureB;
   bool featureC;
   bool featureD;
   bool featureE;
   bool featureF;
+  bool featureG;
   bool seenGavin;
 
   // What task and feature are they currently working on
@@ -34,32 +36,40 @@ class Participant {
 
   /// For each task, what is their progress through the task. A number between 0 and 3.
   /// 0 = they are at the start; 1 = they have completed the task up to the first error; 2 = they have used the feature to fix the error; 3 = they have completed the extention
-  int _currentProgress = 0; 
+  int _currentProgress = 0;
 
   /// How many times has the run button been pressed for the current activity
   int runButtonPressed = 0;
 
   /// bool to show when the next task button has been pressed, and the conditions have been met to show the next task
-  bool _nextTask = false;
+  bool _nextTask = true; // Initialise as true so that a task starts upon the app initially starting.
   bool showNextTask() {
     if (_nextTask) {
       _nextTask = false;
+      resetProgress();
       return true;
-    }
-    else {
+    } else {
       return false;
     }
   }
+
   void nextTaskPressed(BuildContext context) {
-    if (_currentProgress >= 2) { // If they have completed the main task, but may or may not have completed the extention, allow them to move on
+    if (_currentProgress >= 2) {
+      // If they have completed the main task, but may or may not have completed the extention, allow them to move on
       _nextTask = true;
       Provider.of<TaskTracker>(context, listen: false).taskUpdate();
-    }
-    else if (runButtonPressed < 2 && _currentProgress <= 2) { // If they have attempted the task less than twice, and not yet completed the activity
+    } else if (runButtonPressed < 2 && _currentProgress <= 2) {
+      // If they have attempted the task less than twice, and not yet completed the activity
       // Show toast pop up saying to attempt the task at least twice before moving on
-      showToastWithIcon(context, "You need to complete the current task before moving to the next task. If you can't figure it out, raise your hand and someone will come help", Icons.front_hand, Colors.blue[400]!, 10);
-    }
-    else if (runButtonPressed >= 2 && _currentProgress < 2) { // If they have attempted the task at least twice, but not been able to complete the task
+      showToastWithIcon(
+        context,
+        "You need to complete the current task before moving to the next task. If you can't figure it out, raise your hand and someone will come help",
+        Icons.front_hand,
+        Colors.blue[400]!,
+        10,
+      );
+    } else if (runButtonPressed >= 2 && _currentProgress < 2) {
+      // If they have attempted the task at least twice, but not been able to complete the task
       // Show a popup with a textbox
       // The user must input a 4 digit code. If the code matches the value of supervisorCode, set _nextTask to true
       showCodePopup(context, supervisorCode).then((authorized) {
@@ -79,7 +89,8 @@ class Participant {
     }
   }
 
-  String _errorLine = "# Start Here";
+  String _errorCode = "# Start Here";
+  int _errorLine = 1;
   String _taskCodeUpToError = "";
 
   Participant({
@@ -91,18 +102,25 @@ class Participant {
     this.task4 = false,
     this.task5 = false,
     this.task6 = false,
+    this.task7 = false,
     this.featureA = false,
     this.featureB = false,
     this.featureC = false,
     this.featureD = false,
     this.featureE = false,
     this.featureF = false,
+    this.featureG = false,
+
     this.seenGavin = false,
     this.currentTask,
     this.currentFeature,
   });
 
-  factory Participant.fromJson(String classid, String id, Map<String, dynamic> json) {
+  factory Participant.fromJson(
+    String classid,
+    String id,
+    Map<String, dynamic> json,
+  ) {
     return Participant(
       classID: classid,
       ID: id,
@@ -112,16 +130,18 @@ class Participant {
       task4: json["task4"] ?? false,
       task5: json["task5"] ?? false,
       task6: json["task6"] ?? false,
+      task7: json["task7"] ?? false,
       featureA: json["featureA"] ?? false,
       featureB: json["featureB"] ?? false,
       featureC: json["featureC"] ?? false,
       featureD: json["featureD"] ?? false,
       featureE: json["featureE"] ?? false,
       featureF: json["featureF"] ?? false,
+      featureG: json["featureG"] ?? false,
       seenGavin: json["seenGavin"] ?? false,
 
       currentTask: json['currentTask'],
-      currentFeature: json['currentFeature']
+      currentFeature: json['currentFeature'],
     );
   }
 
@@ -146,14 +166,14 @@ class Participant {
 
     return currentFeature;
   }
-  
+
   /// Returns the number of task to complete next (```int?``` between 1 and 5, inclusive). The next task is selected randomly from the pool of tasks that have not already been completed.
   /// If all tasks have been completed, function will return ```null```
   int? assignTask() {
     final random = Random();
 
     // If all tasks have been completed, return null
-    if (task1 && task2 && task3 && task4 && task5 && task6) {
+    if (task1 && task2 && task3 && task4 && task5 && task6 && task7) {
       return null;
     }
 
@@ -177,6 +197,9 @@ class Participant {
     if (!task6) {
       incompleteTasks.add(6);
     }
+    if (!task7) {
+      incompleteTasks.add(7);
+    }
 
     return incompleteTasks[random.nextInt(incompleteTasks.length)];
   }
@@ -187,7 +210,7 @@ class Participant {
     final random = Random();
 
     // If all tasks have been completed, return null
-    if (featureA && featureA && featureC && featureD && featureE && featureF) {
+    if (featureA && featureA && featureC && featureD && featureE && featureF && featureG) {
       return null;
     }
 
@@ -210,6 +233,9 @@ class Participant {
     }
     if (!featureF) {
       incompleteTasks.add('F');
+    } 
+    if (!featureG) {
+      incompleteTasks.add('G');
     }
 
     return incompleteTasks[random.nextInt(incompleteTasks.length)];
@@ -218,86 +244,98 @@ class Participant {
   void taskComplete() {
     if (currentTask == 1) {
       task1 = true;
-    } 
-    else if (currentTask == 2) {
+    } else if (currentTask == 2) {
       task2 = true;
-    } 
-    else if (currentTask == 3) {
+    } else if (currentTask == 3) {
       task3 = true;
-    } 
-    else if (currentTask == 4) {
+    } else if (currentTask == 4) {
       task4 = true;
-    } 
-    else if (currentTask == 5) {
+    } else if (currentTask == 5) {
       task5 = true;
-    } 
-    else if (currentTask == 6) {
+    } else if (currentTask == 6) {
       task6 = true;
+    } else if (currentTask == 7) {
+      task7 = true;
     }
+    
 
     if (currentFeature == "A") {
       featureA = true;
-    }
-    else if (currentFeature == "B") {
+    } else if (currentFeature == "B") {
       featureB = true;
-    }
-    else if (currentFeature == "C") {
+    } else if (currentFeature == "C") {
       featureC = true;
-    }
-    else if (currentFeature == "D") {
+    } else if (currentFeature == "D") {
       featureD = true;
-    }
-    else if (currentFeature == "E") {
+    } else if (currentFeature == "E") {
       featureE = true;
-    }
-    else if (currentFeature == 'F') {
+    } else if (currentFeature == 'F') {
       featureF = true;
+    } else if (currentFeature == 'G') {
+      featureG = true;
     }
+    
 
     currentTask = null;
     currentFeature = null;
-    _currentProgress = 0;
-    runButtonPressed = 0;
-
-    clearCurrentTask(this);
-
     saveParticipantData(this);
   }
 
   Future<bool> checkSolution(BuildContext context, String solution) async {
-    final String response = await rootBundle.loadString('assets/solutions.json'); // Get the solutions from a json file
+    final String response = await rootBundle.loadString(
+      'assets/solutions.json',
+    ); // Get the solutions from a json file
     final data = json.decode(response);
 
-    _errorLine = data["${currentTask}ErrorCode"] ?? "# Start Here";
+    _errorCode = data["${currentTask}ErrorCode"] ?? "# Start Here";
+    _errorLine = data["${currentTask}ErrorLine"] ?? 1;
     _taskCodeUpToError = data["$currentTask"] ?? "# Start Here";
 
-
     print("Solution: $solution");
-    print("Answer ($currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}): ${data["$currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}"]}");
+    print(
+      "Answer ($currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}): ${data["$currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}"]}",
+    );
 
-    if (solution == data["$currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}"]) { // If the solution given matches the solution for the currentTask
+    if (solution ==
+        data["$currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}"]) {
+      // If the solution given matches the solution for the currentTask
       _currentProgress++; // If the solution was correct, increase thier progress
-      if (_currentProgress == 1) { // If they have completed up to the first error
-        Provider.of<TaskTracker>(context, listen: false).activateFeature(); // Show the new feature
-      }
-      else if (_currentProgress >= 2) { // If they have successfully fixed the error and finished the main tasks
+      if (_currentProgress == 1) {
+        // If they have completed up to the first error
+        Provider.of<TaskTracker>(
+          context,
+          listen: false,
+        ).activateFeature(); // Show the new feature
+      } else if (_currentProgress >= 2) {
+        // If they have successfully fixed the error and finished the main tasks
         taskComplete(); // Mark the task as complete
         Provider.of<TaskTracker>(context, listen: false).taskUpdate();
       }
 
       return true;
-    }
-    else {
+    } else {
       return false;
     }
   }
 
+  /// Returns the line of code associated with the error. Or returns null if no task is selected or the task is not found
+  String getErrorCode() {
+    return _errorCode;
+  }
+
   /// Returns the line number where the error is located. Or returns null if no task is selected or the task is not found
-  String getErrorLine() {
+  int getErrorLine() {
     return _errorLine;
   }
 
   String getCodeUpToFirstError() {
     return _taskCodeUpToError;
+  }
+
+  void resetProgress() {
+    _currentProgress = 0;
+    runButtonPressed = 0;
+
+    clearCurrentTask(this);
   }
 }

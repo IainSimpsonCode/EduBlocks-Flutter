@@ -20,9 +20,10 @@ class _blockLibraryScrollerState extends State<blockLibraryScroller> {
     final blocks = Provider.of<BlockLibrary>(
       context,
       listen: false,
-    ).getBlocksByCategory(widget.category);
+    ).getBlocksByCategoryAndTask(widget.category, context);
 
     return ListView.builder(
+      
       itemCount: blocks.length,
       itemBuilder: (context, index) {
         final block = blocks[index];
