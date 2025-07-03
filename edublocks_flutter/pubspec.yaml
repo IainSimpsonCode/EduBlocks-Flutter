@@ -27,3 +27,16 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
+    - assets/block_images/import/
+    - assets/block_images/lists/
+    - assets/block_images/logic/ageLessThan11/
+    - assets/block_images/logic/countLessThan10/
+    - assets/block_images/logic/else/
+    - assets/block_images/logic/elseIfAgeLessThan16/
+    - assets/block_images/loops/for_i_inRange/
+    - assets/block_images/loops/whileGrades/
+    - assets/block_images/loops/whileTrue/
+    - assets/block_images/statements/
+    - assets/block_images/variables/
+    - assets/category_icons/
+    - assets/sounds/
