@@ -287,7 +287,7 @@ class Participant {
 
   Future<bool> checkSolution(BuildContext context, String solution) async {
     final String response = await rootBundle.loadString(
-      'assets/solutions.json',
+      'app_assets/solutions.json',
     ); // Get the solutions from a json file
     final data = json.decode(response);
 

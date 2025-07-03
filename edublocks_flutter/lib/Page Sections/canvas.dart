@@ -14,7 +14,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 
 Future<void> loadJsonFromAssets() async {
-  String jsonString = await rootBundle.loadString('assets/data.json');
+  String jsonString = await rootBundle.loadString('app_assets/data.json');
   Map<String, dynamic> jsonMap = jsonDecode(jsonString);
 
   print(jsonMap);
@@ -1344,13 +1344,13 @@ class _canvasWidgetState extends State<canvasWidget> {
 
   Future<void> playSound(int option) async {
     if (option == 0) {
-      await player.setAsset('sounds/disconnect.wav');
+      await player.setAsset('app_assets/sounds/disconnect.wav');
       await player.play();
     } else if (option == 1) {
-      await player.setAsset('sounds/click.mp3');
+      await player.setAsset('app_assets/sounds/click.mp3');
       await player.play();
     } else {
-      await player.setAsset('sounds/disconnect.wav');
+      await player.setAsset('app_assets/sounds/disconnect.wav');
       await player.play();
     }
   }

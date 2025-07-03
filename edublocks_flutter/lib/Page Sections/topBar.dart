@@ -56,7 +56,7 @@ class _topBarWidgetState extends State<topBarWidget> {
             ),
           ),
           buttonWithIcon(
-            svgIconLocation: 'category_icons/trash.svg', 
+            svgIconLocation: 'app_assets/category_icons/trash.svg', 
             backgroundColor: Colors.red[400]!,
             text: "Delete All",
             onTap: () {
@@ -64,7 +64,7 @@ class _topBarWidgetState extends State<topBarWidget> {
             },
           ),
           buttonWithIcon(
-            svgIconLocation: 'category_icons/play.svg', 
+            svgIconLocation: 'app_assets/category_icons/play.svg', 
             backgroundColor: runButtonColour,
             text: "Run",
             onTap: () {
@@ -72,7 +72,7 @@ class _topBarWidgetState extends State<topBarWidget> {
             },
           ),
           buttonWithIcon(
-            svgIconLocation: 'category_icons/flag.svg', 
+            svgIconLocation: 'app_assets/category_icons/flag.svg', 
             backgroundColor: Colors.green[400]!,
             text: "Next Task",
             onTap: () {

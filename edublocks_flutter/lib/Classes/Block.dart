@@ -43,9 +43,8 @@ class Block {
     return Block(
       category: json['category'] ?? "Undefined",
       code: json['code'] ?? "# Code not added",
-      imageName: json['imageName'] ?? "Undefined",
-      displayImageName:
-          json['displayImageName'] ?? json['imageName'] ?? "Undefined",
+      imageName: "app_assets/${json['imageName'] ?? "Undefined"}",
+      displayImageName: "app_assets/${json['displayImageName'] ?? json['imageName'] ?? "Undefined"}",
       condition: json['condition'] ?? false,
       hasChildren: json['hasChildren'] ?? false,
       priorityBuild: json['priorityBuild'] ?? false,
@@ -60,7 +59,7 @@ class Block {
 }
 
 Future<int> loadBlocks(BuildContext context) async {
-  final String response = await rootBundle.loadString('assets/blocks.json');
+  final String response = await rootBundle.loadString('app_assets/blocks.json');
   final data = json.decode(response);
   List<Block> blockList =
       (data['blocks'] as List).map((item) => Block.fromJson(item)).toList();

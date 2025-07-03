@@ -8160,7 +8160,7 @@ m=t.j
 l=J
 k=B.a8
 s=3
-return A.t($.iY().Bh("assets/blocks.json"),$async$aAw)
+return A.t($.iY().Bh("app_assets/blocks.json"),$async$aAw)
 case 3:p=n.ie(m.a(l.dg(k.dz(c),"blocks")),new A.aAx(),t.q8)
 o=A.W(p,p.$ti.i("ag.E"))
 if(a.e==null){q=1
@@ -8212,7 +8212,7 @@ m=t.j
 l=J
 k=B.a8
 s=3
-return A.t($.iY().Bh("assets/categories.json"),$async$aAy)
+return A.t($.iY().Bh("app_assets/categories.json"),$async$aAy)
 case 3:p=n.ie(m.a(l.dg(k.dz(c),"categories")),new A.aAz(),t.oo)
 o=A.W(p,p.$ti.i("ag.E"))
 if(a.e==null){q=1
@@ -44642,10 +44642,10 @@ if(f==null)f=h
 s=a.h(0,"code")
 if(s==null)s="# Code not added"
 r=a.h(0,g)
-if(r==null)r=h
+r=A.j(r==null?h:r)
 q=a.h(0,"displayImageName")
 if(q==null)q=a.h(0,g)
-if(q==null)q=h
+q=A.j(q==null?h:q)
 a.h(0,"condition")
 p=a.h(0,"hasChildren")
 if(p==null)p=!1
@@ -44663,7 +44663,8 @@ if(k==null)k=0
 j=a.h(0,"snapYOffset")
 if(j==null)j=0
 i=a.h(0,"task")
-return new A.li(f,s,r,q,p,o,n,l,m,i==null?0:i,k,j)},
+if(i==null)i=0
+return new A.li(f,s,"app_assets/"+r,"app_assets/"+q,p,o,n,l,m,i,k,j)},
 $S:678}
 A.azK.prototype={
 $1(a){return a.a===this.a.a},
@@ -44716,7 +44717,7 @@ alA(a,b){var s=0,r=A.y(t.y),q,p=this,o,n,m,l,k,j,i,h
 var $async$zO=A.u(function(c,d){if(c===1)return A.v(d,r)
 while(true)switch(s){case 0:h=B.a8
 s=3
-return A.t($.iY().Bh("assets/solutions.json"),$async$zO)
+return A.t($.iY().Bh("app_assets/solutions.json"),$async$zO)
 case 3:k=h.dz(d)
 j=J.aE(k)
 i=j.h(k,A.j(p.CW)+"ErrorCode")
@@ -45279,7 +45280,7 @@ while(true)switch(s){case 0:s=a===0?2:4
 break
 case 2:p=q.r
 s=5
-return A.t(p.CV("sounds/disconnect.wav"),$async$i_)
+return A.t(p.CV("app_assets/sounds/disconnect.wav"),$async$i_)
 case 5:s=6
 return A.t(p.f2(),$async$i_)
 case 6:s=3
@@ -45288,13 +45289,13 @@ case 4:p=q.r
 s=a===1?7:9
 break
 case 7:s=10
-return A.t(p.CV("sounds/click.mp3"),$async$i_)
+return A.t(p.CV("app_assets/sounds/click.mp3"),$async$i_)
 case 10:s=11
 return A.t(p.f2(),$async$i_)
 case 11:s=8
 break
 case 9:s=12
-return A.t(p.CV("sounds/disconnect.wav"),$async$i_)
+return A.t(p.CV("app_assets/sounds/disconnect.wav"),$async$i_)
 case 12:s=13
 return A.t(p.f2(),$async$i_)
 case 13:case 8:case 3:return A.w(null,r)}})
@@ -45672,7 +45673,7 @@ if(r==null)r=0
 o=A.ai(a,!1,o).a
 o=o==null?q:o.kv()
 if(o==null)o="0"
-return A.eJ(q,A.on(A.b([A.uR(A.ch("Participant ID: "+n+s+"\nYou are working on Task "+r+" with Feature "+o,q,q,q,q,$.yO(),q,q),1),A.aEd(B.nl,new A.azC(a),"category_icons/trash.svg","Delete All"),A.aEd(B.Hd,new A.azD(a),"category_icons/play.svg","Run"),A.aEd(B.iL,new A.azE(a),"category_icons/flag.svg","Next Task")],t.p),B.aI,B.eJ,B.bg,14),B.v,B.k,q,q,q,65,q,new A.aD(14,14,14,14),q,q,p.a.a)}}
+return A.eJ(q,A.on(A.b([A.uR(A.ch("Participant ID: "+n+s+"\nYou are working on Task "+r+" with Feature "+o,q,q,q,q,$.yO(),q,q),1),A.aEd(B.nl,new A.azC(a),"app_assets/category_icons/trash.svg","Delete All"),A.aEd(B.Hd,new A.azD(a),"app_assets/category_icons/play.svg","Run"),A.aEd(B.iL,new A.azE(a),"app_assets/category_icons/flag.svg","Next Task")],t.p),B.aI,B.eJ,B.bg,14),B.v,B.k,q,q,q,65,q,new A.aD(14,14,14,14),q,q,p.a.a)}}
 A.azB.prototype={
 $0(){},
 $S:0}
@@ -45855,7 +45856,7 @@ A.de("Correct Solution?: "+A.j(d))
 $.a9.p2$.push(new A.a4F(f,d,a7))
 a6=B.a8
 s=6
-return A.t($.iY().Bh("assets/solutions.json"),$async$f4)
+return A.t($.iY().Bh("app_assets/solutions.json"),$async$f4)
 case 6:c=a6.dz(a9)
 b=A.ai(a7,!1,a4).a.pB()
 f=""+(b==null?0:b)
@@ -46222,7 +46223,7 @@ p=A.n6(8)
 o=A.b([new A.e0(0,B.e_,A.aY(64,B.l.I()>>>16&255,B.l.I()>>>8&255,B.l.I()&255),B.Pd,6)],t.sq)
 n=A.n6(8)
 m=A.n6(8)
-o=A.eJ(k,A.eJ(k,A.aJ9("category_icons/"+r.c+".svg",B.k,new A.ayn(),B.fd,k),B.v,k,k,new A.cZ(r.b,k,k,m,k,k,B.ac),k,k,k,B.nE,k,k,k),B.v,k,k,new A.cZ(k,k,k,n,o,k,B.ac),k,32,B.Iv,k,k,k,32)
+o=A.eJ(k,A.eJ(k,A.aJ9("app_assets/category_icons/"+r.c+".svg",B.k,new A.ayn(),B.fd,k),B.v,k,k,new A.cZ(r.b,k,k,m,k,k,B.ac),k,k,k,B.nE,k,k,k),B.v,k,k,new A.cZ(k,k,k,n,o,k,B.ac),k,32,B.Iv,k,k,k,32)
 n=$.a1H()
 m=q&&l.d?B.k:B.iN
 return A.iC(A.aFo(A.iv(k,A.eJ(k,new A.Oq(o,A.ch(r.a,k,k,k,k,n.amq(m,q&&l.d?B.bC:B.n),k,k),k),B.v,k,k,new A.cZ(i,k,k,p,k,k,B.ac),k,k,k,k,k,k,k),B.a1,!1,k,k,k,k,k,k,k,k,k,k,k,k,k,k,k,new A.ayo(l.b,b,l.e,a,r),k,k,k,k,k,k),B.ae,B.Z,new A.aD(s,s,s,s)),B.b6,k,new A.ayp(j,b),new A.ayq(j,b),k)},

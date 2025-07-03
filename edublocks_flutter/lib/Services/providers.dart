@@ -608,7 +608,7 @@ class CodeTracker extends ChangeNotifier {
 
       // Get the relevant detailed error message
       final String response = await rootBundle.loadString(
-        'assets/solutions.json',
+        'app_assets/solutions.json',
       ); // Get the solutions from a json file
       final data = json.decode(response);
       int currentTask =

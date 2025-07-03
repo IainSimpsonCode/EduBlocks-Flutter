@@ -33,7 +33,7 @@ class Category {
 
 /// Load in the categories of blocks (e.g. 'Statement', 'Logic') and save the categories in the ```BlockLibrary``` ```ChangeNotifier```
 Future<int> loadCategories(BuildContext context) async {
-  final String response = await rootBundle.loadString('assets/categories.json');
+  final String response = await rootBundle.loadString('app_assets/categories.json');
   final data = json.decode(response);
   List<Category> categoryList =
       (data['categories'] as List)
