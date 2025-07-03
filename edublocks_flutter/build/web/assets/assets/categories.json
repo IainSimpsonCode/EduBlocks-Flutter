@@ -1,0 +1,49 @@
+{
+  "categories": [
+    {
+      "category": "Import",
+      "color": "#e61d64",
+      "icon": "upload"
+    },
+    {
+      "category": "Variables",
+      "color": "#364fd7",
+      "icon": "bars"
+    },
+    {
+      "category": "Statements",
+      "color": "#f59421",
+      "icon": "exclamation"
+    },
+    {
+      "category": "Text",
+      "color": "#a855f7",
+      "icon": "textsize"
+    },
+    {
+      "category": "Math",
+      "color": "#1b173c",
+      "icon": "squareroot"
+    },
+    {
+      "category": "Logic",
+      "color": "#49af4d",
+      "icon": "arrows"
+    },
+    {
+      "category": "Lists",
+      "color": "#15b9d3",
+      "icon": "list"
+    },
+    {
+      "category": "Loops",
+      "color": "#644a9e",
+      "icon": "rotateright"
+    },
+    {
+      "category": "Random",
+      "color": "#8ac148",
+      "icon": "shuffle"
+    }
+  ]
+}
