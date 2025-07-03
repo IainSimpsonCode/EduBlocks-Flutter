@@ -1,0 +1,11 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "prepare-to-deploy",
+      "type": "shell",
+      "command": "cd edublocks_flutter; flutter build web; cd build/web; rm -Force -R app_assets; cd assets; mv app_assets ..",
+      "problemMatcher": [],
+    }
+  ]
+}
