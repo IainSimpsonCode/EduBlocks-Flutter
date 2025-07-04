@@ -295,10 +295,12 @@ class Participant {
     _errorLine = data["${currentTask}ErrorLine"] ?? 1;
     _taskCodeUpToError = data["$currentTask"] ?? "# Start Here";
 
-    print("Solution: $solution");
-    print(
-      "Answer ($currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}): ${data["$currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}"]}",
-    );
+    if (!isProduction) {
+      print("Solution: $solution");
+      print(
+        "Answer ($currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}): ${data["$currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}"]}",
+      );
+    }
 
     if (solution ==
         data["$currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}"]) {
