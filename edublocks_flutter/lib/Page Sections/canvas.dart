@@ -1237,6 +1237,9 @@ class _canvasWidgetState extends State<canvasWidget> {
         // Assert that the selectedBlock is not null, and does exist
         final block = _codeTracker.selectedBlock!;
 
+        // Log that a block has been deleted
+        logAnalytics(context, "delete_block", "'${block.type}' deleted");
+
         // If the block had any children, detatch them
         if (block.childId != null) {
           detatch(

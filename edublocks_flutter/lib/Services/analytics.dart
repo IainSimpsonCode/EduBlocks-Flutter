@@ -7,6 +7,11 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 Future<bool>logAnalytics(BuildContext context, String action_type, dynamic value) async {
+
+  if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant == null) {
+    return false;
+  }
+
   String PID = Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getPID() ?? "0000";
   int AID = Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getTask() ?? 0;
   String FID = Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getFeature() ?? "X";
@@ -24,20 +29,13 @@ Future<bool> sendAnalyticsToMongo(String PID, int AID, String FID, int version, 
   }
 
   final jsonBody = {
-    // "PID": PID,
-    // "AID": AID.toString(),
-    // "FID": FID,
-    // "VID": version.toString(),
-    // "activity": action_type,
-    // "value": value,
-    //"time": DateTime.now().toString()
-    "PID": "0102",
-    "AID": "1",
-    "FID": "A",
-    "VID": 1,
-    "activity": "start",
-    "value": true,
-    "time": 1973
+    "PID": PID,
+    "AID": AID.toString(),
+    "FID": FID,
+    "VID": version.toString(),
+    "activity": action_type,
+    "value": value,
+    "time": DateTime.now().toString()
   };
 
   try {

@@ -346,6 +346,7 @@ class CodeTracker extends ChangeNotifier {
 
     if (line == -1) {
       // If line is -1, remove the last item in the chain
+      logAnalytics(context, "detach_block", "'${blocks.last["code"]}' at line ${blocks.last["line"]}");
       blocks.removeLast();
     } else {
       // If a line number is specified, remove all blocks at and below that line.
@@ -559,7 +560,10 @@ class CodeTracker extends ChangeNotifier {
   /// Will send the code currently stored in the CodeTracker notifier to a python compiler server. Returns the output as a string to be shown on the output pane.
   Future<String> run(BuildContext context) async {
 
-    //bool showPopup = false; // When true, the toast notification shown will be a dialogue popup instead.
+    bool isSolutionCorrect = false;
+
+    // Log that run has been pressed
+    logAnalytics(context, "run_blocks", true);
 
     // Check if the code matches the desired solution
     if (Provider.of<ParticipantInformation>(
@@ -608,7 +612,7 @@ class CodeTracker extends ChangeNotifier {
             "That wasnt quite right. Your code doesn't match with what is in your workbook. Reread the task and try again.";
       }
 
-      final isSolutionCorrect = await Provider.of<ParticipantInformation>(
+      isSolutionCorrect = await Provider.of<ParticipantInformation>(
         context,
         listen: false,
       ).currentParticipant!.checkSolution(context, JSONToPythonCode());
@@ -659,6 +663,10 @@ class CodeTracker extends ChangeNotifier {
           data["${currentTask}detailedErrorMessageImage"],
           context,
         );
+
+        // Log the error message returned
+        logAnalytics(context, "error_message", detailedErrorMessage);
+
         return detailedErrorMessage;
       }
     }
@@ -677,6 +685,9 @@ class CodeTracker extends ChangeNotifier {
     } catch (e) {
       output = "Error: ${e.toString()}";
     }
+
+    // Log the output
+    logAnalytics(context, "output", output);
 
     setOutputString(output, null, context);
     return output;
@@ -717,6 +728,9 @@ class TaskTracker extends ChangeNotifier {
 
 class DeleteAll extends ChangeNotifier {
   void deleteAll(BuildContext context, bool askAreYouSure) {
+
+    logAnalytics(context, "delete_all_blocks", true);
+
     if (askAreYouSure) {
       // Check they really want to delete all the blocks
       WidgetsBinding.instance.addPostFrameCallback((_) {
