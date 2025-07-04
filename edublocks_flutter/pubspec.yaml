@@ -34,9 +34,11 @@ flutter:
     - app_assets/block_images/logic/countLessThan10/
     - app_assets/block_images/logic/else/
     - app_assets/block_images/logic/elseIfAgeLessThan16/
+    - app_assets/block_images/logic/elifClass/
     - app_assets/block_images/loops/for_i_inRange/
     - app_assets/block_images/loops/whileGrades/
     - app_assets/block_images/loops/whileTrue/
+    - app_assets/block_images/loops/
     - app_assets/block_images/statements/
     - app_assets/block_images/variables/
     - app_assets/category_icons/

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 const bool isProduction = true;       // Is the code in production or debug mode
-const bool requireLogin = true;       // Should the app load a login screen on start, or go straight to the codeScreen
+const bool requireLogin = false;       // Should the app load a login screen on start, or go straight to the codeScreen
 const bool showPIDonLogin = false;    // Should the app show the participant ID on screen after login in large font
 const bool doExtentionTasks = false;  // Should the app load extention tasks after the main task, or just move straight to the next task
 

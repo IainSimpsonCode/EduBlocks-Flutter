@@ -113,8 +113,11 @@ class BlockLibrary extends ChangeNotifier {
   ) {
     if (category == null) {
       return _allBlocks;
-    }
-    else if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant == null) {
+    } else if (Provider.of<ParticipantInformation>(
+          context,
+          listen: false,
+        ).currentParticipant ==
+        null) {
       int task = 10;
       return _allBlocks
           .where(
@@ -123,8 +126,7 @@ class BlockLibrary extends ChangeNotifier {
                 (element.task == task || element.task == 0),
           )
           .toList();
-    }
-    else {
+    } else {
       int task =
           (Provider.of<ParticipantInformation>(
                 context,
@@ -197,6 +199,7 @@ class CodeTracker extends ChangeNotifier {
         position: const Offset(50, 50),
         height: 90,
         nestedBlocks: [],
+        imageName: "app_assets/block_images/startHere.png",
       ),
     ];
 

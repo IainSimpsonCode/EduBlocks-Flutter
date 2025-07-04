@@ -306,6 +306,87 @@
       "task": 10
     },
     {
+      "category": "Statements",
+      "code": "print(number, \"x\", counter, \"=\", result)",
+      "imageName": "block_images/statements/print-result.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 10
+    },
+    {
+      "category": "Statements",
+      "code": "print(\"Hello World\")",
+      "imageName": "block_images/statements/print-hello-world.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 10
+    },
+    {
+      "category": "Statements",
+      "code": "print(\"I am in year\", year-group)",
+      "imageName": "block_images/statements/print-my-year.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 10
+    },
+    {
+      "category": "Statements",
+      "code": "print(\"The reseachers are: \")",
+      "imageName": "block_images/statements/print-researcher.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 10
+    },
+    {
+      "category": "Statements",
+      "code": "print(researcher-name)",
+      "imageName": "block_images/statements/print-researcher_name.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 10
+    },
+    {
+      "category": "Statements",
+      "code": "print(\"Hello Clayton-le-Woods Primary School\")",
+      "imageName": "block_images/statements/print-school.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 10
+    },
+    {
+      "category": "Statements",
+      "code": "print(teacher-name)",
+      "imageName": "block_images/statements/print-teacher.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 10
+    },
+    {
+      "category": "Statements",
+      "code": "print(\"My teachers are: \")",
+      "imageName": "block_images/statements/print-teachers.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 10
+    },
+    {
+      "category": "Statements",
+      "code": "print(\"The reseachers are from: \", \"Univeristy of Lanchashire\")",
+      "imageName": "block_images/statements/print-university.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 10
+    },
+    {
       "category": "Variables",
       "code": "count += 1",
       "imageName": "block_images/variables/count+=1.png",
@@ -524,22 +605,6 @@
     },
     {
       "category": "Variables",
-      "code": "myClass = \"Ash Class\"",
-      "imageName": "block_images/variables/variable-elder.png",
-      "condition": false,
-      "hasChildren": false,
-      "task": 10
-    },
-    {
-      "category": "Variables",
-      "code": "Classes = [\"Willow Class\", \"Ash Class\"]",
-      "imageName": "block_images/variables/variable-elder.png",
-      "condition": false,
-      "hasChildren": false,
-      "task": 10
-    },
-    {
-      "category": "Variables",
       "code": "KS1 = [\"Oak Class\", \"Elm Class\"]",
       "imageName": "block_images/variables/variable-ks1-list.png",
       "condition": false,
@@ -564,14 +629,6 @@
     },
     {
       "category": "Variables",
-      "code": "myClass = Classes[4]",
-      "imageName": "block_images/variables/variables-class-4.png",
-      "condition": false,
-      "hasChildren": false,
-      "task": 10
-    },
-    {
-      "category": "Variables",
       "code": "myClass = Classes[5]",
       "imageName": "block_images/variables/variables-class-5.png",
       "condition": false,
@@ -582,6 +639,126 @@
       "category": "Variables",
       "code": "myClass = Classes[7]",
       "imageName": "block_images/variables/variables-class-7.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 10
+    },
+    {
+      "category": "Variables",
+      "code": "counter += 1",
+      "imageName": "block_images/variables/counter-plus1.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 10
+    },
+    {
+      "category": "Variables",
+      "code": "number = 3",
+      "imageName": "block_images/variables/variable-3.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 10
+    },
+    {
+      "category": "Variables",
+      "code": "number = 4",
+      "imageName": "block_images/variables/variable-4.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 10
+    },
+    {
+      "category": "Variables",
+      "code": "number = 6",
+      "imageName": "block_images/variables/variable-6.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 10
+    },
+    {
+      "category": "Variables",
+      "code": "number = 8",
+      "imageName": "block_images/variables/variable-8.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 10
+    },
+    {
+      "category": "Variables",
+      "code": "counter = 0",
+      "imageName": "block_images/variables/variable-counter.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 10
+    },
+    {
+      "category": "Variables",
+      "code": "result = number * counter",
+      "imageName": "block_images/variables/variable-number-counter.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 10
+    },
+    {
+      "category": "Variables",
+      "code": "result = 0",
+      "imageName": "block_images/variables/variable-result.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 10
+    },
+    {
+      "category": "Variables",
+      "code": "year-group = 6",
+      "imageName": "block_images/variables/variable-6.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 10
+    },
+    {
+      "category": "Variables",
+      "code": "teacher-name = \"Mr Kay\"",
+      "imageName": "block_images/variables/variable-kay.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 10
+    },
+    {
+      "category": "Variables",
+      "code": "teacher-name = \"Mrs Walsh\"",
+      "imageName": "block_images/variables/variable-walsh.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 10
+    },
+    {
+      "category": "Variables",
+      "code": "reseacher-name = \"Dr Kerr\"",
+      "imageName": "block_images/variables/variable-kerr.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 10
+    },
+    {
+      "category": "Variables",
+      "code": "reseacher-name = \"Dr Lochire\"",
+      "imageName": "block_images/variables/variable-lochrie.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 10
+    },
+    {
+      "category": "Variables",
+      "code": "reseacher-name = \"Dr Sim\"",
+      "imageName": "block_images/variables/variable-sim.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 10
+    },
+    {
+      "category": "Variables",
+      "code": "reseacher-name = \"Mr Simpson\"",
+      "imageName": "block_images/variables/variable-simpson.png",
       "condition": false,
       "hasChildren": false,
       "task": 10
@@ -677,6 +854,21 @@
       "task": 0
     },
     {
+      "category": "Loops",
+      "code": "while counter <= 12:",
+      "imageName": "block_images/loops/while-loop-counter.png",
+      "displayImageName": "block_images/loops/while-loop-counter.png",
+      "condition": false,
+      "hasChildren": true,
+      "priorityBuild": true,
+      "height": 150,
+      "displayImageHeight": 150,
+      "snapXOffset": -40,
+      "snapYOffset": -8,
+      "standardCodeColour": "0xFF996ddd",
+      "task": 0
+    },
+    {
       "category": "Logic",
       "code": "if (count <= 10):",
       "imageName": "block_images/logic/countLessThan10/ifCountLessThan10_Small.png",
@@ -739,105 +931,98 @@
     {
       "category": "Logic",
       "code": "elif (my_class == \"Beech Class\"):",
-      "imageName": "block_images/logic/elifClass/elif-beech-class.png",
-      "displayImageName": "block_images/logic/elifClass/elif-beech-class.png",
+      "imageName": "block_images/logic/elifClass/elif-beech-classSmall.png",
+      "displayImageName": "block_images/logic/elifClass/elif-beech-classSmall.png",
       "condition": false,
       "hasChildren": true,
       "priorityBuild": true,
       "height": 145,
       "displayImageHeight": 150,
       "snapXOffset": -38,
-      "snapYOffset": -8,
       "standardCodeColour": "0xFF996ddd",
       "task": 10
     },
     {
       "category": "Logic",
       "code": "elif (my_class == \"Elder Class\"):",
-      "imageName": "block_images/logic/elifClass/elif-elder-class.png",
-      "displayImageName": "block_images/logic/elifClass/elif-elder-class.png",
+      "imageName": "block_images/logic/elifClass/elif-elder-classSmall.png",
+      "displayImageName": "block_images/logic/elifClass/elif-elder-classSmall.png",
       "condition": false,
       "hasChildren": true,
       "priorityBuild": true,
       "height": 145,
       "displayImageHeight": 150,
       "snapXOffset": -38,
-      "snapYOffset": -8,
       "standardCodeColour": "0xFF996ddd",
       "task": 10
     },
     {
       "category": "Logic",
       "code": "elif (my_class == \"Elm Class\"):",
-      "imageName": "block_images/logic/elifClass/elif-elm-class.png",
-      "displayImageName": "block_images/logic/elifClass/elif-elm-class.png",
+      "imageName": "block_images/logic/elifClass/elif-elm-classSmall.png",
+      "displayImageName": "block_images/logic/elifClass/elif-elm-classSmall.png",
       "condition": false,
       "hasChildren": true,
       "priorityBuild": true,
       "height": 145,
       "displayImageHeight": 150,
       "snapXOffset": -38,
-      "snapYOffset": -8,
       "standardCodeColour": "0xFF996ddd",
       "task": 10
     },
     {
       "category": "Logic",
       "code": "elif (my_class == \"Holly Class\"):",
-      "imageName": "block_images/logic/elifClass/elif-holly-class.png",
-      "displayImageName": "block_images/logic/elifClass/elif-holly-class.png",
+      "imageName": "block_images/logic/elifClass/elif-holly-classSmall.png",
+      "displayImageName": "block_images/logic/elifClass/elif-holly-classSmall.png",
       "condition": false,
       "hasChildren": true,
       "priorityBuild": true,
       "height": 145,
       "displayImageHeight": 150,
       "snapXOffset": -38,
-      "snapYOffset": -8,
       "standardCodeColour": "0xFF996ddd",
       "task": 10
     },
     {
       "category": "Logic",
       "code": "elif (my_class == \"Oak Class\"):",
-      "imageName": "block_images/logic/elifClass/elif-oak-class.png",
-      "displayImageName": "block_images/logic/elifClass/elif-oak-class.png",
+      "imageName": "block_images/logic/elifClass/elif-oak-classSmall.png",
+      "displayImageName": "block_images/logic/elifClass/elif-oak-classSmall.png",
       "condition": false,
       "hasChildren": true,
       "priorityBuild": true,
       "height": 145,
       "displayImageHeight": 150,
       "snapXOffset": -38,
-      "snapYOffset": -8,
       "standardCodeColour": "0xFF996ddd",
       "task": 10
     },
     {
       "category": "Logic",
       "code": "elif (my_class == \"Silver Birch Class\"):",
-      "imageName": "block_images/logic/elifClass/elif-silver-birch-class.png",
-      "displayImageName": "block_images/logic/elifClass/elif-silver-birch-class.png",
+      "imageName": "block_images/logic/elifClass/elif-silver_birch-classSmall.png",
+      "displayImageName": "block_images/logic/elifClass/elif-silver_birch-classSmall.png",
       "condition": false,
       "hasChildren": true,
       "priorityBuild": true,
       "height": 145,
       "displayImageHeight": 150,
       "snapXOffset": -38,
-      "snapYOffset": -8,
       "standardCodeColour": "0xFF996ddd",
       "task": 10
     },
     {
       "category": "Logic",
-      "code": "elif (my_class == \"Ash Class\"):",
-      "imageName": "block_images/logic/elifClass/elif-ash-class.png",
-      "displayImageName": "block_images/logic/elifClass/elif-ash-class.png",
+      "code": "if (my_class == \"Ash Class\"):",
+      "imageName": "block_images/logic/elifClass/if-ash-classSmall.png",
+      "displayImageName": "block_images/logic/elifClass/if-ash-classSmall.png",
       "condition": false,
       "hasChildren": true,
       "priorityBuild": true,
       "height": 145,
       "displayImageHeight": 150,
       "snapXOffset": -38,
-      "snapYOffset": -8,
       "standardCodeColour": "0xFF996ddd",
       "task": 10
     }

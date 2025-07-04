@@ -862,6 +862,138 @@ class _canvasWidgetState extends State<canvasWidget> {
             break;
         }
         break;
+
+      case "elif (my_class == \"Beech Class\"):":
+        switch (parentNestedBlocks) {
+          case 0:
+            parent.imageName =
+                "${blockFolder}logic/elifClass/elif-beech-classSmall.png";
+            parent.height = 150.0;
+            break;
+          case 1:
+            parent.imageName =
+                "${blockFolder}logic/elifClass/elif-beech-class_1Block.png";
+            parent.height = 200.0;
+            break;
+          default:
+            parent.imageName =
+                "${blockFolder}logic/elifClass/elif-beech-class_1Blocks.png";
+            parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
+        }
+        break;
+
+      case "elif (my_class == \"Elder Class\"):":
+        switch (parentNestedBlocks) {
+          case 0:
+            parent.imageName =
+                "${blockFolder}logic/elifClass/elif-elder-classSmall.png";
+            parent.height = 150.0;
+            break;
+          case 1:
+            parent.imageName =
+                "${blockFolder}logic/elifClass/elif-elder-class_1Block.png";
+            parent.height = 200.0;
+            break;
+          default:
+            parent.imageName =
+                "${blockFolder}logic/elifClass/elif-elder-class_1Blocks.png";
+            parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
+        }
+        break;
+
+      case "elif (my_class == \"Elm Class\"):":
+        switch (parentNestedBlocks) {
+          case 0:
+            parent.imageName =
+                "${blockFolder}logic/elifClass/elif-elm-classSmall.png";
+            parent.height = 150.0;
+            break;
+          case 1:
+            parent.imageName =
+                "${blockFolder}logic/elifClass/elif-elm-class_1Block.png";
+            parent.height = 200.0;
+            break;
+          default:
+            parent.imageName =
+                "${blockFolder}logic/elifClass/elif-elm-class_1Blocks.png";
+            parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
+        }
+        break;
+
+      case "elif (my_class == \"Holly Class\"):":
+        switch (parentNestedBlocks) {
+          case 0:
+            parent.imageName =
+                "${blockFolder}logic/elifClass/elif-holly-classSmall.png";
+            parent.height = 150.0;
+            break;
+          case 1:
+            parent.imageName =
+                "${blockFolder}logic/elifClass/elif-holly-class_1Block.png";
+            parent.height = 200.0;
+            break;
+          default:
+            parent.imageName =
+                "${blockFolder}logic/elifClass/elif-holly-class_1Blocks.png";
+            parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
+        }
+        break;
+
+      case "elif (my_class == \"Oak Class\"):":
+        switch (parentNestedBlocks) {
+          case 0:
+            parent.imageName =
+                "${blockFolder}logic/elifClass/elif-oak-classSmall.png";
+            parent.height = 150.0;
+            break;
+          case 1:
+            parent.imageName =
+                "${blockFolder}logic/elifClass/elif-oak-class_1Block.png";
+            parent.height = 200.0;
+            break;
+          default:
+            parent.imageName =
+                "${blockFolder}logic/elifClass/elif-oak-class_1Blocks.png";
+            parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
+        }
+        break;
+
+      case "elif (my_class == \"Silver Birch Class\"):":
+        switch (parentNestedBlocks) {
+          case 0:
+            parent.imageName =
+                "${blockFolder}logic/elifClass/elif-silver_birch-classSmall.png";
+            parent.height = 150.0;
+            break;
+          case 1:
+            parent.imageName =
+                "${blockFolder}logic/elifClass/elif-silver_birch-class_1Block.png";
+            parent.height = 200.0;
+            break;
+          default:
+            parent.imageName =
+                "${blockFolder}logic/elifClass/elif-silver_birch-class_1Blocks.png";
+            parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
+        }
+        break;
+
+      case "if (my_class == \"Ash Class\"):":
+        switch (parentNestedBlocks) {
+          case 0:
+            parent.imageName =
+                "${blockFolder}logic/elifClass/if-ash-classSmall.png";
+            parent.height = 150.0;
+            break;
+          case 1:
+            parent.imageName =
+                "${blockFolder}logic/elifClass/if-ash-class_1Block.png";
+            parent.height = 200.0;
+            break;
+          default:
+            parent.imageName =
+                "${blockFolder}logic/elifClass/if-ash-class_1Blocks.png";
+            parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
+        }
     }
 
     buildBlock(parent);
@@ -889,7 +1021,14 @@ class _canvasWidgetState extends State<canvasWidget> {
           snappedTo.type.code == 'elif (age <= 16):' ||
           snappedTo.type.code == 'else:' ||
           snappedTo.type.code == 'while i < len(my_grades):' ||
-          snappedTo.type.code == 'for i in range(len(my_grades)):' &&
+          snappedTo.type.code == 'for i in range(len(my_grades)):' ||
+          snappedTo.type.code == 'elif (my_class == \"Beech Class\"):' ||
+          snappedTo.type.code == 'elif (my_class == \"Elder Class\"):' ||
+          snappedTo.type.code == 'elif (my_class == \"Elm Class\"):' ||
+          snappedTo.type.code == 'elif (my_class == \"Holly Class\"):' ||
+          snappedTo.type.code == 'elif (my_class == \"Oak Class\"):' ||
+          snappedTo.type.code == 'elif (my_class == \"Silver Birch Class\"):' ||
+          snappedTo.type.code == 'if (my_class == \"Ash Class\"):' &&
               snappedTo.id != block.id) {
         return snappedTo;
       }
@@ -909,7 +1048,15 @@ class _canvasWidgetState extends State<canvasWidget> {
           currentBlock.type.code == "elif (age <= 16):" ||
           currentBlock.type.code == "else:" ||
           currentBlock.type.code == "while i < len(my_grades):" ||
-          currentBlock.type.code == "for i in range(len(my_grades)):") {
+          currentBlock.type.code == "for i in range(len(my_grades)):" ||
+          currentBlock.type.code == "elif (my_class == \"Beech Class\"):" ||
+          currentBlock.type.code == "elif (my_class == \"Elder Class\"):" ||
+          currentBlock.type.code == "elif (my_class == \"Elm Class\"):" ||
+          currentBlock.type.code == "elif (my_class == \"Holly Class\"):" ||
+          currentBlock.type.code == "elif (my_class == \"Oak Class\"):" ||
+          currentBlock.type.code ==
+              "elif (my_class == \"Silver Birch Class\"):" ||
+          currentBlock.type.code == "if (my_class == \"Ash Class\"):") {
         if (currentBlock.nestedBlocks!.isNotEmpty) {
           blockUnits += getNumberOfNestedBlocks(currentBlock);
           blockUnits = blockUnits + 2;
