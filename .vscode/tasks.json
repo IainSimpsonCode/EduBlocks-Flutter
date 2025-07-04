@@ -4,7 +4,8 @@
     {
       "label": "prepare-to-deploy",
       "type": "shell",
-      "command": "cd edublocks_flutter; flutter build web; cd build/web; rm -Force -R app_assets; cd assets; mv app_assets ..",
+      //"command": "cd edublocks_flutter; flutter build web; cd build/web; rm -Force -R app_assets; cd assets; mv app_assets ..",
+      "command": "cd edublocks_flutter; flutter build web; cd build/web; rm -Force -R app_assets; cd assets; cp -R app_assets ..",
       "problemMatcher": [],
     }
   ]
