@@ -24,7 +24,7 @@ Future<bool> sendAnalyticsToMongo(String PID, int AID, String FID, int version, 
     "VID": version,
     "activity": action_type,
     "value": value,
-    "timestamp": DateTime.now()
+    "timestamp": DateTime.now().toString()
   };
 
   try {
