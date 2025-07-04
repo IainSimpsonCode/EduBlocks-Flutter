@@ -179,7 +179,33 @@
       "standardCodeColour": "0xFF61afef",
       "task": 5
     },
-
+    {
+      "category": "Statements",
+      "code": "print(number1 + number2)",
+      "imageName": "block_images/statements/print-calc.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 7
+    },
+    {
+      "category": "Statements",
+      "code": "print(\"***\")",
+      "imageName": "block_images/statements/print-seperator.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 7
+    },
+    {
+      "category": "Statements",
+      "code": "print(number 1 + \"divided by\" + number 2 + \"is...\")",
+      "imageName": "block_images/statements/print-variables-text.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 7
+    },
     {
       "category": "Variables",
       "code": "count += 1",
@@ -348,6 +374,38 @@
       "condition": false,
       "hasChildren": false,
       "task": 6
+    },
+    {
+      "category": "Variables",
+      "code": "number2 = 0",
+      "imageName": "block_images/variables/variable-0.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 7
+    },
+    {
+      "category": "Variables",
+      "code": "number2 = 1",
+      "imageName": "block_images/variables/variable-1.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 7
+    },
+    {
+      "category": "Variables",
+      "code": "number2 += 1",
+      "imageName": "block_images/variables/variable2-incremented.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 7
+    },
+    {
+      "category": "Variables",
+      "code": "number1 = 10",
+      "imageName": "block_images/variables/variable-10.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 7
     },
     {
       "category": "Lists",

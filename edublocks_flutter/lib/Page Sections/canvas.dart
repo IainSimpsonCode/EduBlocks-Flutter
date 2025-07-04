@@ -464,7 +464,7 @@ class _canvasWidgetState extends State<canvasWidget> {
 
           MoveableBlock parent = getParent(dragged);
 
-          parent.nestedBlocks?.add(dragged);
+          // parent.nestedBlocks?.add(dragged);
           reSizeBlock(dragged);
         } else if (dragged.isNested) {
           dragged.isNested = false;
@@ -660,7 +660,6 @@ class _canvasWidgetState extends State<canvasWidget> {
     MoveableBlock parent = getParent(block);
 
     int parentNestedBlocks = getNumberOfNestedBlocks(parent);
-
     switch (parent.type.code) {
       case 'while True:':
         switch (parentNestedBlocks) {
@@ -692,7 +691,7 @@ class _canvasWidgetState extends State<canvasWidget> {
             break;
           default:
             parent.type.imageName =
-                "block_images/loops00/whileTrue/whileTrue4Blocks.png";
+                "block_images/loops/whileTrue/whileTrue4Blocks.png";
             parent.height = 190.0 + (70 * (parentNestedBlocks - 1));
             break;
         }
