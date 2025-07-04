@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:edublocks_flutter/Services/providers.dart';
+import 'package:edublocks_flutter/features.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -35,7 +36,7 @@ Future<bool> sendAnalyticsToMongo(String PID, int AID, String FID, int version, 
     final response = await http.post(url, headers: headers, body: body);
     
     if (response.statusCode == 200) {
-      print("Activity logged successfully");
+      if (!isProduction) {print("Activity logged successfully");}
       return true;
     }
     else {
