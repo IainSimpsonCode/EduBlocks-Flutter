@@ -79,7 +79,7 @@ class _categoryScrollerState extends State<categoryScroller> {
                           ),
                           padding: const EdgeInsets.all(6),
                           child: SvgPicture.asset(
-                            'category_icons/${category.iconName}.svg',
+                            'app_assets/category_icons/${category.iconName}.svg',
                             color: Colors.white,
                             fit: BoxFit.contain,
                             errorBuilder: (context, error, stackTrace) {

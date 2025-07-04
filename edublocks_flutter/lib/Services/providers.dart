@@ -4,6 +4,7 @@ import 'package:edublocks_flutter/Classes/Category.dart';
 import 'package:edublocks_flutter/Classes/MoveableBlock.dart';
 import 'package:edublocks_flutter/Classes/Participant.dart';
 import 'package:edublocks_flutter/Services/TextFormatter.dart';
+import 'package:edublocks_flutter/Services/analytics.dart';
 import 'package:edublocks_flutter/Services/toastNotifications.dart';
 import 'package:edublocks_flutter/Widgets/codeTextPanel.dart';
 import 'package:edublocks_flutter/Widgets/outputTextPanel.dart';
@@ -196,7 +197,7 @@ class CodeTracker extends ChangeNotifier {
       dragPositions[block.id] = block.position;
     }
 
-    removeBlock(2, notify: notify); // Remove all blocks after the start block
+    removeBlock(context, 2, notify: notify); // Remove all blocks after the start block
   }
 
   /// Returns the total height of all the blocks within the chain of blocks
@@ -259,7 +260,11 @@ class CodeTracker extends ChangeNotifier {
   }
 
   /// Insert a block (using the ```Block``` class) into the code chain at a specific line number
-  int insertBlock(Block block, int line) {
+  int insertBlock(BuildContext context, Block block, int line) {
+
+    // Log a block being added
+    logAnalytics(context, "attach_block", "'${block.code}' at line $line");
+
     if (line <= 1 && line != -1) {
       return 1;
     } // Line number must be positive (except -1), and cannot be 1 as this is the start block. Inserting at -1 will automatically place the block at the end of the chain.
@@ -315,7 +320,7 @@ class CodeTracker extends ChangeNotifier {
     return 0;
   }
 
-  int removeBlock(int line, {bool notify = true}) {
+  int removeBlock(BuildContext context, int line, {bool notify = true}) {
     if (line <= 1 && line != -1) {
       return 1;
     } // Line number must be positive (except -1), and cannot be 1 as this is the start block. Removing at -1 will automatically remove the block at the end of the chain.
@@ -348,6 +353,8 @@ class CodeTracker extends ChangeNotifier {
         }
 
         blocksToRemove.add(block["line"]);
+        // Log a block being removbed
+        logAnalytics(context, "detach_block", "'${block["code"]}' at line ${block["line"]}");
       }
 
       blocks.removeWhere((element) => blocksToRemove.contains(element["line"]));
@@ -601,7 +608,7 @@ class CodeTracker extends ChangeNotifier {
 
       // Get the relevant detailed error message
       final String response = await rootBundle.loadString(
-        'assets/solutions.json',
+        'app_assets/solutions.json',
       ); // Get the solutions from a json file
       final data = json.decode(response);
       int currentTask =

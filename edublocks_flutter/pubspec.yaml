@@ -26,4 +26,18 @@ dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/
+    - app_assets/
+    - app_assets/block_images/
+    - app_assets/block_images/import/
+    - app_assets/block_images/lists/
+    - app_assets/block_images/logic/ageLessThan11/
+    - app_assets/block_images/logic/countLessThan10/
+    - app_assets/block_images/logic/else/
+    - app_assets/block_images/logic/elseIfAgeLessThan16/
+    - app_assets/block_images/loops/for_i_inRange/
+    - app_assets/block_images/loops/whileGrades/
+    - app_assets/block_images/loops/whileTrue/
+    - app_assets/block_images/statements/
+    - app_assets/block_images/variables/
+    - app_assets/category_icons/
+    - app_assets/sounds/

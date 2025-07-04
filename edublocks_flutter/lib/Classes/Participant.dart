@@ -145,6 +145,10 @@ class Participant {
     );
   }
 
+  String getPID() {
+    return "$classID$ID";
+  }
+
   /// Returns the current progress of the participant through thier current task.
   /// 0 = they are at the start; 1 = they have completed the task up to the first error; 2 = they have used the feature to fix the error; 3 = they have completed the extention
   int get currentProgress => _currentProgress;
@@ -283,7 +287,7 @@ class Participant {
 
   Future<bool> checkSolution(BuildContext context, String solution) async {
     final String response = await rootBundle.loadString(
-      'assets/solutions.json',
+      'app_assets/solutions.json',
     ); // Get the solutions from a json file
     final data = json.decode(response);
 

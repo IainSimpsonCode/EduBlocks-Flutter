@@ -1,6 +1,5 @@
 import 'package:edublocks_flutter/Services/providers.dart';
 import 'package:edublocks_flutter/Views/loadingScreen.dart';
-import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';

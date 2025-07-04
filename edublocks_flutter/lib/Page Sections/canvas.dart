@@ -1,4 +1,5 @@
 import 'package:edublocks_flutter/Classes/Block.dart';
+import 'package:edublocks_flutter/Services/analytics.dart';
 import 'package:edublocks_flutter/Services/providers.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 
 Future<void> loadJsonFromAssets() async {
-  String jsonString = await rootBundle.loadString('assets/data.json');
+  String jsonString = await rootBundle.loadString('app_assets/data.json');
   Map<String, dynamic> jsonMap = jsonDecode(jsonString);
 
   print(jsonMap);
@@ -45,11 +46,15 @@ class _canvasWidgetState extends State<canvasWidget> {
       // Get the next block from the queue
       Block? block = _blocksToLoad.getBlockToLoad();
 
+
       if (block == null) {
         // If there was no block left in the queue (queue is empty), leave the loop
         run = false;
         break;
       } else {
+        // Log a block being loaded to MongoDB analytics
+        logAnalytics(context, "load_block", block.code);
+        
         setState(() {
           // Load next block in the queue
           _codeTracker.blocks.add(
@@ -273,7 +278,7 @@ class _canvasWidgetState extends State<canvasWidget> {
         Provider.of<CodeTracker>(
           context,
           listen: false,
-        ).removeBlock(blockLineNumber);
+        ).removeBlock(context, blockLineNumber);
       }
     }
 
@@ -607,11 +612,12 @@ class _canvasWidgetState extends State<canvasWidget> {
       Provider.of<CodeTracker>(
         context,
         listen: false,
-      ).insertBlock(block.type, -1);
+      ).insertBlock(context, block.type, -1);
     }
     //1.2 this is called when the block is nested but without children
     else if (block.childId == null && block.nestedBlocks!.isEmpty) {
       _codeTracker.insertBlock(
+        context, 
         block.type,
         getBlockLineNumber(
           block.id,
@@ -636,6 +642,7 @@ class _canvasWidgetState extends State<canvasWidget> {
       //nested blocks are handled in getBlockLineNumber
       for (int i = 0; i < chain.length; i++) {
         _codeTracker.insertBlock(
+          context, 
           chain[i].type,
           getBlockLineNumber(
             chain[i].id,
@@ -1136,7 +1143,7 @@ class _canvasWidgetState extends State<canvasWidget> {
           Provider.of<CodeTracker>(
             context,
             listen: false,
-          ).removeBlock(blockLineNumber);
+          ).removeBlock(context, blockLineNumber);
         }
       }
     } else if (removeDecendants == false) {
@@ -1336,13 +1343,13 @@ class _canvasWidgetState extends State<canvasWidget> {
 
   Future<void> playSound(int option) async {
     if (option == 0) {
-      await player.setAsset('sounds/disconnect.wav');
+      await player.setAsset('app_assets/sounds/disconnect.wav');
       await player.play();
     } else if (option == 1) {
-      await player.setAsset('sounds/click.mp3');
+      await player.setAsset('app_assets/sounds/click.mp3');
       await player.play();
     } else {
-      await player.setAsset('sounds/disconnect.wav');
+      await player.setAsset('app_assets/sounds/disconnect.wav');
       await player.play();
     }
   }
