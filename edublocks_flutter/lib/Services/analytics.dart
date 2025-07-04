@@ -30,7 +30,8 @@ Future<bool> sendAnalyticsToMongo(String PID, int AID, String FID, int version, 
     "VID": version.toString(),
     "activity": action_type,
     "value": value,
-    "time": DateTime.now().toString()
+    //"time": DateTime.now().toString()
+    "time": 1973
   };
 
   try {
