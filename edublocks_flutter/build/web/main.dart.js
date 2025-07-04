@@ -28201,9 +28201,9 @@ if(!h){A.f_("Log: Value was not a valid type.")
 q=!1
 s=1
 break}h=t.N
-n=A.ae(["PID",a,"AID",B.e.k(b),"FID",c,"VID",B.e.k(d),"activity",e,"value",a0,"time",1973],h,t.z)
+n=A.ae(["PID","0102","AID","1","FID","A","VID",1,"activity","start","value",!0,"time",1973],h,t.K)
 p=4
-m=A.eD("/log",0,null)
+m=A.eD("https://marklochrie.co.uk/edublocks_logger/log",0,null)
 l=A.ae(["Content-Type","application/json"],h,h)
 k=B.a8.oF(n,null)
 s=7

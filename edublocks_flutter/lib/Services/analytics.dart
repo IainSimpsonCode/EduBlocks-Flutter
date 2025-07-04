@@ -24,18 +24,24 @@ Future<bool> sendAnalyticsToMongo(String PID, int AID, String FID, int version, 
   }
 
   final jsonBody = {
-    "PID": PID,
-    "AID": AID.toString(),
-    "FID": FID,
-    "VID": version.toString(),
-    "activity": action_type,
-    "value": value,
+    // "PID": PID,
+    // "AID": AID.toString(),
+    // "FID": FID,
+    // "VID": version.toString(),
+    // "activity": action_type,
+    // "value": value,
     //"time": DateTime.now().toString()
+    "PID": "0102",
+    "AID": "1",
+    "FID": "A",
+    "VID": 1,
+    "activity": "start",
+    "value": true,
     "time": 1973
   };
 
   try {
-    final url = Uri.parse("/log");  
+    final url = Uri.parse("https://marklochrie.co.uk/edublocks_logger/log");  
     final headers = {"Content-Type": "application/json"};
     final body = jsonEncode(jsonBody);
 
