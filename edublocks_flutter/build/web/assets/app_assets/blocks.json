@@ -179,7 +179,132 @@
       "standardCodeColour": "0xFF61afef",
       "task": 5
     },
-
+    {
+      "category": "Statements",
+      "code": "print(number1 / number2)",
+      "imageName": "block_images/statements/print-calc.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 7
+    },
+    {
+      "category": "Statements",
+      "code": "print(\"***\")",
+      "imageName": "block_images/statements/print-seperator.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 7
+    },
+    {
+      "category": "Statements",
+      "code": "print(number 1 + \"divided by\" + number 2 + \"is...\")",
+      "imageName": "block_images/statements/print-variables-text.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 7
+    },
+    {
+      "category": "Statements",
+      "code": "print(classes)",
+      "imageName": "block_images/statements/print-classes.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 10
+    },
+    {
+      "category": "Statements",
+      "code": "print(\"You are in reception\")",
+      "imageName": "block_images/statements/print-reception.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 10
+    },
+    {
+      "category": "Statements",
+      "code": "print(\"We are not sure what year you are in\")",
+      "imageName": "block_images/statements/print-unknown.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 10
+    },
+    {
+      "category": "Statements",
+      "code": "print(\"You are in year 1\")",
+      "imageName": "block_images/statements/print-year1.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 10
+    },
+    {
+      "category": "Statements",
+      "code": "print(\"You are in year 2\")",
+      "imageName": "block_images/statements/print-year2.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 10
+    },
+    {
+      "category": "Statements",
+      "code": "print(\"You are in year 3\")",
+      "imageName": "block_images/statements/print-year3.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 10
+    },
+    {
+      "category": "Statements",
+      "code": "print(\"You are in year 4\")",
+      "imageName": "block_images/statements/print-year4.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 10
+    },
+    {
+      "category": "Statements",
+      "code": "print(\"You are in year 5\")",
+      "imageName": "block_images/statements/print-year5.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 10
+    },
+    {
+      "category": "Statements",
+      "code": "print(\"You are in year 6\")",
+      "imageName": "block_images/statements/print-year6.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 10
+    },
+    {
+      "category": "Statements",
+      "code": "#list of classes",
+      "imageName": "block_images/statements/comment1.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 10
+    },
+    {
+      "category": "Statements",
+      "code": "#working out which class you are in",
+      "imageName": "block_images/statements/comment2.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 10
+    },
     {
       "category": "Variables",
       "code": "count += 1",
@@ -350,6 +475,118 @@
       "task": 6
     },
     {
+      "category": "Variables",
+      "code": "number2 = 0",
+      "imageName": "block_images/variables/variable-0.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 7
+    },
+    {
+      "category": "Variables",
+      "code": "number2 = 1",
+      "imageName": "block_images/variables/variable-1.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 7
+    },
+    {
+      "category": "Variables",
+      "code": "number2 += 1",
+      "imageName": "block_images/variables/variable2-incremented.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 7
+    },
+    {
+      "category": "Variables",
+      "code": "number1 = 10",
+      "imageName": "block_images/variables/variable-10.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 7
+    },
+    {
+      "category": "Variables",
+      "code": "myClass = \"Ash Class\"",
+      "imageName": "block_images/variables/variable-ash.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 10
+    },
+    {
+      "category": "Variables",
+      "code": "Classes = [\"Willow Class\", \"Ash Class\"]",
+      "imageName": "block_images/variables/variable-classes-list.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 10
+    },
+    {
+      "category": "Variables",
+      "code": "myClass = \"Ash Class\"",
+      "imageName": "block_images/variables/variable-elder.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 10
+    },
+    {
+      "category": "Variables",
+      "code": "Classes = [\"Willow Class\", \"Ash Class\"]",
+      "imageName": "block_images/variables/variable-elder.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 10
+    },
+    {
+      "category": "Variables",
+      "code": "KS1 = [\"Oak Class\", \"Elm Class\"]",
+      "imageName": "block_images/variables/variable-ks1-list.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 10
+    },
+    {
+      "category": "Variables",
+      "code": "KS2 = [\"Beech Class\", \"Silver Birch Class\", \"Holly Class\", \"Elder Class\"]",
+      "imageName": "block_images/variables/variable-ks2-list.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 10
+    },
+    {
+      "category": "Variables",
+      "code": "myClass = Classes[2]",
+      "imageName": "block_images/variables/variables-class-2.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 10
+    },
+    {
+      "category": "Variables",
+      "code": "myClass = Classes[4]",
+      "imageName": "block_images/variables/variables-class-4.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 10
+    },
+    {
+      "category": "Variables",
+      "code": "myClass = Classes[5]",
+      "imageName": "block_images/variables/variables-class-5.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 10
+    },
+    {
+      "category": "Variables",
+      "code": "myClass = Classes[7]",
+      "imageName": "block_images/variables/variables-class-7.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 10
+    },
+    {
       "category": "Lists",
       "code": "friends.append('Ann')",
       "imageName": "block_images/lists/friends-append.png",
@@ -375,6 +612,24 @@
       "hasChildren": false,
       "standardCodeColour": "0xFFe06356",
       "task": 0
+    },
+    {
+      "category": "Lists",
+      "code": "Classes.extend(KS1)",
+      "imageName": "block_images/lists/list-extend-ks1.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFFe06356",
+      "task": 10
+    },
+    {
+      "category": "Lists",
+      "code": "Classes.extend(KS2)",
+      "imageName": "block_images/lists/list-extend-ks2.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFFe06356",
+      "task": 10
     },
     {
       "category": "Loops",
@@ -480,6 +735,111 @@
       "snapYOffset": -8,
       "standardCodeColour": "0xFF996ddd",
       "task": 0
+    },
+    {
+      "category": "Logic",
+      "code": "elif (my_class == \"Beech Class\"):",
+      "imageName": "block_images/logic/elifClass/elif-beech-class.png",
+      "displayImageName": "block_images/logic/elifClass/elif-beech-class.png",
+      "condition": false,
+      "hasChildren": true,
+      "priorityBuild": true,
+      "height": 145,
+      "displayImageHeight": 150,
+      "snapXOffset": -38,
+      "snapYOffset": -8,
+      "standardCodeColour": "0xFF996ddd",
+      "task": 10
+    },
+    {
+      "category": "Logic",
+      "code": "elif (my_class == \"Elder Class\"):",
+      "imageName": "block_images/logic/elifClass/elif-elder-class.png",
+      "displayImageName": "block_images/logic/elifClass/elif-elder-class.png",
+      "condition": false,
+      "hasChildren": true,
+      "priorityBuild": true,
+      "height": 145,
+      "displayImageHeight": 150,
+      "snapXOffset": -38,
+      "snapYOffset": -8,
+      "standardCodeColour": "0xFF996ddd",
+      "task": 10
+    },
+    {
+      "category": "Logic",
+      "code": "elif (my_class == \"Elm Class\"):",
+      "imageName": "block_images/logic/elifClass/elif-elm-class.png",
+      "displayImageName": "block_images/logic/elifClass/elif-elm-class.png",
+      "condition": false,
+      "hasChildren": true,
+      "priorityBuild": true,
+      "height": 145,
+      "displayImageHeight": 150,
+      "snapXOffset": -38,
+      "snapYOffset": -8,
+      "standardCodeColour": "0xFF996ddd",
+      "task": 10
+    },
+    {
+      "category": "Logic",
+      "code": "elif (my_class == \"Holly Class\"):",
+      "imageName": "block_images/logic/elifClass/elif-holly-class.png",
+      "displayImageName": "block_images/logic/elifClass/elif-holly-class.png",
+      "condition": false,
+      "hasChildren": true,
+      "priorityBuild": true,
+      "height": 145,
+      "displayImageHeight": 150,
+      "snapXOffset": -38,
+      "snapYOffset": -8,
+      "standardCodeColour": "0xFF996ddd",
+      "task": 10
+    },
+    {
+      "category": "Logic",
+      "code": "elif (my_class == \"Oak Class\"):",
+      "imageName": "block_images/logic/elifClass/elif-oak-class.png",
+      "displayImageName": "block_images/logic/elifClass/elif-oak-class.png",
+      "condition": false,
+      "hasChildren": true,
+      "priorityBuild": true,
+      "height": 145,
+      "displayImageHeight": 150,
+      "snapXOffset": -38,
+      "snapYOffset": -8,
+      "standardCodeColour": "0xFF996ddd",
+      "task": 10
+    },
+    {
+      "category": "Logic",
+      "code": "elif (my_class == \"Silver Birch Class\"):",
+      "imageName": "block_images/logic/elifClass/elif-silver-birch-class.png",
+      "displayImageName": "block_images/logic/elifClass/elif-silver-birch-class.png",
+      "condition": false,
+      "hasChildren": true,
+      "priorityBuild": true,
+      "height": 145,
+      "displayImageHeight": 150,
+      "snapXOffset": -38,
+      "snapYOffset": -8,
+      "standardCodeColour": "0xFF996ddd",
+      "task": 10
+    },
+    {
+      "category": "Logic",
+      "code": "elif (my_class == \"Ash Class\"):",
+      "imageName": "block_images/logic/elifClass/elif-ash-class.png",
+      "displayImageName": "block_images/logic/elifClass/elif-ash-class.png",
+      "condition": false,
+      "hasChildren": true,
+      "priorityBuild": true,
+      "height": 145,
+      "displayImageHeight": 150,
+      "snapXOffset": -38,
+      "snapYOffset": -8,
+      "standardCodeColour": "0xFF996ddd",
+      "task": 10
     }
   ]
 }

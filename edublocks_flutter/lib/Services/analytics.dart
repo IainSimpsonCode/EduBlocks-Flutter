@@ -18,6 +18,11 @@ Future<bool>logAnalytics(BuildContext context, String action_type, dynamic value
 
 Future<bool> sendAnalyticsToMongo(String PID, int AID, String FID, int version, String action_type, dynamic value) async {
 
+  if (!(value is String || value is bool || value is int)) {
+    print("Log: Value was not a valid type.");
+    return false;
+  }
+
   final jsonBody = {
     "PID": PID,
     "AID": AID.toString(),
@@ -29,7 +34,7 @@ Future<bool> sendAnalyticsToMongo(String PID, int AID, String FID, int version, 
   };
 
   try {
-    final url = Uri.parse("/log");
+    final url = Uri.parse("/log");  
     final headers = {"Content-Type": "application/json"};
     final body = jsonEncode(jsonBody);
 
