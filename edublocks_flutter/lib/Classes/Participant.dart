@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:edublocks_flutter/Services/analytics.dart';
 import 'package:edublocks_flutter/Services/firestore.dart';
 import 'package:edublocks_flutter/Services/providers.dart';
 import 'package:edublocks_flutter/Services/supervisorCodePopup.dart';
@@ -68,12 +69,18 @@ class Participant {
         Colors.blue[400]!,
         10,
       );
+
+      // Log that they have tried to move on without finishing the task
+      logAnalytics(context, "finish_early", true);
     } else if (runButtonPressed >= 2 && _currentProgress < 2) {
       // If they have attempted the task at least twice, but not been able to complete the task
       // Show a popup with a textbox
       // The user must input a 4 digit code. If the code matches the value of supervisorCode, set _nextTask to true
       showCodePopup(context, supervisorCode).then((authorized) {
         if (authorized) {
+          // Log that they have been authorised to move on without finishing the task
+          logAnalytics(context, "finish_early", true);
+
           _nextTask = true;
         } else {
           showToastWithIcon(
@@ -295,10 +302,12 @@ class Participant {
     _errorLine = data["${currentTask}ErrorLine"] ?? 1;
     _taskCodeUpToError = data["$currentTask"] ?? "# Start Here";
 
-    print("Solution: $solution");
-    print(
-      "Answer ($currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}): ${data["$currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}"]}",
-    );
+    if (!isProduction) {
+      print("Solution: $solution");
+      print(
+        "Answer ($currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}): ${data["$currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}"]}",
+      );
+    }
 
     if (solution ==
         data["$currentTask${_currentProgress == 1 ? "fixed" : ""}${_currentProgress == 2 ? "extention" : ""}"]) {

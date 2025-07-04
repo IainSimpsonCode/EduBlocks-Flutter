@@ -4,6 +4,7 @@ import 'package:edublocks_flutter/Page%20Sections/sideBar.dart';
 import 'package:edublocks_flutter/Page%20Sections/topBar.dart';
 import 'package:edublocks_flutter/Services/analytics.dart';
 import 'package:edublocks_flutter/Services/firestore.dart';
+import 'package:edublocks_flutter/Services/popupNotification.dart';
 import 'package:edublocks_flutter/Services/providers.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
@@ -33,31 +34,13 @@ class _CodeScreenState extends State<CodeScreen> {
     // log analytics information to MongoDB
     logAnalytics(context, "start_activity", true);
 
-    // Show popup to display task
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final taskNumber = Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getTask();
-      if (taskNumber == null) {
-        return;
-      }
+    final taskNumber = Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getTask();
+    if (taskNumber == null) {
+      return;
+    }
+    final text = "You are working on task $taskNumber.\nPlease find it in your workbook";
 
-      final text = "You are working on task $taskNumber.\nPlease find it in your workbook";
-      showDialog(
-        barrierDismissible: false, // User must click a button to proceed
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Your Task'),
-            content: Text(text),
-            actions: [
-              TextButton(
-                child: Text('OK'),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ],
-          );
-        },
-      );
-    });
+    showPopup(context, "Your Task", text, null);
   }
 
   void _onTaskUpdate() {

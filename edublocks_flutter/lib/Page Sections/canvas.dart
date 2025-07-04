@@ -17,7 +17,7 @@ Future<void> loadJsonFromAssets() async {
   String jsonString = await rootBundle.loadString('app_assets/data.json');
   Map<String, dynamic> jsonMap = jsonDecode(jsonString);
 
-  print(jsonMap);
+  if (!isProduction) {print(jsonMap);}
 }
 
 class canvasWidget extends StatefulWidget {
@@ -1104,9 +1104,7 @@ class _canvasWidgetState extends State<canvasWidget> {
         onPanUpdate: (details) => onUpdateDrag(block.id, details),
         onPanEnd: (_) => onEndDrag(block.id),
         onTap: () {
-          print(
-            "Line number: ${getBlockLineNumber(block.id, _codeTracker.blocks.firstWhere((b) => b.id == 0))}",
-          );
+          if (!isProduction) {print("Line number: ${getBlockLineNumber(block.id, _codeTracker.blocks.firstWhere((b) => b.id == 0))}");}
 
           if (block.id != 0) {
             setState(() {
@@ -1116,7 +1114,7 @@ class _canvasWidgetState extends State<canvasWidget> {
                 _codeTracker.selectedBlock = block;
               }
             });
-            print("Block selected: ${block.type.code}");
+            if (!isProduction) {print("Block selected: ${block.type.code}");}
           }
         },
         child: SizedBox(
@@ -1385,6 +1383,9 @@ class _canvasWidgetState extends State<canvasWidget> {
 
         // Assert that the selectedBlock is not null, and does exist
         final block = _codeTracker.selectedBlock!;
+
+        // Log that a block has been deleted
+        logAnalytics(context, "delete_block", "'${block.type}' deleted");
 
         // If the block had any children, detatch them
         if (block.childId != null) {

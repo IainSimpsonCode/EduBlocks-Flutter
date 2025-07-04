@@ -50,7 +50,7 @@ class _sideBarWidgetState extends State<sideBarWidget> {
   @override
   Widget build(BuildContext context) {
     String? categorySelected = _blockLibrary.categorySelected;
-    print(categorySelected);
+    if (!isProduction) {print(categorySelected);}
     minimised = (categorySelected == null);
 
     // If the sideBar is minimised, it's size should be divided by 2.

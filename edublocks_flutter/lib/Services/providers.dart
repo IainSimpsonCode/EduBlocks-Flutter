@@ -5,6 +5,7 @@ import 'package:edublocks_flutter/Classes/MoveableBlock.dart';
 import 'package:edublocks_flutter/Classes/Participant.dart';
 import 'package:edublocks_flutter/Services/TextFormatter.dart';
 import 'package:edublocks_flutter/Services/analytics.dart';
+import 'package:edublocks_flutter/Services/popupNotification.dart';
 import 'package:edublocks_flutter/Services/toastNotifications.dart';
 import 'package:edublocks_flutter/Widgets/codeTextPanel.dart';
 import 'package:edublocks_flutter/Widgets/outputTextPanel.dart';
@@ -348,6 +349,7 @@ class CodeTracker extends ChangeNotifier {
 
     if (line == -1) {
       // If line is -1, remove the last item in the chain
+      logAnalytics(context, "detach_block", "'${blocks.last["code"]}' at line ${blocks.last["line"]}");
       blocks.removeLast();
     } else {
       // If a line number is specified, remove all blocks at and below that line.
@@ -491,13 +493,13 @@ class CodeTracker extends ChangeNotifier {
   String cleanPythonCode(String rawCode) {
     Map<String, String> replacements = {"while True": "for i in range(100)"};
 
-    print("Raw code: $rawCode");
+    if (!isProduction) {print("Raw code: $rawCode");}
 
     replacements.forEach((key, value) {
       rawCode = rawCode.replaceAll(key, value);
     });
 
-    print("Cleaned code: $rawCode");
+    if (!isProduction) {print("Cleaned code: $rawCode");}
 
     return rawCode;
   }
@@ -560,6 +562,12 @@ class CodeTracker extends ChangeNotifier {
 
   /// Will send the code currently stored in the CodeTracker notifier to a python compiler server. Returns the output as a string to be shown on the output pane.
   Future<String> run(BuildContext context) async {
+
+    bool isSolutionCorrect = false;
+
+    // Log that run has been pressed
+    logAnalytics(context, "run_blocks", true);
+
     // Check if the code matches the desired solution
     if (Provider.of<ParticipantInformation>(
           context,
@@ -582,7 +590,7 @@ class CodeTracker extends ChangeNotifier {
           0) {
         // If they are at the start of the task
         correctAnswerText =
-            "You've correcly put together the code from the workbook. However, this code is broken and has an error. We have added a new feature to the app to help you try and fix the error. Read through the error message provided on the output panel and see if you can fix the error.";
+            "You've correcly put together the code from the workbook. However, this code is broken and has an error.\n\nPlease answer question 1 in your logbook for activity ${Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.getTask()}. After you have finished question 1, come back and finish this activity\n\nWe have added a new feature to the app to help you try and fix the error. Read through the error message provided on the output panel and see if you can fix the error.";
         incorrectAnswerText =
             "That wasnt quite right. Your code doesn't match with what is in your workbook. Reread the task and try again.";
       } else if (Provider.of<ParticipantInformation>(
@@ -592,7 +600,7 @@ class CodeTracker extends ChangeNotifier {
           1) {
         // If they have the new feature and are debugging
         correctAnswerText =
-            "Correct! You've found what was causing the problem and successfully fixed it. \nNow you can work on making the code even better. Try the extention activity in your workbook.";
+            "Correct! You've found what was causing the problem and successfully fixed it. \n${doExtentionTasks ? "Now you can work on making the code even better. Try the extention activity in your workbook." : "Please finish the rest of the questions in your logbook."}";
         incorrectAnswerText =
             "That wasnt quite right. The original error hasn't been fixed. Try again.";
       } else if (Provider.of<ParticipantInformation>(
@@ -607,25 +615,33 @@ class CodeTracker extends ChangeNotifier {
             "That wasnt quite right. Your code doesn't match with what is in your workbook. Reread the task and try again.";
       }
 
-      final isSolutionCorrect = await Provider.of<ParticipantInformation>(
+      isSolutionCorrect = await Provider.of<ParticipantInformation>(
         context,
         listen: false,
       ).currentParticipant!.checkSolution(context, JSONToPythonCode());
-      print("Correct Solution?: $isSolutionCorrect");
+      if (!isProduction) {print("Correct Solution?: $isSolutionCorrect");}
 
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final text =
-            isSolutionCorrect ? correctAnswerText : incorrectAnswerText;
-        final icon =
-            isSolutionCorrect ? Icons.check_circle : Icons.warning_amber;
-        final color = isSolutionCorrect ? Colors.green : Colors.amber;
-        final time =
-            isSolutionCorrect
-                ? 10
-                : 5; // If correct, give more time to read the longer notification
+      if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.currentProgress >= 2 && !doExtentionTasks) { // If they are doing the extention activity and extentions are disabled, dont do any popup
+      
+      }
+      else if (isSolutionCorrect && (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.currentProgress == 2 || Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.currentProgress == 1)) { // If the user just finished part 1 or part 2 and found/fixed the error, show a popup instead of a toast notification
+        showPopup(context, "Well done", correctAnswerText, null);
+      } 
+      else {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          final text =
+              isSolutionCorrect ? correctAnswerText : incorrectAnswerText;
+          final icon =
+              isSolutionCorrect ? Icons.check_circle : Icons.warning_amber;
+          final color = isSolutionCorrect ? Colors.green : Colors.amber;
+          final time =
+              isSolutionCorrect
+                  ? 10
+                  : 5; // If correct, give more time to read the longer notification
 
-        showToastWithIcon(context, text, icon, color, time);
-      });
+          showToastWithIcon(context, text, icon, color, time);
+        });
+      }
 
       // Get the relevant detailed error message
       final String response = await rootBundle.loadString(
@@ -650,6 +666,10 @@ class CodeTracker extends ChangeNotifier {
           data["${currentTask}detailedErrorMessageImage"],
           context,
         );
+
+        // Log the error message returned
+        logAnalytics(context, "error_message", detailedErrorMessage);
+
         return detailedErrorMessage;
       }
     }
@@ -668,6 +688,9 @@ class CodeTracker extends ChangeNotifier {
     } catch (e) {
       output = "Error: ${e.toString()}";
     }
+
+    // Log the output
+    logAnalytics(context, "output", output);
 
     setOutputString(output, null, context);
     return output;
@@ -708,6 +731,9 @@ class TaskTracker extends ChangeNotifier {
 
 class DeleteAll extends ChangeNotifier {
   void deleteAll(BuildContext context, bool askAreYouSure) {
+
+    logAnalytics(context, "delete_all_blocks", true);
+
     if (askAreYouSure) {
       // Check they really want to delete all the blocks
       WidgetsBinding.instance.addPostFrameCallback((_) {

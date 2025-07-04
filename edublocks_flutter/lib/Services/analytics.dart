@@ -1,11 +1,17 @@
 import 'dart:convert';
 
 import 'package:edublocks_flutter/Services/providers.dart';
+import 'package:edublocks_flutter/features.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 Future<bool>logAnalytics(BuildContext context, String action_type, dynamic value) async {
+
+  if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant == null) {
+    return false;
+  }
+
   String PID = Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getPID() ?? "0000";
   int AID = Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getTask() ?? 0;
   String FID = Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getFeature() ?? "X";
@@ -17,25 +23,30 @@ Future<bool>logAnalytics(BuildContext context, String action_type, dynamic value
 
 Future<bool> sendAnalyticsToMongo(String PID, int AID, String FID, int version, String action_type, dynamic value) async {
 
+  if (!(value is String || value is bool || value is int)) {
+    print("Log: Value was not a valid type.");
+    return false;
+  }
+
   final jsonBody = {
     "PID": PID,
-    "AID": AID,
+    "AID": AID.toString(),
     "FID": FID,
-    "VID": version,
+    "VID": version.toString(),
     "activity": action_type,
     "value": value,
-    "timestamp": DateTime.now().toString()
+    "time": DateTime.now().toString()
   };
 
   try {
-    final url = Uri.parse("https://mongodbserver-h5f1.onrender.com/log");
+    final url = Uri.parse("https://marklochrie.co.uk/edublocks_logger/log");  
     final headers = {"Content-Type": "application/json"};
     final body = jsonEncode(jsonBody);
 
     final response = await http.post(url, headers: headers, body: body);
     
     if (response.statusCode == 200) {
-      print("Activity logged successfully");
+      if (!isProduction) {print("Activity logged successfully");}
       return true;
     }
     else {
