@@ -38,6 +38,8 @@ class _canvasWidgetState extends State<canvasWidget> {
 
   late BlocksToLoad _blocksToLoad;
 
+  String blockFolder = "app_assets/block_images/";
+
   /// Function called when the BlocksToLoad function calls ```notifyListeners()```. Is run everytime a block is added to the queue of blocks to load from the block library
   void _handleLoadingBlock() {
     //Load blocks on the screen
@@ -46,7 +48,6 @@ class _canvasWidgetState extends State<canvasWidget> {
       // Get the next block from the queue
       Block? block = _blocksToLoad.getBlockToLoad();
 
-
       if (block == null) {
         // If there was no block left in the queue (queue is empty), leave the loop
         run = false;
@@ -54,7 +55,7 @@ class _canvasWidgetState extends State<canvasWidget> {
       } else {
         // Log a block being loaded to MongoDB analytics
         logAnalytics(context, "load_block", block.code);
-        
+
         setState(() {
           // Load next block in the queue
           _codeTracker.blocks.add(
@@ -64,6 +65,7 @@ class _canvasWidgetState extends State<canvasWidget> {
               position: const Offset(400, 100),
               height: block.height,
               nestedBlocks: [],
+              imageName: block.imageName,
             ),
           );
         });
@@ -100,6 +102,7 @@ class _canvasWidgetState extends State<canvasWidget> {
         position: const Offset(50, 50),
         height: 90,
         nestedBlocks: [],
+        imageName: "app_assets/block_images/startHere.png",
       ),
     ];
 
@@ -617,7 +620,7 @@ class _canvasWidgetState extends State<canvasWidget> {
     //1.2 this is called when the block is nested but without children
     else if (block.childId == null && block.nestedBlocks!.isEmpty) {
       _codeTracker.insertBlock(
-        context, 
+        context,
         block.type,
         getBlockLineNumber(
           block.id,
@@ -642,7 +645,7 @@ class _canvasWidgetState extends State<canvasWidget> {
       //nested blocks are handled in getBlockLineNumber
       for (int i = 0; i < chain.length; i++) {
         _codeTracker.insertBlock(
-          context, 
+          context,
           chain[i].type,
           getBlockLineNumber(
             chain[i].id,
@@ -660,38 +663,38 @@ class _canvasWidgetState extends State<canvasWidget> {
     MoveableBlock parent = getParent(block);
 
     int parentNestedBlocks = getNumberOfNestedBlocks(parent);
+
     switch (parent.type.code) {
       case 'while True:':
         switch (parentNestedBlocks) {
           case 0:
-            parent.type.imageName =
-                "block_images/loops/whileTrue/whileTrueSmallV1.png";
+            parent.imageName =
+                "${blockFolder}loops/whileTrue/whileTrueSmallV1.png";
             parent.height = 150.0;
-
             break;
           case 1:
-            parent.type.imageName =
-                "block_images/loops/whileTrue/whileTrueSmallV2.png";
+            parent.imageName =
+                "${blockFolder}loops/whileTrue/whileTrueSmallV2.png";
             parent.height = 190.0;
             break;
           case 2:
-            parent.type.imageName =
-                "block_images/loops/whileTrue/whileTrue2Blocks.png";
+            parent.imageName =
+                "${blockFolder}loops/whileTrue/whileTrue2Blocks.png";
             parent.height = 190.0 + (70 * (parentNestedBlocks - 1));
             break;
           case 3:
-            parent.type.imageName =
-                "block_images/loops/whileTrue/whileTrue3Blocks.png";
+            parent.imageName =
+                "${blockFolder}loops/whileTrue/whileTrue3Blocks.png";
             parent.height = 190.0 + (70 * (parentNestedBlocks - 1));
             break;
           case 4:
-            parent.type.imageName =
-                "block_images/loops/whileTrue/whileTrue4Blocks.png";
+            parent.imageName =
+                "${blockFolder}loops/whileTrue/whileTrue4Blocks.png";
             parent.height = 190.0 + (70 * (parentNestedBlocks - 1));
             break;
           default:
-            parent.type.imageName =
-                "block_images/loops/whileTrue/whileTrue4Blocks.png";
+            parent.imageName =
+                "${blockFolder}loops/whileTrue/whileTrue4Blocks.png";
             parent.height = 190.0 + (70 * (parentNestedBlocks - 1));
             break;
         }
@@ -700,28 +703,28 @@ class _canvasWidgetState extends State<canvasWidget> {
       case 'if (count <= 10):':
         switch (parentNestedBlocks) {
           case 0:
-            parent.type.imageName =
-                "block_images/logic/countLessThan10/ifCountLessThan10_Small.png";
+            parent.imageName =
+                "${blockFolder}logic/countLessThan10/ifCountLessThan10_Small.png";
             parent.height = 165.0;
             break;
           case 1:
-            parent.type.imageName =
-                "block_images/logic/countLessThan10/ifCountLessThan10_1Block.png";
+            parent.imageName =
+                "${blockFolder}logic/countLessThan10/ifCountLessThan10_1Block.png";
             parent.height = 205.0;
             break;
           case 2:
-            parent.type.imageName =
-                "block_images/logic/countLessThan10/ifCountLessThan10_2Blocks.png";
+            parent.imageName =
+                "${blockFolder}logic/countLessThan10/ifCountLessThan10_2Blocks.png";
             parent.height = 205.0 + (70 * (parentNestedBlocks - 1));
             break;
           case 3:
-            parent.type.imageName =
-                "block_images/logic/countLessThan10/ifCountLessThan10_3Blocks.png";
+            parent.imageName =
+                "${blockFolder}logic/countLessThan10/ifCountLessThan10_3Blocks.png";
             parent.height = 205.0 + (70 * (parentNestedBlocks - 1));
             break;
           default:
-            parent.type.imageName =
-                "block_images/logic/countLessThan10/ifCountLessThan10_3Blocks.png";
+            parent.imageName =
+                "${blockFolder}logic/countLessThan10/ifCountLessThan10_3Blocks.png";
             parent.height = 205.0 + (70 * (parentNestedBlocks - 1));
             break;
         }
@@ -730,28 +733,28 @@ class _canvasWidgetState extends State<canvasWidget> {
       case 'if (age <= 11):':
         switch (parentNestedBlocks) {
           case 0:
-            parent.type.imageName =
-                "block_images/logic/ageLessThan11/ifAgeLessThan11Small.png";
+            parent.imageName =
+                "${blockFolder}logic/ageLessThan11/ifAgeLessThan11Small.png";
             parent.height = 165.0;
             break;
           case 1:
-            parent.type.imageName =
-                "block_images/logic/ageLessThan11/ifAgeLessThan11_1Block.png";
+            parent.imageName =
+                "${blockFolder}logic/ageLessThan11/ifAgeLessThan11_1Block.png";
             parent.height = 208.0;
             break;
           case 2:
-            parent.type.imageName =
-                "block_images/logic/ageLessThan11/ifAgeLessThan11_2Blocks.png";
+            parent.imageName =
+                "${blockFolder}logic/ageLessThan11/ifAgeLessThan11_2Blocks.png";
             parent.height = 210.0 + (70 * (parentNestedBlocks - 1));
             break;
           case 3:
-            parent.type.imageName =
-                "block_images/logic/ageLessThan11/ifAgeLessThan11_3Blocks.png";
+            parent.imageName =
+                "${blockFolder}logic/ageLessThan11/ifAgeLessThan11_3Blocks.png";
             parent.height = 210.0 + (70 * (parentNestedBlocks - 1));
             break;
           default:
-            parent.type.imageName =
-                "block_images/logic/ageLessThan11/ifAgeLessThan11_3Blocks.png";
+            parent.imageName =
+                "${blockFolder}logic/ageLessThan11/ifAgeLessThan11_3Blocks.png";
             parent.height = 210.0 + (70 * (parentNestedBlocks - 1));
         }
         break;
@@ -759,28 +762,28 @@ class _canvasWidgetState extends State<canvasWidget> {
       case "elif (age <= 16):":
         switch (parentNestedBlocks) {
           case 0:
-            parent.type.imageName =
-                "block_images/logic/elseIfAgeLessThan16/elseIfAgeLessThan16Small.png";
+            parent.imageName =
+                "${blockFolder}logic/elseIfAgeLessThan16/elseIfAgeLessThan16Small.png";
             parent.height = 160.0;
             break;
           case 1:
-            parent.type.imageName =
-                "block_images/logic/elseIfAgeLessThan16/elseIfAgeLessThan16_1Block.png";
+            parent.imageName =
+                "${blockFolder}logic/elseIfAgeLessThan16/elseIfAgeLessThan16_1Block.png";
             parent.height = 208.0;
             break;
           case 2:
-            parent.type.imageName =
-                "block_images/logic/elseIfAgeLessThan16/elseIfAgeLessThan16_2Blocks.png";
+            parent.imageName =
+                "${blockFolder}logic/elseIfAgeLessThan16/elseIfAgeLessThan16_2Blocks.png";
             parent.height = 208.0 + (70 * (parentNestedBlocks - 1));
             break;
           case 3:
-            parent.type.imageName =
-                "block_images/logic/elseIfAgeLessThan16/elseIfAgeLessThan16_3Blocks.png";
+            parent.imageName =
+                "${blockFolder}logic/elseIfAgeLessThan16/elseIfAgeLessThan16_3Blocks.png";
             parent.height = 208.0 + (70 * (parentNestedBlocks - 1));
             break;
           default:
-            parent.type.imageName =
-                "block_images/logic/elseIfAgeLessThan16/elseIfAgeLessThan16_3Blocks.png";
+            parent.imageName =
+                "${blockFolder}logic/elseIfAgeLessThan16/elseIfAgeLessThan16_3Blocks.png";
             parent.height = 208.0 + (70 * (parentNestedBlocks - 1));
             break;
         }
@@ -789,19 +792,19 @@ class _canvasWidgetState extends State<canvasWidget> {
       case "else:":
         switch (parentNestedBlocks) {
           case 0:
-            parent.type.imageName = "block_images/logic/else/elseSmall.png";
+            parent.imageName = "${blockFolder}logic/else/elseSmall.png";
             parent.height = 150.0;
             break;
           case 1:
-            parent.type.imageName = "block_images/logic/else/else_1Block.png";
+            parent.imageName = "${blockFolder}logic/else/else_1Block.png";
             parent.height = 200.0;
             break;
           case 2:
-            parent.type.imageName = "block_images/logic/else/else_2Blocks.png";
+            parent.imageName = "${blockFolder}logic/else/else_2Blocks.png";
             parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
             break;
           default:
-            parent.type.imageName = "block_images/logic/else/else_2Blocks.png";
+            parent.imageName = "${blockFolder}logic/else/else_2Blocks.png";
             parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
             break;
         }
@@ -810,28 +813,28 @@ class _canvasWidgetState extends State<canvasWidget> {
       case "while i < len(my_grades):":
         switch (parentNestedBlocks) {
           case 0:
-            parent.type.imageName =
-                "block_images/loops/whileGrades/whileGradeSmall.png";
+            parent.imageName =
+                "${blockFolder}loops/whileGrades/whileGradeSmall.png";
             parent.height = 150.0;
             break;
           case 1:
-            parent.type.imageName =
-                "block_images/loops/whileGrades/whileGrade_1Block.png";
+            parent.imageName =
+                "${blockFolder}loops/whileGrades/whileGrade_1Block.png";
             parent.height = 185.0;
             break;
           case 2:
-            parent.type.imageName =
-                "block_images/loops/whileGrades/whileGrade_2Blocks.png";
+            parent.imageName =
+                "${blockFolder}loops/whileGrades/whileGrade_2Blocks.png";
             parent.height = 185.0 + (70 * (parentNestedBlocks - 1));
             break;
           case 3:
-            parent.type.imageName =
-                "block_images/loops/whileGrades/whileGrade_3Blocks.png";
+            parent.imageName =
+                "${blockFolder}loops/whileGrades/whileGrade_3Blocks.png";
             parent.height = 185.0 + (70 * (parentNestedBlocks - 1));
             break;
           default:
-            parent.type.imageName =
-                "block_images/loops/whileGrades/whileGrade_2Blocks.png";
+            parent.imageName =
+                "${blockFolder}loops/whileGrades/whileGrade_2Blocks.png";
             parent.height = 185.0 + (70 * (parentNestedBlocks - 1));
             break;
         }
@@ -839,23 +842,22 @@ class _canvasWidgetState extends State<canvasWidget> {
       case "for i in range(len(my_grades)):":
         switch (parentNestedBlocks) {
           case 0:
-            parent.type.imageName =
-                "block_images/loops/for_i_inRange/for-loopSmall.png";
+            parent.imageName =
+                "${blockFolder}loops/for_i_inRange/for-loopSmall.png";
             parent.height = 150.0;
             break;
           case 1:
-            parent.type.imageName =
-                "block_images/loops/for_i_inRange/for-loop_1Block.png";
+            parent.imageName =
+                "${blockFolder}loops/for_i_inRange/for-loop_1Block.png";
             parent.height = 185.0;
             break;
           case 2:
-            parent.type.imageName =
-                "block_images/loops/for_i_inRange/for-loop_2Blocks.png";
+            parent.imageName =
+                "${blockFolder}loops/for_i_inRange/for-loop_2Blocks.png";
             parent.height = 185.0 + (70 * (parentNestedBlocks - 1));
             break;
           case 3:
-            parent.type.imageName =
-                "block_images/loops/for_i_inRange/for-loop_3Blocks.png";
+            parent.imageName = "/loops/for_i_inRange/for-loop_3Blocks.png";
             parent.height = 185.0 + (70 * (parentNestedBlocks - 1));
             break;
         }
@@ -923,13 +925,15 @@ class _canvasWidgetState extends State<canvasWidget> {
 
   int returnIndentation(MoveableBlock block) {
     var nestedCount = 0;
-    if(block.isNested) {
-      nestedCount += getNumberOfNestedBlocks(Provider.of<CodeTracker>(
-        context,
-        listen: false,
-      ).blocks.firstWhere((b) => b.id == block.snappedTo));
+    if (block.isNested) {
+      nestedCount += getNumberOfNestedBlocks(
+        Provider.of<CodeTracker>(
+          context,
+          listen: false,
+        ).blocks.firstWhere((b) => b.id == block.snappedTo),
+      );
     }
-    
+
     return nestedCount;
   }
 
@@ -1041,8 +1045,19 @@ class _canvasWidgetState extends State<canvasWidget> {
                         child: CustomPaint(painter: NestedOutlinePainter()),
                       ),
 
-                    if (block.type.code == Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getErrorCode() &&
-                        getBlockLineNumber(block.id, _codeTracker.blocks.firstWhere((b) => b.id == 0)) == Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getErrorCode() &&
+                    if (block.type.code ==
+                            Provider.of<ParticipantInformation>(
+                              context,
+                              listen: false,
+                            ).currentParticipant?.getErrorCode() &&
+                        getBlockLineNumber(
+                              block.id,
+                              _codeTracker.blocks.firstWhere((b) => b.id == 0),
+                            ) ==
+                            Provider.of<ParticipantInformation>(
+                              context,
+                              listen: false,
+                            ).currentParticipant?.getErrorCode() &&
                         redBorder(context))
                       Positioned.fill(
                         child: CustomPaint(painter: ErrorOutlinePainter()),
@@ -1091,7 +1106,7 @@ class _canvasWidgetState extends State<canvasWidget> {
                                 BlendMode.multiply,
                               ),
                       child: Image.asset(
-                        block.type.imageName,
+                        block.imageName!,
                         fit: BoxFit.fitHeight,
                       ),
                     ),

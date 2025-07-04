@@ -14,22 +14,17 @@ class sideBarWidget extends StatefulWidget {
 }
 
 class _sideBarWidgetState extends State<sideBarWidget> {
-
   bool minimised = true;
   late BlockLibrary _blockLibrary;
   late CodeTracker _codeTracker;
 
   void _handleBlockLibraryUpdates() {
-    setState(() {
-      
-    });
+    setState(() {});
   }
 
   void _handleCodeTrackerUpdates() {
     setState(() {
-      if (highlightCodePanelGreen(context)) {
-        
-      }
+      if (highlightCodePanelGreen(context)) {}
     });
   }
 
@@ -54,14 +49,13 @@ class _sideBarWidgetState extends State<sideBarWidget> {
 
   @override
   Widget build(BuildContext context) {
-
     String? categorySelected = _blockLibrary.categorySelected;
+    print(categorySelected);
     minimised = (categorySelected == null);
 
     // If the sideBar is minimised, it's size should be divided by 2.
     // If the sideBar is not minimised, it should be shown at full size, therefore it's size is divided by 1.
     double sizeMofifier = minimised ? 3 : 1;
-
 
     return Container(
       height: MediaQuery.sizeOf(context).height,
@@ -70,19 +64,22 @@ class _sideBarWidgetState extends State<sideBarWidget> {
 
       //child: blockLibraryScroller(),
       //child: categoryScroller(),
-
       child: Row(
         children: [
           SizedBox(
             width: MediaQuery.sizeOf(context).width / (sideBarWidth * 3),
             child: categoryScroller(),
           ),
-          minimised ? SizedBox() : SizedBox(
-            width: MediaQuery.sizeOf(context).width / (sideBarWidth * 1) - MediaQuery.sizeOf(context).width / (sideBarWidth * 3),
-            child: blockLibraryScroller(category: categorySelected),
-          ),
+          minimised
+              ? SizedBox()
+              : SizedBox(
+                width:
+                    MediaQuery.sizeOf(context).width / (sideBarWidth * 1) -
+                    MediaQuery.sizeOf(context).width / (sideBarWidth * 3),
+                child: blockLibraryScroller(category: categorySelected),
+              ),
         ],
-      )
+      ),
     );
   }
 }

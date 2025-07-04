@@ -197,7 +197,11 @@ class CodeTracker extends ChangeNotifier {
       dragPositions[block.id] = block.position;
     }
 
-    removeBlock(context, 2, notify: notify); // Remove all blocks after the start block
+    removeBlock(
+      context,
+      2,
+      notify: notify,
+    ); // Remove all blocks after the start block
   }
 
   /// Returns the total height of all the blocks within the chain of blocks
@@ -261,7 +265,6 @@ class CodeTracker extends ChangeNotifier {
 
   /// Insert a block (using the ```Block``` class) into the code chain at a specific line number
   int insertBlock(BuildContext context, Block block, int line) {
-
     // Log a block being added
     logAnalytics(context, "attach_block", "'${block.code}' at line $line");
 
@@ -354,7 +357,11 @@ class CodeTracker extends ChangeNotifier {
 
         blocksToRemove.add(block["line"]);
         // Log a block being removbed
-        logAnalytics(context, "detach_block", "'${block["code"]}' at line ${block["line"]}");
+        logAnalytics(
+          context,
+          "detach_block",
+          "'${block["code"]}' at line ${block["line"]}",
+        );
       }
 
       blocks.removeWhere((element) => blocksToRemove.contains(element["line"]));
