@@ -20,16 +20,16 @@ Future<bool> sendAnalyticsToMongo(String PID, int AID, String FID, int version, 
 
   final jsonBody = {
     "PID": PID,
-    "AID": AID,
+    "AID": AID.toString(),
     "FID": FID,
-    "VID": version,
+    "VID": version.toString(),
     "activity": action_type,
     "value": value,
-    "timestamp": DateTime.now().toString()
+    "time": DateTime.now().toString()
   };
 
   try {
-    final url = Uri.parse("https://mongodbserver-h5f1.onrender.com/log");
+    final url = Uri.parse("/log");
     final headers = {"Content-Type": "application/json"};
     final body = jsonEncode(jsonBody);
 
