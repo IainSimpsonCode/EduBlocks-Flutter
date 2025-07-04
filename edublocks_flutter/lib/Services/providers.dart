@@ -113,7 +113,18 @@ class BlockLibrary extends ChangeNotifier {
   ) {
     if (category == null) {
       return _allBlocks;
-    } else {
+    }
+    else if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant == null) {
+      int task = 10;
+      return _allBlocks
+          .where(
+            (element) =>
+                element.category == category &&
+                (element.task == task || element.task == 0),
+          )
+          .toList();
+    }
+    else {
       int task =
           (Provider.of<ParticipantInformation>(
                 context,
