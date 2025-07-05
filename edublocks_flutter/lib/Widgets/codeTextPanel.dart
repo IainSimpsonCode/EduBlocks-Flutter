@@ -30,6 +30,11 @@ class _codeTextPanelState extends State<codeTextPanel> {
         }
       });
     }
+    else {
+      setState(() {
+        
+      });
+    }
   }
 
   @override

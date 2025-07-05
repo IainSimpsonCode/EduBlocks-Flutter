@@ -1,5 +1,6 @@
 import 'package:edublocks_flutter/Services/providers.dart';
 import 'package:edublocks_flutter/Widgets/buttonWithIcon.dart';
+import 'package:edublocks_flutter/features.dart';
 import 'package:edublocks_flutter/style.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -71,14 +72,14 @@ class _topBarWidgetState extends State<topBarWidget> {
               Provider.of<CodeTracker>(context, listen: false).run(context);
             },
           ),
-          buttonWithIcon(
+          requireLogin ? buttonWithIcon(
             svgIconLocation: 'app_assets/category_icons/flag.svg', 
             backgroundColor: Colors.green[400]!,
             text: "Next Task",
             onTap: () {
               Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.nextTaskPressed(context);
             },
-          ),
+          ) : SizedBox(), // Only show next task button if using V2
         ],
       ),
     );
