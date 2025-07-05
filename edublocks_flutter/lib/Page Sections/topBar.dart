@@ -50,12 +50,12 @@ class _topBarWidgetState extends State<topBarWidget> {
         mainAxisAlignment: MainAxisAlignment.end,
         spacing: 14,
         children: [
-          Expanded(
+          requireLogin ? Expanded(
             child: Text(
               "Participant ID: ${Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.classID ?? ""}${Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.ID ?? "Not logged in"}\nYou are working on Task ${Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getTask() ?? 0} with Feature ${Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getFeature() ?? "0"}",
               style: codeTextStyle,
             ),
-          ),
+          ) : SizedBox(), // Only show user info text if using V2
           buttonWithIcon(
             svgIconLocation: 'app_assets/category_icons/trash.svg', 
             backgroundColor: Colors.red[400]!,
