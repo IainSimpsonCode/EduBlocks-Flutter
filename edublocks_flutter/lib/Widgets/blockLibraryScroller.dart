@@ -44,13 +44,16 @@ class _blockLibraryScrollerState extends State<blockLibraryScroller> {
               child: AnimatedScale(
                 scale: isHovered ? 1.1 : 1.0,
                 duration: const Duration(milliseconds: 250),
-                child: Image.asset(
-                  block.displayImageName,
-                  height: block.displayImageHeight,
-                  fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) {
-                    return const Icon(Icons.broken_image, size: 80);
-                  },
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Image.asset(
+                    block.displayImageName,
+                    height: block.displayImageHeight,
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) {
+                      return const Icon(Icons.broken_image, size: 80);
+                    },
+                  ),
                 ),
               ),
             ),
