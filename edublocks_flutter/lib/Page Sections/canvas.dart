@@ -17,7 +17,9 @@ Future<void> loadJsonFromAssets() async {
   String jsonString = await rootBundle.loadString('app_assets/data.json');
   Map<String, dynamic> jsonMap = jsonDecode(jsonString);
 
-  if (!isProduction) {print(jsonMap);}
+  if (!isProduction) {
+    print(jsonMap);
+  }
 }
 
 class canvasWidget extends StatefulWidget {
@@ -994,6 +996,30 @@ class _canvasWidgetState extends State<canvasWidget> {
                 "${blockFolder}logic/elifClass/if-ash-class_1Blocks.png";
             parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
         }
+
+      case "while counter <= 12:":
+        switch (parentNestedBlocks) {
+          case 0:
+            parent.imageName =
+                "${blockFolder}loops/while-loop-counterSmall.png";
+            parent.height = 150.0;
+            break;
+          case 1:
+            parent.imageName =
+                "${blockFolder}loops/while-loop-counter_1Block.png";
+            parent.height = 200.0;
+            break;
+          case 2:
+            parent.imageName =
+                "${blockFolder}loops/while-loop-counter_2Blocks.png";
+            parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
+            break;
+          default:
+            parent.imageName =
+                "${blockFolder}loops/while-loop-counter_2Blocks.png";
+            parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
+        }
+        break;
     }
 
     buildBlock(parent);
@@ -1028,7 +1054,8 @@ class _canvasWidgetState extends State<canvasWidget> {
           snappedTo.type.code == 'elif (my_class == \"Holly Class\"):' ||
           snappedTo.type.code == 'elif (my_class == \"Oak Class\"):' ||
           snappedTo.type.code == 'elif (my_class == \"Silver Birch Class\"):' ||
-          snappedTo.type.code == 'if (my_class == \"Ash Class\"):' &&
+          snappedTo.type.code == 'if (my_class == \"Ash Class\"):' ||
+          snappedTo.type.code == 'while counter <= 12:' &&
               snappedTo.id != block.id) {
         return snappedTo;
       }
@@ -1056,7 +1083,8 @@ class _canvasWidgetState extends State<canvasWidget> {
           currentBlock.type.code == "elif (my_class == \"Oak Class\"):" ||
           currentBlock.type.code ==
               "elif (my_class == \"Silver Birch Class\"):" ||
-          currentBlock.type.code == "if (my_class == \"Ash Class\"):") {
+          currentBlock.type.code == "if (my_class == \"Ash Class\"):" ||
+          currentBlock.type.code == "while counter <= 12:") {
         if (currentBlock.nestedBlocks!.isNotEmpty) {
           blockUnits += getNumberOfNestedBlocks(currentBlock);
           blockUnits = blockUnits + 2;
@@ -1104,7 +1132,11 @@ class _canvasWidgetState extends State<canvasWidget> {
         onPanUpdate: (details) => onUpdateDrag(block.id, details),
         onPanEnd: (_) => onEndDrag(block.id),
         onTap: () {
-          if (!isProduction) {print("Line number: ${getBlockLineNumber(block.id, _codeTracker.blocks.firstWhere((b) => b.id == 0))}");}
+          if (!isProduction) {
+            print(
+              "Line number: ${getBlockLineNumber(block.id, _codeTracker.blocks.firstWhere((b) => b.id == 0))}",
+            );
+          }
 
           if (block.id != 0) {
             setState(() {
@@ -1114,7 +1146,9 @@ class _canvasWidgetState extends State<canvasWidget> {
                 _codeTracker.selectedBlock = block;
               }
             });
-            if (!isProduction) {print("Block selected: ${block.type.code}");}
+            if (!isProduction) {
+              print("Block selected: ${block.type.code}");
+            }
           }
         },
         child: SizedBox(

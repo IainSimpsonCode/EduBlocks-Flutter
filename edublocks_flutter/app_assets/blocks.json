@@ -208,7 +208,7 @@
     },
     {
       "category": "Statements",
-      "code": "print(classes)",
+      "code": "print(Classes)",
       "imageName": "block_images/statements/print-classes.png",
       "condition": false,
       "hasChildren": false,
@@ -856,15 +856,15 @@
     {
       "category": "Loops",
       "code": "while counter <= 12:",
-      "imageName": "block_images/loops/while-loop-counter.png",
-      "displayImageName": "block_images/loops/while-loop-counter.png",
+      "imageName": "block_images/loops/while-loop-counterSmall.png",
+      "displayImageName": "block_images/loops/while-loop-counterSmall.png",
       "condition": false,
       "hasChildren": true,
       "priorityBuild": true,
       "height": 150,
       "displayImageHeight": 150,
-      "snapXOffset": -40,
-      "snapYOffset": -8,
+      "snapXOffset": -38,
+      "snapYOffset": 5,
       "standardCodeColour": "0xFF996ddd",
       "task": 0
     },
