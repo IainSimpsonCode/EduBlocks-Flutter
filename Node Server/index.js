@@ -22,15 +22,6 @@ app.get("/v2", (req, res) => {
   res.sendFile(path.join(flutterWebAppPath, "index.html"));
 })
 
-app.get('/v1/*', (req, res) => {
-  res.sendFile(path.join(v1WebAppPath, 'index.html'));
-});
-
-app.get('/v2/*', (req, res) => {
-  res.sendFile(path.join(flutterWebAppPath, 'index.html'));
-});
-
-
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}\nhttp://localhost:${PORT}`);
 });
