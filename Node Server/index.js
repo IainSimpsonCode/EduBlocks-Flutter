@@ -10,11 +10,6 @@ const v1WebAppPath = path.join(__dirname, "V1");
 app.use('/v2', express.static(flutterWebAppPath));
 app.use('/v1', express.static(v1WebAppPath));
 
-
-app.get("/v2", (req, res) => {
-  res.sendFile(path.join(flutterWebAppPath, "index.html"));
-})
-
 app.get("/", (req, res) => {
   res.redirect('/v2');
 })
@@ -22,6 +17,19 @@ app.get("/", (req, res) => {
 app.get("/v1", (req, res) => {
   res.sendFile(path.join(v1WebAppPath, "index.html"));
 })
+
+app.get("/v2", (req, res) => {
+  res.sendFile(path.join(flutterWebAppPath, "index.html"));
+})
+
+app.get('/v1/*', (req, res) => {
+  res.sendFile(path.join(v1WebAppPath, 'index.html'));
+});
+
+app.get('/v2/*', (req, res) => {
+  res.sendFile(path.join(flutterWebAppPath, 'index.html'));
+});
+
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}\nhttp://localhost:${PORT}`);
