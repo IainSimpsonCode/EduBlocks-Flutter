@@ -4,7 +4,8 @@ const app = express()
 
 const PORT = 3001;
 
-const flutterWebAppPath = path.join(__dirname, '..', "edublocks_flutter", "build", "web");
+//const flutterWebAppPath = path.join(__dirname, '..', "edublocks_flutter", "build", "web");
+const flutterWebAppPath = path.join(__dirname, "V2");
 const v1WebAppPath = path.join(__dirname, "V1");
 
 app.use('/v2', express.static(flutterWebAppPath));
