@@ -7,6 +7,9 @@ const PORT = 3001;
 const flutterWebAppPath = path.join(__dirname, '..', "edublocks_flutter", "build", "web");
 app.use(express.static(flutterWebAppPath));
 
+const v1WebAppPath = path.join(__dirname, "V1");
+app.use(express.static(v1WebAppPath));
+
 app.get("/v2", (req, res) => {
   res.sendFile(path.join(flutterWebAppPath, "index.html"));
 })
@@ -16,7 +19,7 @@ app.get("/", (req, res) => {
 })
 
 app.get("/v1", (req, res) => {
-  res.sendFile(path.join(flutterWebAppPath, "index.html"));
+  res.sendFile(path.join(v1WebAppPath, "index.html"));
 })
 
 app.listen(PORT, () => {
