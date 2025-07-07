@@ -5,10 +5,11 @@ const app = express()
 const PORT = 3001;
 
 const flutterWebAppPath = path.join(__dirname, '..', "edublocks_flutter", "build", "web");
-app.use(express.static(flutterWebAppPath));
-
 const v1WebAppPath = path.join(__dirname, "V1");
-app.use(express.static(v1WebAppPath));
+
+app.use('/v2', express.static(flutterWebAppPath));
+app.use('/v1', express.static(v1WebAppPath));
+
 
 app.get("/v2", (req, res) => {
   res.sendFile(path.join(flutterWebAppPath, "index.html"));
