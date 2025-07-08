@@ -45,7 +45,7 @@
     "7fixed": "\n# Start Here\nnumber1 = 10\nnumber2 = 1\nwhile True:\n print(number1 + 'divided by' + number2 + 'is...')\n print(number1 / number2)\n print('***')\n number2 += 1\n pass",
     "7extention": "\n# Start Here\nnumber1 = 10\nnumber2 = 0\nwhile True:\n number2 += 1\n print(number1 / number2)\n pass",
     "7ErrorCode": "print(number1 / number2)",
-    "7ErrorLine": 5,
+    "7ErrorLine": 6,
     "7detailedErrorMessage": "7 Error",
     "7detailedErrorMessageImage": "block_images/variables/count=0.png"
 }
