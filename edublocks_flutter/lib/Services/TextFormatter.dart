@@ -69,7 +69,7 @@ class TextFormatter {
     final variableColour = altColours(context) ? Color(0xFF364fd7) : keywordColour;
 
     final keywords = ["time", "random", "math", "sleep"];
-    final variables = ["count", "age", "friends", "number1", "number2", "Classes", "teacher-name", "year-group", "result", "researcher-name", "number", "counter", "fruits"];
+    final variables = ["count", "age", "friends", "number1", "number2", "Classes", "teacher-name", "year-group", "result", "researcher-name", "number", "counter", "my_class", "fruits"];
 
     final String keywordPattern = keywords.map(RegExp.escape).join('|');
     final String variablePattern = variables.map(RegExp.escape).join('|');
