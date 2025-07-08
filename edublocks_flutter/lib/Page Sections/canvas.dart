@@ -879,7 +879,7 @@ class _canvasWidgetState extends State<canvasWidget> {
             break;
           default:
             parent.imageName =
-                "${blockFolder}logic/elifClass/elif-beech-class_1Blocks.png";
+                "${blockFolder}logic/elifClass/elif-beech-class_1Block.png";
             parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
         }
         break;
@@ -898,7 +898,7 @@ class _canvasWidgetState extends State<canvasWidget> {
             break;
           default:
             parent.imageName =
-                "${blockFolder}logic/elifClass/elif-elder-class_1Blocks.png";
+                "${blockFolder}logic/elifClass/elif-elder-class_1Block.png";
             parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
         }
         break;
@@ -917,7 +917,7 @@ class _canvasWidgetState extends State<canvasWidget> {
             break;
           default:
             parent.imageName =
-                "${blockFolder}logic/elifClass/elif-elm-class_1Blocks.png";
+                "${blockFolder}logic/elifClass/elif-elm-class_1Block.png";
             parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
         }
         break;
@@ -936,7 +936,7 @@ class _canvasWidgetState extends State<canvasWidget> {
             break;
           default:
             parent.imageName =
-                "${blockFolder}logic/elifClass/elif-holly-class_1Blocks.png";
+                "${blockFolder}logic/elifClass/elif-holly-class_1Block.png";
             parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
         }
         break;
@@ -955,7 +955,7 @@ class _canvasWidgetState extends State<canvasWidget> {
             break;
           default:
             parent.imageName =
-                "${blockFolder}logic/elifClass/elif-oak-class_1Blocks.png";
+                "${blockFolder}logic/elifClass/elif-oak-class_1Block.png";
             parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
         }
         break;
@@ -974,7 +974,7 @@ class _canvasWidgetState extends State<canvasWidget> {
             break;
           default:
             parent.imageName =
-                "${blockFolder}logic/elifClass/elif-silver_birch-class_1Blocks.png";
+                "${blockFolder}logic/elifClass/elif-silver_birch-class_1Block.png";
             parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
         }
         break;
@@ -993,7 +993,7 @@ class _canvasWidgetState extends State<canvasWidget> {
             break;
           default:
             parent.imageName =
-                "${blockFolder}logic/elifClass/if-ash-class_1Blocks.png";
+                "${blockFolder}logic/elifClass/if-ash-class_1Block.png";
             parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
         }
 
@@ -1041,9 +1041,9 @@ class _canvasWidgetState extends State<canvasWidget> {
         listen: false,
       ).blocks.firstWhere((b) => b.id == block.snappedTo);
 
-      if ((snappedTo.type.code == 'while True:' ||
-              snappedTo.type.code == 'if (count <= 10):' ||
-              snappedTo.type.code == 'if (age <= 11):') ||
+      if (snappedTo.type.code == 'while True:' ||
+          snappedTo.type.code == 'if (count <= 10):' ||
+          snappedTo.type.code == 'if (age <= 11):' ||
           snappedTo.type.code == 'elif (age <= 16):' ||
           snappedTo.type.code == 'else:' ||
           snappedTo.type.code == 'while i < len(my_grades):' ||
@@ -1056,7 +1056,8 @@ class _canvasWidgetState extends State<canvasWidget> {
           snappedTo.type.code == 'elif (my_class == \"Silver Birch Class\"):' ||
           snappedTo.type.code == 'if (my_class == \"Ash Class\"):' ||
           snappedTo.type.code == 'while counter <= 12:' &&
-              snappedTo.id != block.id) {
+              snappedTo.id != block.id &&
+              snappedTo.childId != block.id) {
         return snappedTo;
       }
 
@@ -1101,11 +1102,12 @@ class _canvasWidgetState extends State<canvasWidget> {
   int returnIndentation(MoveableBlock block) {
     var nestedCount = 0;
     if (block.isNested) {
-      nestedCount += getNumberOfNestedBlocks(
+      nestedCount += 1;
+      nestedCount += returnIndentation(
         Provider.of<CodeTracker>(
           context,
           listen: false,
-        ).blocks.firstWhere((b) => b.id == block.snappedTo),
+        ).blocks.firstWhere((b) => b.id == getParent(block).id),
       );
     }
 
