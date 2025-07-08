@@ -1,6 +1,6 @@
 name: edublocks_flutter
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
@@ -30,6 +30,7 @@ flutter:
     - app_assets/block_images/
     - app_assets/block_images/import/
     - app_assets/block_images/lists/
+    - app_assets/block_images/logic/
     - app_assets/block_images/logic/ageLessThan11/
     - app_assets/block_images/logic/countLessThan10/
     - app_assets/block_images/logic/else/

@@ -663,7 +663,7 @@ class _canvasWidgetState extends State<canvasWidget> {
 
   void reSizeBlock(MoveableBlock block) {
     MoveableBlock parent = getParent(block);
-
+    
     int parentNestedBlocks = getNumberOfNestedBlocks(parent);
 
     switch (parent.type.code) {
@@ -1020,6 +1020,26 @@ class _canvasWidgetState extends State<canvasWidget> {
             parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
         }
         break;
+
+      case "if (my_grades [i == 0]):":
+        switch (parentNestedBlocks) {
+          case 0:
+            parent.imageName = "${blockFolder}logic/if_my-gradesSmall.png";
+            parent.height = 150.0;
+            break;
+          case 1:
+            parent.imageName = "${blockFolder}logic/if_my-grades_1Block.png";
+            parent.height = 200.0;
+            break;
+          case 2:
+            parent.imageName = "${blockFolder}logic/if_my-grades_2Blocks.png";
+            parent.height = 200.0;
+            break;
+          default:
+            parent.imageName = "${blockFolder}logic/if_my-grades_2Blocks.png";
+            parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
+        }
+        break;
     }
 
     buildBlock(parent);
@@ -1055,7 +1075,8 @@ class _canvasWidgetState extends State<canvasWidget> {
           snappedTo.type.code == 'elif (my_class == \"Oak Class\"):' ||
           snappedTo.type.code == 'elif (my_class == \"Silver Birch Class\"):' ||
           snappedTo.type.code == 'if (my_class == \"Ash Class\"):' ||
-          snappedTo.type.code == 'while counter <= 12:' &&
+          snappedTo.type.code == 'while counter <= 12:' ||
+          snappedTo.type.code == 'if (my_grades [i == 0]):' &&
               snappedTo.id != block.id &&
               snappedTo.childId != block.id) {
         return snappedTo;
@@ -1085,7 +1106,8 @@ class _canvasWidgetState extends State<canvasWidget> {
           currentBlock.type.code ==
               "elif (my_class == \"Silver Birch Class\"):" ||
           currentBlock.type.code == "if (my_class == \"Ash Class\"):" ||
-          currentBlock.type.code == "while counter <= 12:") {
+          currentBlock.type.code == "while counter <= 12:" ||
+          currentBlock.type.code == "if (my_grades [i == 0]):") {
         if (currentBlock.nestedBlocks!.isNotEmpty) {
           blockUnits += getNumberOfNestedBlocks(currentBlock);
           blockUnits = blockUnits + 2;
@@ -1102,6 +1124,12 @@ class _canvasWidgetState extends State<canvasWidget> {
   int returnIndentation(MoveableBlock block) {
     var nestedCount = 0;
     if (block.isNested) {
+      // nestedCount += getNumberOfNestedBlocks(
+      //   Provider.of<CodeTracker>(
+      //     context,
+      //     listen: false,
+      //   ).blocks.firstWhere((b) => b.id == block.snappedTo),
+      // );
       nestedCount += 1;
       nestedCount += returnIndentation(
         Provider.of<CodeTracker>(

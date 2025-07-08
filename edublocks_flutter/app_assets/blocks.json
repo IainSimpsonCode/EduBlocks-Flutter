@@ -1025,6 +1025,20 @@
       "snapXOffset": -38,
       "standardCodeColour": "0xFF996ddd",
       "task": 10
+    },
+    {
+      "category": "Logic",
+      "code": "if (my_grades [i == 0]):",
+      "imageName": "block_images/logic/if_my-gradesSmall.png",
+      "displayImageName": "block_images/logic/if_my-gradesSmall.png",
+      "condition": false,
+      "hasChildren": true,
+      "priorityBuild": true,
+      "height": 145,
+      "displayImageHeight": 150,
+      "snapXOffset": -38,
+      "standardCodeColour": "0xFF996ddd",
+      "task": 10
     }
   ]
 }
