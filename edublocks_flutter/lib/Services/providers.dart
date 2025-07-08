@@ -600,7 +600,7 @@ class CodeTracker extends ChangeNotifier {
           1) {
         // If they have the new feature and are debugging
         correctAnswerText =
-            "Correct! You've found what was causing the problem and successfully fixed it. \n${doExtentionTasks ? "Now you can work on making the code even better. Try the extention activity in your workbook." : "Please finish the rest of the questions in your logbook."}";
+            "Correct! You've found what was causing the problem and successfully fixed it. \n${doExtentionTasks ? "Now you can work on making the code even better. Try the extention activity in your workbook." : "Please finish the rest of the questions in your logbook. After you have finished, press the green 'Next Task' button."}";
         incorrectAnswerText =
             "That wasnt quite right. The original error hasn't been fixed. Try again.";
       } else if (Provider.of<ParticipantInformation>(
@@ -621,10 +621,7 @@ class CodeTracker extends ChangeNotifier {
       ).currentParticipant!.checkSolution(context, JSONToPythonCode());
       if (!isProduction) {print("Correct Solution?: $isSolutionCorrect");}
 
-      if (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.currentProgress >= 2 && !doExtentionTasks) { // If they are doing the extention activity and extentions are disabled, dont do any popup
-      
-      }
-      else if (isSolutionCorrect && (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.currentProgress == 2 || Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.currentProgress == 1)) { // If the user just finished part 1 or part 2 and found/fixed the error, show a popup instead of a toast notification
+      if (isSolutionCorrect && (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.currentProgress == 2 || Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.currentProgress == 1)) { // If the user just finished part 1 or part 2 and found/fixed the error, show a popup instead of a toast notification
         showPopup(context, "Well done", correctAnswerText, null);
       } 
       else {

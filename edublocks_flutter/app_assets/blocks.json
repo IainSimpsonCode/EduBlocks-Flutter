@@ -190,7 +190,7 @@
     },
     {
       "category": "Statements",
-      "code": "print(\"***\")",
+      "code": "print('***')",
       "imageName": "block_images/statements/print-seperator.png",
       "condition": false,
       "hasChildren": false,
@@ -199,7 +199,7 @@
     },
     {
       "category": "Statements",
-      "code": "print(number 1 + \"divided by\" + number 2 + \"is...\")",
+      "code": "print(number1 + 'divided by' + number2 + 'is...')",
       "imageName": "block_images/statements/print-variables-text.png",
       "condition": false,
       "hasChildren": false,
@@ -217,7 +217,7 @@
     },
     {
       "category": "Statements",
-      "code": "print(\"You are in reception\")",
+      "code": "print('You are in reception')",
       "imageName": "block_images/statements/print-reception.png",
       "condition": false,
       "hasChildren": false,
@@ -226,7 +226,7 @@
     },
     {
       "category": "Statements",
-      "code": "print(\"We are not sure what year you are in\")",
+      "code": "print('We are not sure what year you are in')",
       "imageName": "block_images/statements/print-unknown.png",
       "condition": false,
       "hasChildren": false,
@@ -235,7 +235,7 @@
     },
     {
       "category": "Statements",
-      "code": "print(\"You are in year 1\")",
+      "code": "print('You are in year 1')",
       "imageName": "block_images/statements/print-year1.png",
       "condition": false,
       "hasChildren": false,
@@ -244,7 +244,7 @@
     },
     {
       "category": "Statements",
-      "code": "print(\"You are in year 2\")",
+      "code": "print('You are in year 2')",
       "imageName": "block_images/statements/print-year2.png",
       "condition": false,
       "hasChildren": false,
@@ -253,7 +253,7 @@
     },
     {
       "category": "Statements",
-      "code": "print(\"You are in year 3\")",
+      "code": "print('You are in year 3')",
       "imageName": "block_images/statements/print-year3.png",
       "condition": false,
       "hasChildren": false,
@@ -262,7 +262,7 @@
     },
     {
       "category": "Statements",
-      "code": "print(\"You are in year 4\")",
+      "code": "print('You are in year 4')",
       "imageName": "block_images/statements/print-year4.png",
       "condition": false,
       "hasChildren": false,
@@ -271,7 +271,7 @@
     },
     {
       "category": "Statements",
-      "code": "print(\"You are in year 5\")",
+      "code": "print('You are in year 5')",
       "imageName": "block_images/statements/print-year5.png",
       "condition": false,
       "hasChildren": false,
@@ -280,7 +280,7 @@
     },
     {
       "category": "Statements",
-      "code": "print(\"You are in year 6\")",
+      "code": "print('You are in year 6')",
       "imageName": "block_images/statements/print-year6.png",
       "condition": false,
       "hasChildren": false,
@@ -307,7 +307,7 @@
     },
     {
       "category": "Statements",
-      "code": "print(number, \"x\", counter, \"=\", result)",
+      "code": "print(number, 'x', counter, '=', result)",
       "imageName": "block_images/statements/print-result.png",
       "condition": false,
       "hasChildren": false,
@@ -316,7 +316,7 @@
     },
     {
       "category": "Statements",
-      "code": "print(\"Hello World\")",
+      "code": "print('Hello World')",
       "imageName": "block_images/statements/print-hello-world.png",
       "condition": false,
       "hasChildren": false,
@@ -325,7 +325,7 @@
     },
     {
       "category": "Statements",
-      "code": "print(\"I am in year\", year-group)",
+      "code": "print('I am in year', year-group)",
       "imageName": "block_images/statements/print-my-year.png",
       "condition": false,
       "hasChildren": false,
@@ -334,7 +334,7 @@
     },
     {
       "category": "Statements",
-      "code": "print(\"The reseachers are: \")",
+      "code": "print('The reseachers are: ')",
       "imageName": "block_images/statements/print-researcher.png",
       "condition": false,
       "hasChildren": false,
@@ -352,7 +352,7 @@
     },
     {
       "category": "Statements",
-      "code": "print(\"Hello Clayton-le-Woods Primary School\")",
+      "code": "print('Hello Clayton-le-Woods Primary School')",
       "imageName": "block_images/statements/print-school.png",
       "condition": false,
       "hasChildren": false,
@@ -370,7 +370,7 @@
     },
     {
       "category": "Statements",
-      "code": "print(\"My teachers are: \")",
+      "code": "print('My teachers are: ')",
       "imageName": "block_images/statements/print-teachers.png",
       "condition": false,
       "hasChildren": false,
@@ -379,7 +379,7 @@
     },
     {
       "category": "Statements",
-      "code": "print(\"The reseachers are from: \", \"Univeristy of Lanchashire\")",
+      "code": "print('The reseachers are from: ', 'Univeristy of Lanchashire')",
       "imageName": "block_images/statements/print-university.png",
       "condition": false,
       "hasChildren": false,
@@ -589,7 +589,7 @@
     },
     {
       "category": "Variables",
-      "code": "myClass = \"Ash Class\"",
+      "code": "myClass = 'Ash Class'",
       "imageName": "block_images/variables/variable-ash.png",
       "condition": false,
       "hasChildren": false,
@@ -597,7 +597,7 @@
     },
     {
       "category": "Variables",
-      "code": "Classes = [\"Willow Class\", \"Ash Class\"]",
+      "code": "Classes = ['Willow Class', 'Ash Class']",
       "imageName": "block_images/variables/variable-classes-list.png",
       "condition": false,
       "hasChildren": false,
@@ -605,7 +605,7 @@
     },
     {
       "category": "Variables",
-      "code": "KS1 = [\"Oak Class\", \"Elm Class\"]",
+      "code": "KS1 = ['Oak Class', 'Elm Class']",
       "imageName": "block_images/variables/variable-ks1-list.png",
       "condition": false,
       "hasChildren": false,
@@ -613,7 +613,7 @@
     },
     {
       "category": "Variables",
-      "code": "KS2 = [\"Beech Class\", \"Silver Birch Class\", \"Holly Class\", \"Elder Class\"]",
+      "code": "KS2 = ['Beech Class', 'Silver Birch Class', 'Holly Class', 'Elder Class']",
       "imageName": "block_images/variables/variable-ks2-list.png",
       "condition": false,
       "hasChildren": false,
@@ -717,7 +717,7 @@
     },
     {
       "category": "Variables",
-      "code": "teacher-name = \"Mr Kay\"",
+      "code": "teacher-name = 'Mr Kay'",
       "imageName": "block_images/variables/variable-kay.png",
       "condition": false,
       "hasChildren": false,
@@ -725,7 +725,7 @@
     },
     {
       "category": "Variables",
-      "code": "teacher-name = \"Mrs Walsh\"",
+      "code": "teacher-name = 'Mrs Walsh'",
       "imageName": "block_images/variables/variable-walsh.png",
       "condition": false,
       "hasChildren": false,
@@ -733,7 +733,7 @@
     },
     {
       "category": "Variables",
-      "code": "reseacher-name = \"Dr Kerr\"",
+      "code": "reseacher-name = 'Dr Kerr'",
       "imageName": "block_images/variables/variable-kerr.png",
       "condition": false,
       "hasChildren": false,
@@ -741,7 +741,7 @@
     },
     {
       "category": "Variables",
-      "code": "reseacher-name = \"Dr Lochire\"",
+      "code": "reseacher-name = 'Dr Lochire'",
       "imageName": "block_images/variables/variable-lochrie.png",
       "condition": false,
       "hasChildren": false,
@@ -749,7 +749,7 @@
     },
     {
       "category": "Variables",
-      "code": "reseacher-name = \"Dr Sim\"",
+      "code": "reseacher-name = 'Dr Sim'",
       "imageName": "block_images/variables/variable-sim.png",
       "condition": false,
       "hasChildren": false,
@@ -757,7 +757,7 @@
     },
     {
       "category": "Variables",
-      "code": "reseacher-name = \"Mr Simpson\"",
+      "code": "reseacher-name = 'Mr Simpson'",
       "imageName": "block_images/variables/variable-simpson.png",
       "condition": false,
       "hasChildren": false,
@@ -930,7 +930,7 @@
     },
     {
       "category": "Logic",
-      "code": "elif (my_class == \"Beech Class\"):",
+      "code": "elif (my_class == 'Beech Class'):",
       "imageName": "block_images/logic/elifClass/elif-beech-classSmall.png",
       "displayImageName": "block_images/logic/elifClass/elif-beech-classSmall.png",
       "condition": false,
@@ -944,7 +944,7 @@
     },
     {
       "category": "Logic",
-      "code": "elif (my_class == \"Elder Class\"):",
+      "code": "elif (my_class == 'Elder Class'):",
       "imageName": "block_images/logic/elifClass/elif-elder-classSmall.png",
       "displayImageName": "block_images/logic/elifClass/elif-elder-classSmall.png",
       "condition": false,
@@ -958,7 +958,7 @@
     },
     {
       "category": "Logic",
-      "code": "elif (my_class == \"Elm Class\"):",
+      "code": "elif (my_class == 'Elm Class'):",
       "imageName": "block_images/logic/elifClass/elif-elm-classSmall.png",
       "displayImageName": "block_images/logic/elifClass/elif-elm-classSmall.png",
       "condition": false,
@@ -972,7 +972,7 @@
     },
     {
       "category": "Logic",
-      "code": "elif (my_class == \"Holly Class\"):",
+      "code": "elif (my_class == 'Holly Class'):",
       "imageName": "block_images/logic/elifClass/elif-holly-classSmall.png",
       "displayImageName": "block_images/logic/elifClass/elif-holly-classSmall.png",
       "condition": false,
@@ -986,7 +986,7 @@
     },
     {
       "category": "Logic",
-      "code": "elif (my_class == \"Oak Class\"):",
+      "code": "elif (my_class == 'Oak Class'):",
       "imageName": "block_images/logic/elifClass/elif-oak-classSmall.png",
       "displayImageName": "block_images/logic/elifClass/elif-oak-classSmall.png",
       "condition": false,
@@ -1000,7 +1000,7 @@
     },
     {
       "category": "Logic",
-      "code": "elif (my_class == \"Silver Birch Class\"):",
+      "code": "elif (my_class == 'Silver Birch Class'):",
       "imageName": "block_images/logic/elifClass/elif-silver_birch-classSmall.png",
       "displayImageName": "block_images/logic/elifClass/elif-silver_birch-classSmall.png",
       "condition": false,
@@ -1014,7 +1014,7 @@
     },
     {
       "category": "Logic",
-      "code": "if (my_class == \"Ash Class\"):",
+      "code": "if (my_class == 'Ash Class'):",
       "imageName": "block_images/logic/elifClass/if-ash-classSmall.png",
       "displayImageName": "block_images/logic/elifClass/if-ash-classSmall.png",
       "condition": false,

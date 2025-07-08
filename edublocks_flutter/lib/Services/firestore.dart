@@ -61,12 +61,14 @@ Future<bool> saveParticipantData(Participant participant) async {
       "task4": participant.task4,
       "task5": participant.task5,
       "task6": participant.task6,
+      "task7": participant.task7,
       "featureA": participant.featureA,
       "featureB": participant.featureB,
       "featureC": participant.featureC,
       "featureD": participant.featureD,
       "featureE": participant.featureE,
-      "featureF": participant.featureF
+      "featureF": participant.featureF,
+      "featureG": participant.featureG
     }, SetOptions(merge: true));
 
     return true;

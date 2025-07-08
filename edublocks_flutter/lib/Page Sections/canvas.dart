@@ -1244,20 +1244,9 @@ class _canvasWidgetState extends State<canvasWidget> {
 
                     ColorFiltered(
                       colorFilter:
-                          (getBlockLineNumber(
-                                        block.id,
-                                        _codeTracker.blocks.firstWhere(
-                                          (b) => b.id == 0,
-                                        ),
-                                      ) ==
-                                      null) ||
-                                  (greyscaleHighlight(context) &&
-                                      block.type.code !=
-                                          Provider.of<ParticipantInformation>(
-                                                context,
-                                                listen: false,
-                                              ).currentParticipant
-                                              ?.getErrorCode()) // If the block is not connected, OR, if the greyscale feature is active and this block does not match the error line
+                          (getBlockLineNumber(block.id, _codeTracker.blocks.firstWhere((b) => b.id == 0)) == null) ||
+                          (greyscaleHighlight(context) && block.type.code != Provider.of<ParticipantInformation>(context, listen: false).currentParticipant ?.getErrorCode() 
+                          && getBlockLineNumber(block.id, _codeTracker.blocks.firstWhere((b) => b.id == 0)) != Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getErrorLine()) // If the block is not connected, OR, if the greyscale feature is active and this block does not match the error line
                               ? const ColorFilter.matrix([
                                 0.2126,
                                 0.7152,
