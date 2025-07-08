@@ -44,10 +44,16 @@ class Participant {
 
   /// bool to show when the next task button has been pressed, and the conditions have been met to show the next task
   bool _nextTask = true; // Initialise as true so that a task starts upon the app initially starting.
+  bool _appStartFlag = true; // Flag used to stop the app reseting current progress when the app starts. Variable starts as true, and is set to false for the rest of the life of the app
   bool showNextTask() {
     if (_nextTask) {
       _nextTask = false;
-      resetProgress();
+      if (_appStartFlag) { 
+        _appStartFlag = false;
+      } 
+      else {
+        resetProgress(); 
+      }
       return true;
     } else {
       return false;
@@ -286,9 +292,7 @@ class Participant {
       featureG = true;
     }
     
-
-    currentTask = null;
-    currentFeature = null;
+    clearCurrentTask(this);
     saveParticipantData(this);
   }
 
@@ -348,6 +352,8 @@ class Participant {
   void resetProgress() {
     _currentProgress = 0;
     runButtonPressed = 0;
+    currentTask = null;
+    currentFeature = null;
 
     clearCurrentTask(this);
   }

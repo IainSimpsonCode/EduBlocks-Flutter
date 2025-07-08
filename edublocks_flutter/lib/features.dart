@@ -11,48 +11,56 @@ const bool showEmptyCategories = false; // Should the app show empty categories
 
 const String supervisorCode = "1450"; // Code required to allow users to finish thier tasks early without figuring out the answer.
 
+/// Feature A
 bool lineNumbering(BuildContext context) {
   return (
     Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getFeature() == "A" 
   );
 }
 
+/// Feature B
 bool detailedErrorMessages(BuildContext context) {
   return (
     Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getFeature() == "B" && 
-    Provider.of<TaskTracker>(context, listen: false).isFeatureVisible && 
+    (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.currentProgress ?? 0) >= 1 && 
     Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getCodeUpToFirstError() == Provider.of<CodeTracker>(context, listen: false).JSONToPythonCode()
   );
 }
 
+/// Feature C
 bool altColours(BuildContext context) {
   return (
     Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getFeature() == "C"
   );
 }
 
+/// Feature D
 bool redBorder(BuildContext context) {
   return (
     Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getFeature() == "D" && 
-    Provider.of<TaskTracker>(context, listen: false).isFeatureVisible &&
+    (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.currentProgress ?? 0) >= 1 &&
     Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getCodeUpToFirstError() == Provider.of<CodeTracker>(context, listen: false).JSONToPythonCode()
   );
 }
 
+/// Feature E
 bool greyscaleHighlight(BuildContext context) {
   return (
     Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getFeature() == "E" && 
-    Provider.of<TaskTracker>(context, listen: false).isFeatureVisible && 
+    (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.currentProgress ?? 0) >= 1 && 
     Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getCodeUpToFirstError() == Provider.of<CodeTracker>(context, listen: false).JSONToPythonCode()
   );
 }
 
+/// Feature F
 bool showCodeAndOutputSimultaniously(BuildContext context) {
   return (
     Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getFeature() == "F"
   );
 }
- bool highlightCodePanelGreen(BuildContext context) {
+
+/// Feature G
+bool highlightCodePanelGreen(BuildContext context) {
   return (
     Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getFeature() == "G"
   );

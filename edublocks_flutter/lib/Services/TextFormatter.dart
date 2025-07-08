@@ -69,12 +69,12 @@ class TextFormatter {
     final variableColour = altColours(context) ? Color(0xFF364fd7) : keywordColour;
 
     final keywords = ["time", "random", "math", "sleep"];
-    final variables = ["count", "age", "friends", "number1", "number2", "Classes", "teacher-name", "year-group", "result", "researcher-name", "number", "counter", "my_class", "my_grades"];
+    final variables = ["count", "age", "friends", "number1", "number2", "Classes", "teacher-name", "year-group", "result", "researcher-name", "number", "counter", "my_class", "my_grades", "fruits"];
 
     final String keywordPattern = keywords.map(RegExp.escape).join('|');
     final String variablePattern = variables.map(RegExp.escape).join('|');
 
-    final RegExp regex = RegExp(r'''(?<space>\s+|^\s+)|(?<keyword>\b(?:''' + keywordPattern + r''')\b)|(?<variables>\b(?:''' + variablePattern + r''')\b)|(?<input>\binput\b|\bint\b)|(?<append>\bappend\b)|(?<mainCommand>\b''' + mainCommand + r'''\b)|(?<string>["'](?:\\.|[^\\])*?["'])|(?<comment>#.*$)|(?<bool>\bTrue\b|\bFalse\b)|(?<number>\b\d+(?:\.\d+)?\b)|(?<syntax>[()\[\]:,\.])|(?<operands>[+=<>\-])|(?<word>\b\w+\b)
+    final RegExp regex = RegExp(r'''(?<space>\s+|^\s+)|(?<keyword>\b(?:''' + keywordPattern + r''')\b)|(?<variables>\b(?:''' + variablePattern + r''')\b)|(?<input>\binput\b|\bint\b)|(?<append>\bappend\b|\bremove\b)|(?<mainCommand>\b''' + mainCommand + r'''\b)|(?<string>["'](?:\\.|[^\\])*?["'])|(?<comment>#.*$)|(?<bool>\bTrue\b|\bFalse\b)|(?<number>\b\d+(?:\.\d+)?\b)|(?<syntax>[()\[\]:,\.])|(?<operands>[+=<>\/-])|(?<word>\b\w+\b)
     ''', multiLine: true, caseSensitive: false, dotAll: true);
 
     final matches = regex.allMatches(line);
