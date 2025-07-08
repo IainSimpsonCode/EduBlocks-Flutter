@@ -387,6 +387,24 @@
       "task": 10
     },
     {
+      "category": "Statements",
+      "code": "#Adding grades together",
+      "imageName": "block_images/statements/comment_adding-grades 1.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 10
+    },
+    {
+      "category": "Statements",
+      "code": "#Setting up my grades",
+      "imageName": "block_images/statements/comment_setting-up 1.png",
+      "condition": false,
+      "hasChildren": false,
+      "standardCodeColour": "0xFF61afef",
+      "task": 10
+    },
+    {
       "category": "Variables",
       "code": "count += 1",
       "imageName": "block_images/variables/count+=1.png",
@@ -421,7 +439,7 @@
     {
       "category": "Variables",
       "code": "number2 = 2",
-      "imageName": "block_images/variables/number2_variable.png",
+      "imageName": "block_images/variables/number2_variable_int.png",
       "condition": false,
       "hasChildren": false,
       "task": 4
@@ -1038,7 +1056,7 @@
       "displayImageHeight": 150,
       "snapXOffset": -38,
       "standardCodeColour": "0xFF996ddd",
-      "task": 10
+      "task": 6
     }
   ]
 }
