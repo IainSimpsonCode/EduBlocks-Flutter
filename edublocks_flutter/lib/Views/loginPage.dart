@@ -2,6 +2,7 @@ import 'package:edublocks_flutter/Classes/Participant.dart';
 import 'package:edublocks_flutter/Services/firestore.dart';
 import 'package:edublocks_flutter/Services/providers.dart';
 import 'package:edublocks_flutter/Views/PIDScreen.dart';
+import 'package:edublocks_flutter/Views/allParticipantProgress.dart';
 import 'package:edublocks_flutter/Views/codeScreen.dart';
 import 'package:edublocks_flutter/Widgets/buttonWithIcon.dart';
 import 'package:edublocks_flutter/features.dart';
@@ -41,6 +42,16 @@ class _loginPageState extends State<loginPage> {
 
       String classID = username.substring(0, 2); // First 2 digits = class ID
       String participantID = username.substring(2); // Last 2 digits = participant ID
+
+      // If participant ID ends in 99, proceed to admin screen
+      if (participantID == "99") {
+        List<Participant> participants = await getAllParticipantsInClass(classID);
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => Material( child: allParticipantInfoScreen(participants: participants)),
+          ),
+        );
+      }
 
       if (await doesParticipantExist(classID, participantID)) {
 

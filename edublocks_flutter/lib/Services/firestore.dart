@@ -46,6 +46,30 @@ Future<Participant?> getParticipantInfo(String classID, String participantID) as
   }
 }
 
+Future<List<Participant>> getAllParticipantsInClass(String classID) async {
+  try {
+    var db = FirebaseFirestore.instance;
+
+    QuerySnapshot snapshot = await db
+        .collection('Classes')
+        .doc(classID)
+        .collection('Participants')
+        .get();
+
+    return snapshot.docs.map((doc) {
+      return Participant.fromJson(
+        classID,
+        doc.id,
+        doc.data() as Map<String, dynamic>,
+      );
+    }).toList();
+  } catch (e) {
+    print('getAllParticipantsInClass(): \nError loading participants: $e');
+    return [];
+  }
+}
+
+
 Future<bool> saveParticipantData(Participant participant) async {
   try {
     DocumentReference docRef = FirebaseFirestore.instance
