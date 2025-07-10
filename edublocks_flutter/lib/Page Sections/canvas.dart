@@ -1285,7 +1285,7 @@ class _canvasWidgetState extends State<canvasWidget> {
                             Provider.of<ParticipantInformation>(
                               context,
                               listen: false,
-                            ).currentParticipant?.getErrorCode() &&
+                            ).currentParticipant?.getErrorLine() &&
                         redBorder(context))
                       Positioned.fill(
                         child: CustomPaint(painter: ErrorOutlinePainter()),

@@ -24,7 +24,7 @@ class _sideBarWidgetState extends State<sideBarWidget> {
 
   void _handleCodeTrackerUpdates() {
     setState(() {
-      if (highlightCodePanelGreen(context)) {}
+      
     });
   }
 

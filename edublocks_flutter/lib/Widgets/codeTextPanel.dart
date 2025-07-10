@@ -62,7 +62,7 @@ class _codeTextPanelState extends State<codeTextPanel> {
         decoration: BoxDecoration(
           color: codeTextPanelColour,
           borderRadius: BorderRadius.all(Radius.circular(4)),
-          border: Border.all(color: _borderColor, width: 5),
+          border: Border.all(color: _borderColor, width: 10),
         ),
         padding: EdgeInsets.all(8),
         child: ListView(

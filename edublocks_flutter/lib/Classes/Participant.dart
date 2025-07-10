@@ -92,6 +92,7 @@ class Participant {
           logAnalytics(context, "finish_early", true);
 
           _nextTask = true;
+          taskComplete();
         } else {
           showToastWithIcon(
             context,

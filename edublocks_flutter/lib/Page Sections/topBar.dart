@@ -70,7 +70,6 @@ class _topBarWidgetState extends State<topBarWidget> {
             backgroundColor: runButtonColour,
             text: "Run",
             onTap: () {
-              showToastWithIcon(context, "Working on it ...", Icons.front_hand, Colors.blue[400]!, 4, true);
               Provider.of<CodeTracker>(context, listen: false).run(context);
             },
           ),
