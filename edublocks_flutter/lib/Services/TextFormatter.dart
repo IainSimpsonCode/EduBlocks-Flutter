@@ -8,7 +8,6 @@ class TextFormatter {
   /// E.g. print("count") => print <br>
   /// E.g. while True: => while
   static String getCentralCommand(String line) {
-
     // Ignore any leading whitespace
     String trimmed = line.trimLeft();
 
@@ -27,8 +26,11 @@ class TextFormatter {
     return trimmed;
   }
 
-  static List<TextSpan> formatCodeLine(BuildContext context, String line, Color mainCommandColour) {
-
+  static List<TextSpan> formatCodeLine(
+    BuildContext context,
+    String line,
+    Color mainCommandColour,
+  ) {
     List<TextSpan> textSpans = [];
 
     // Variable Explaination
@@ -39,15 +41,10 @@ class TextFormatter {
 
     // Check if the line is a comment before doing any other checks
     if (getCentralCommand(line) == "#") {
-      textSpans.add(TextSpan(
-        text: line,
-        style: codeTextStyle
-      ));
+      textSpans.add(TextSpan(text: line, style: codeTextStyle));
 
       return textSpans;
     }
-
-
 
     // Format the rest of the line after the main command
     /// Style Guide:
@@ -66,16 +63,46 @@ class TextFormatter {
     final numberColour = Color(0xFFe5c07b);
     final inputColour = Color(0xFFf59421);
     final appendColour = Color(0xFF15b9d3);
-    final variableColour = altColours(context) ? Color(0xFF364fd7) : keywordColour;
+    final variableColour =
+        altColours(context) ? Color(0xFF364fd7) : keywordColour;
 
     final keywords = ["time", "random", "math", "sleep"];
-    final variables = ["count", "age", "friends", "number1", "number2", "Classes", "teacher-name", "year-group", "result", "researcher-name", "number", "counter", "my_class", "my_grades", "fruits"];
+    final variables = [
+      "count",
+      "age",
+      "friends",
+      "number1",
+      "number2",
+      "Classes",
+      "teacher_name",
+      "year_group",
+      "result",
+      "researcher_name",
+      "number",
+      "counter",
+      "my_class",
+      "my_grades",
+      "fruits",
+      "KS1",
+      "KS2",
+    ];
 
     final String keywordPattern = keywords.map(RegExp.escape).join('|');
     final String variablePattern = variables.map(RegExp.escape).join('|');
 
-    final RegExp regex = RegExp(r'''(?<space>\s+|^\s+)|(?<keyword>\b(?:''' + keywordPattern + r''')\b)|(?<variables>\b(?:''' + variablePattern + r''')\b)|(?<input>\binput\b|\bint\b)|(?<append>\bappend\b|\bremove\b)|(?<mainCommand>\b''' + mainCommand + r'''\b)|(?<string>["'](?:\\.|[^\\])*?["'])|(?<comment>#.*$)|(?<bool>\bTrue\b|\bFalse\b)|(?<number>\b\d+(?:\.\d+)?\b)|(?<syntax>[()\[\]:,\.])|(?<operands>[+=<>\/-])|(?<word>\b\w+\b)
-    ''', multiLine: true, caseSensitive: false, dotAll: true);
+    final RegExp regex = RegExp(
+      r'''(?<space>\s+|^\s+)|(?<keyword>\b(?:''' +
+          keywordPattern +
+          r''')\b)|(?<variables>\b(?:''' +
+          variablePattern +
+          r''')\b)|(?<input>\binput\b|\bint\b)|(?<append>\bappend\b|\bremove\b)|(?<mainCommand>\b''' +
+          mainCommand +
+          r'''\b)|(?<string>["'](?:\\.|[^\\])*?["'])|(?<comment>#.*$)|(?<bool>\bTrue\b|\bFalse\b)|(?<number>\b\d+(?:\.\d+)?\b)|(?<syntax>[()\[\]:,\.])|(?<operands>[+=<>\/-])|(?<word>\b\w+\b)
+    ''',
+      multiLine: true,
+      caseSensitive: false,
+      dotAll: true,
+    );
 
     final matches = regex.allMatches(line);
 

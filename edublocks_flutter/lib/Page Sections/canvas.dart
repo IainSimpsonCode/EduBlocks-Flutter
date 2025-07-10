@@ -663,7 +663,7 @@ class _canvasWidgetState extends State<canvasWidget> {
 
   void reSizeBlock(MoveableBlock block) {
     MoveableBlock parent = getParent(block);
-    
+
     int parentNestedBlocks = getNumberOfNestedBlocks(parent);
 
     switch (parent.type.code) {
@@ -1014,6 +1014,11 @@ class _canvasWidgetState extends State<canvasWidget> {
                 "${blockFolder}loops/while-loop-counter_2Blocks.png";
             parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
             break;
+          case 3:
+            parent.imageName =
+                "${blockFolder}loops/while-loop-counter_3Blocks.png";
+            parent.height = 200.0 + (70 * (parentNestedBlocks - 1));
+            break;
           default:
             parent.imageName =
                 "${blockFolder}loops/while-loop-counter_2Blocks.png";
@@ -1060,7 +1065,6 @@ class _canvasWidgetState extends State<canvasWidget> {
         context,
         listen: false,
       ).blocks.firstWhere((b) => b.id == block.snappedTo);
-
       if (snappedTo.type.code == 'while True:' ||
           snappedTo.type.code == 'if (count <= 10):' ||
           snappedTo.type.code == 'if (age <= 11):' ||
@@ -1274,9 +1278,31 @@ class _canvasWidgetState extends State<canvasWidget> {
 
                     ColorFiltered(
                       colorFilter:
-                          (getBlockLineNumber(block.id, _codeTracker.blocks.firstWhere((b) => b.id == 0)) == null) ||
-                          (greyscaleHighlight(context) && block.type.code != Provider.of<ParticipantInformation>(context, listen: false).currentParticipant ?.getErrorCode() 
-                          && getBlockLineNumber(block.id, _codeTracker.blocks.firstWhere((b) => b.id == 0)) != Provider.of<ParticipantInformation>(context, listen: false).currentParticipant?.getErrorLine()) // If the block is not connected, OR, if the greyscale feature is active and this block does not match the error line
+                          (getBlockLineNumber(
+                                        block.id,
+                                        _codeTracker.blocks.firstWhere(
+                                          (b) => b.id == 0,
+                                        ),
+                                      ) ==
+                                      null) ||
+                                  (greyscaleHighlight(context) &&
+                                      block.type.code !=
+                                          Provider.of<ParticipantInformation>(
+                                                context,
+                                                listen: false,
+                                              ).currentParticipant
+                                              ?.getErrorCode() &&
+                                      getBlockLineNumber(
+                                            block.id,
+                                            _codeTracker.blocks.firstWhere(
+                                              (b) => b.id == 0,
+                                            ),
+                                          ) !=
+                                          Provider.of<ParticipantInformation>(
+                                                context,
+                                                listen: false,
+                                              ).currentParticipant
+                                              ?.getErrorLine()) // If the block is not connected, OR, if the greyscale feature is active and this block does not match the error line
                               ? const ColorFilter.matrix([
                                 0.2126,
                                 0.7152,
