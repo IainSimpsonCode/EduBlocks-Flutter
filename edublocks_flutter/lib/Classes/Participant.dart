@@ -77,6 +77,7 @@ class Participant {
         Icons.front_hand,
         Colors.blue[400]!,
         4,
+        true
       );
 
       // Log that they have tried to move on without finishing the task
@@ -98,6 +99,7 @@ class Participant {
             Icons.lock,
             Colors.red[400]!,
             5,
+            true
           );
         }
         Provider.of<TaskTracker>(context, listen: false).taskUpdate();

@@ -17,6 +17,7 @@ class codeBarWidget extends StatefulWidget {
 class _codeBarWidgetState extends State<codeBarWidget> {
 
   late CodeOutputTextPanelNotifier _codeOutputTextPanelNotifier;
+  late CodeTracker _codeTracker;
 
   void _handleCodeOutputTextPanelUpdates() {
     setState(() {
@@ -31,12 +32,16 @@ class _codeBarWidgetState extends State<codeBarWidget> {
 
     _codeOutputTextPanelNotifier = Provider.of<CodeOutputTextPanelNotifier>(context, listen: false);
     _codeOutputTextPanelNotifier.addListener(_handleCodeOutputTextPanelUpdates);
+
+    _codeTracker = Provider.of<CodeTracker>(context, listen: false);
+    _codeTracker.addListener(_handleCodeOutputTextPanelUpdates);
   }
 
   @override
   void dispose() {
     // Safely remove provider listener
     _codeOutputTextPanelNotifier.removeListener(_handleCodeOutputTextPanelUpdates);
+    _codeTracker.removeListener(_handleCodeOutputTextPanelUpdates);
     super.dispose();
   }
 
@@ -59,7 +64,7 @@ class _codeBarWidgetState extends State<codeBarWidget> {
           outputTextPanel(),
         ] : [
           codeOutputToggleButtons(),
-          _codeOutputTextPanelNotifier.textPanel(),
+          _codeOutputTextPanelNotifier.textPanel(context),
         ]
       ),
     );

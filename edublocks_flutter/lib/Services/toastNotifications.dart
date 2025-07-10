@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-void showToastWithIcon(BuildContext context, String message, IconData icon, Color iconColor, int seconds) {
+void showToastWithIcon(BuildContext context, String message, IconData icon, Color iconColor, int seconds, bool center) {
   final overlay = Overlay.of(context);
   final screenSize = MediaQuery.of(context).size;
 
@@ -10,8 +10,8 @@ void showToastWithIcon(BuildContext context, String message, IconData icon, Colo
   final overlayEntry = OverlayEntry(
     builder: (context) => Positioned(
       bottom: 50,
-      left: sidePadding,
-      right: sidePadding,
+      left: center ? sidePadding : (2 * sidePadding),
+      right: center ? sidePadding : 0,
       child: Material(
         color: Colors.transparent,
         child: Container(

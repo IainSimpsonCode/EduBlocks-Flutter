@@ -86,8 +86,6 @@ class TextFormatter {
       "KS1",
       "KS2",
       "i",
-      "len",
-      "in",
       "total_grades",
       "grade1",
       "grade2",
@@ -104,7 +102,7 @@ class TextFormatter {
           keywordPattern +
           r''')\b)|(?<variables>\b(?:''' +
           variablePattern +
-          r''')\b)|(?<input>\binput\b|\bint\b)|(?<append>\bappend\b|\bremove\b)|(?<mainCommand>\b''' +
+          r''')\b)|(?<input>\brange\b|\blen\b|\binb|\binput\b|\bint\b)|(?<append>\bappend\b|\bremove\b)|(?<mainCommand>\b''' +
           mainCommand +
           r'''\b)|(?<string>["'](?:\\.|[^\\])*?["'])|(?<comment>#.*$)|(?<bool>\bTrue\b|\bFalse\b)|(?<number>\b\d+(?:\.\d+)?\b)|(?<syntax>[()\[\]:,\.])|(?<operands>[+=<>\/-])|(?<word>\b\w+\b)
     ''',
