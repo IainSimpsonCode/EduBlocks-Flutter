@@ -58,14 +58,15 @@ class _canvasWidgetState extends State<canvasWidget> {
         // Log a block being loaded to MongoDB analytics
         logAnalytics(context, "load_block", block.code);
 
-        double y = block.position.dy;
+        double y = getLastBlock().position.dy;
+        double x = getLastBlock().position.dx;
         setState(() {
           // Load next block in the queue
           _codeTracker.blocks.add(
             MoveableBlock(
               id: getNewID(),
               type: block,
-              position: Offset(375, y - block.height),
+              position: Offset(x + 50,y + 100),
               height: block.height,
               nestedBlocks: [],
               imageName: block.imageName,
@@ -79,6 +80,10 @@ class _canvasWidgetState extends State<canvasWidget> {
 
           _codeTracker.dragPositions[block.id] = block.position;
         }
+        Provider.of<BlockLibrary>(
+          context,
+          listen: false,
+        ).setCategorySelected(null);
       }
     }
   }
@@ -172,6 +177,8 @@ class _canvasWidgetState extends State<canvasWidget> {
 
     return chain;
   }
+
+  MoveableBlock getLastBlock() => _codeTracker.blocks.last;
 
   /// Return the line number of a block in a chain the starts at startBlock.
   /// The line number is relative to startBlock, who's line number will always be 1.
@@ -605,7 +612,7 @@ class _canvasWidgetState extends State<canvasWidget> {
           ).contains(dragged)) {
         callInsertBlock(dragged);
         Provider.of<CodeOutputTextPanelNotifier>(context, listen: false)
-          .codeSelected = true;
+            .codeSelected = true;
         break;
       }
     }
