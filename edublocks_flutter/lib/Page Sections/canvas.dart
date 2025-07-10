@@ -58,13 +58,14 @@ class _canvasWidgetState extends State<canvasWidget> {
         // Log a block being loaded to MongoDB analytics
         logAnalytics(context, "load_block", block.code);
 
+        double y = block.position.dy;
         setState(() {
           // Load next block in the queue
           _codeTracker.blocks.add(
             MoveableBlock(
               id: getNewID(),
               type: block,
-              position: const Offset(400, 100),
+              position: Offset(400, y - block.height),
               height: block.height,
               nestedBlocks: [],
               imageName: block.imageName,
@@ -832,6 +833,11 @@ class _canvasWidgetState extends State<canvasWidget> {
           case 3:
             parent.imageName =
                 "${blockFolder}loops/whileGrades/whileGrade_3Blocks.png";
+            parent.height = 185.0 + (70 * (parentNestedBlocks - 1));
+            break;
+          case 4:
+            parent.imageName =
+                "${blockFolder}loops/whileGrades/whileGrade_4Blocks.png";
             parent.height = 185.0 + (70 * (parentNestedBlocks - 1));
             break;
           default:

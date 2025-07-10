@@ -85,6 +85,15 @@ class TextFormatter {
       "fruits",
       "KS1",
       "KS2",
+      "i",
+      "len",
+      "in",
+      "total_grades",
+      "grade1",
+      "grade2",
+      "grade3",
+      "grade4",
+      
     ];
 
     final String keywordPattern = keywords.map(RegExp.escape).join('|');

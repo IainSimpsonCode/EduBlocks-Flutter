@@ -199,7 +199,7 @@
     },
     {
       "category": "Statements",
-      "code": "print(number1 + 'divided by' + number2 + 'is...')",
+      "code": "print(str(number1) +\" divided by \" + str(number2) + \" is...\")",
       "imageName": "block_images/statements/print-variables-text.png",
       "condition": false,
       "hasChildren": false,
@@ -388,21 +388,21 @@
     },
     {
       "category": "Statements",
-      "code": "#Adding grades together",
+      "code": "# Adding grades together",
       "imageName": "block_images/statements/comment_adding-grades 1.png",
       "condition": false,
       "hasChildren": false,
       "standardCodeColour": "0xFF61afef",
-      "task": 10
+      "task": 6
     },
     {
       "category": "Statements",
-      "code": "#Setting up my grades",
+      "code": "# Setting up my grades",
       "imageName": "block_images/statements/comment_setting-up 1.png",
       "condition": false,
       "hasChildren": false,
       "standardCodeColour": "0xFF61afef",
-      "task": 10
+      "task": 6
     },
     {
       "category": "Variables",
@@ -503,7 +503,7 @@
     },
     {
       "category": "Variables",
-      "code": "grade = 9",
+      "code": "grade1 = 9",
       "imageName": "block_images/variables/grade1.png",
       "condition": false,
       "hasChildren": false,
@@ -511,7 +511,7 @@
     },
     {
       "category": "Variables",
-      "code": "grade = 'six'",
+      "code": "grade2 = 'six'",
       "imageName": "block_images/variables/grade2.png",
       "condition": false,
       "hasChildren": false,
@@ -519,7 +519,15 @@
     },
     {
       "category": "Variables",
-      "code": "grade = 4",
+      "code": "grade2 = 6",
+      "imageName": "block_images/variables/grade2-int.png",
+      "condition": false,
+      "hasChildren": false,
+      "task": 6
+    },
+    {
+      "category": "Variables",
+      "code": "grade3 = 4",
       "imageName": "block_images/variables/grade3.png",
       "condition": false,
       "hasChildren": false,
@@ -527,7 +535,7 @@
     },
     {
       "category": "Variables",
-      "code": "grade = 7",
+      "code": "grade4 = 7",
       "imageName": "block_images/variables/grade4.png",
       "condition": false,
       "hasChildren": false,

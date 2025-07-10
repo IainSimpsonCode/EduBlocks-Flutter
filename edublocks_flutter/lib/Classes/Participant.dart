@@ -43,16 +43,17 @@ class Participant {
   int runButtonPressed = 0;
 
   /// bool to show when the next task button has been pressed, and the conditions have been met to show the next task
-  bool _nextTask = true; // Initialise as true so that a task starts upon the app initially starting.
-  bool _appStartFlag = true; // Flag used to stop the app reseting current progress when the app starts. Variable starts as true, and is set to false for the rest of the life of the app
+  bool _nextTask =
+      true; // Initialise as true so that a task starts upon the app initially starting.
+  bool _appStartFlag =
+      true; // Flag used to stop the app reseting current progress when the app starts. Variable starts as true, and is set to false for the rest of the life of the app
   bool showNextTask() {
     if (_nextTask) {
       _nextTask = false;
-      if (_appStartFlag) { 
+      if (_appStartFlag) {
         _appStartFlag = false;
-      } 
-      else {
-        resetProgress(); 
+      } else {
+        resetProgress();
       }
       return true;
     } else {
@@ -64,6 +65,8 @@ class Participant {
     if (_currentProgress >= 2) {
       // If they have completed the main task, but may or may not have completed the extention, allow them to move on
       _nextTask = true;
+      Provider.of<CodeOutputTextPanelNotifier>(context, listen: false)
+          .codeSelected = true;
       Provider.of<TaskTracker>(context, listen: false).taskUpdate();
     } else if (runButtonPressed < 2 && _currentProgress <= 2) {
       // If they have attempted the task less than twice, and not yet completed the activity
@@ -73,7 +76,7 @@ class Participant {
         "You need to complete the current task before moving to the next task. If you can't figure it out, raise your hand and someone will come help",
         Icons.front_hand,
         Colors.blue[400]!,
-        10,
+        4,
       );
 
       // Log that they have tried to move on without finishing the task
@@ -227,7 +230,13 @@ class Participant {
     final random = Random();
 
     // If all tasks have been completed, return null
-    if (featureA && featureA && featureC && featureD && featureE && featureF && featureG) {
+    if (featureA &&
+        featureA &&
+        featureC &&
+        featureD &&
+        featureE &&
+        featureF &&
+        featureG) {
       return null;
     }
 
@@ -250,7 +259,7 @@ class Participant {
     }
     if (!featureF) {
       incompleteTasks.add('F');
-    } 
+    }
     if (!featureG) {
       incompleteTasks.add('G');
     }
@@ -274,7 +283,6 @@ class Participant {
     } else if (currentTask == 7) {
       task7 = true;
     }
-    
 
     if (currentFeature == "A") {
       featureA = true;
@@ -291,7 +299,7 @@ class Participant {
     } else if (currentFeature == 'G') {
       featureG = true;
     }
-    
+
     clearCurrentTask(this);
     saveParticipantData(this);
   }
@@ -331,6 +339,7 @@ class Participant {
 
       return true;
     } else {
+      print(solution);
       return false;
     }
   }

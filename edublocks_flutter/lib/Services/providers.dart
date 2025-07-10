@@ -153,7 +153,8 @@ class BlockLibrary extends ChangeNotifier {
 class BlocksToLoad extends ChangeNotifier {
   List<Block> _blocksToLoad = [];
 
-  void AddBlockToLoad(Block block) {
+  void AddBlockToLoad(Block block, Offset position) {
+    block.position = position;
     _blocksToLoad.add(block);
 
     notifyListeners();
@@ -349,7 +350,11 @@ class CodeTracker extends ChangeNotifier {
 
     if (line == -1) {
       // If line is -1, remove the last item in the chain
-      logAnalytics(context, "detach_block", "'${blocks.last["code"]}' at line ${blocks.last["line"]}");
+      logAnalytics(
+        context,
+        "detach_block",
+        "'${blocks.last["code"]}' at line ${blocks.last["line"]}",
+      );
       blocks.removeLast();
     } else {
       // If a line number is specified, remove all blocks at and below that line.
@@ -493,13 +498,17 @@ class CodeTracker extends ChangeNotifier {
   String cleanPythonCode(String rawCode) {
     Map<String, String> replacements = {"while True": "for i in range(100)"};
 
-    if (!isProduction) {print("Raw code: $rawCode");}
+    if (!isProduction) {
+      print("Raw code: $rawCode");
+    }
 
     replacements.forEach((key, value) {
       rawCode = rawCode.replaceAll(key, value);
     });
 
-    if (!isProduction) {print("Cleaned code: $rawCode");}
+    if (!isProduction) {
+      print("Cleaned code: $rawCode");
+    }
 
     return rawCode;
   }
@@ -560,10 +569,22 @@ class CodeTracker extends ChangeNotifier {
     return returnWidgets;
   }
 
+  bool calledAPI = false;
+
   /// Will send the code currently stored in the CodeTracker notifier to a python compiler server. Returns the output as a string to be shown on the output pane.
   Future<String> run(BuildContext context) async {
-
     bool isSolutionCorrect = false;
+
+    if (calledAPI) {
+      showToastWithIcon(
+        context,
+        "The code is running, please wait.",
+        Icons.front_hand,
+        Colors.blue[400]!,
+        10,
+      );
+      return "";
+    }
 
     // Log that run has been pressed
     logAnalytics(context, "run_blocks", true);
@@ -619,12 +640,24 @@ class CodeTracker extends ChangeNotifier {
         context,
         listen: false,
       ).currentParticipant!.checkSolution(context, JSONToPythonCode());
-      if (!isProduction) {print("Correct Solution?: $isSolutionCorrect");}
+      if (!isProduction) {
+        print("Correct Solution?: $isSolutionCorrect");
+      }
 
-      if (isSolutionCorrect && (Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.currentProgress == 2 || Provider.of<ParticipantInformation>(context, listen: false).currentParticipant!.currentProgress == 1)) { // If the user just finished part 1 or part 2 and found/fixed the error, show a popup instead of a toast notification
+      if (isSolutionCorrect &&
+          (Provider.of<ParticipantInformation>(
+                    context,
+                    listen: false,
+                  ).currentParticipant!.currentProgress ==
+                  2 ||
+              Provider.of<ParticipantInformation>(
+                    context,
+                    listen: false,
+                  ).currentParticipant!.currentProgress ==
+                  1)) {
+        // If the user just finished part 1 or part 2 and found/fixed the error, show a popup instead of a toast notification
         showPopup(context, "Well done", correctAnswerText, null);
-      } 
-      else {
+      } else {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           final text =
               isSolutionCorrect ? correctAnswerText : incorrectAnswerText;
@@ -677,12 +710,13 @@ class CodeTracker extends ChangeNotifier {
       final url = Uri.parse("https://marklochrie.co.uk/edublocks/run");
       final headers = {"Content-Type": "application/json"};
       final body = jsonEncode({"code": cleanPythonCode(JSONToPythonCode())});
-
+      calledAPI = true;
       final response = await http.post(url, headers: headers, body: body);
       final data = jsonDecode(response.body);
 
       output = data["output"] ?? data["error"] ?? "Unknown response";
     } catch (e) {
+      calledAPI = false;
       output = "Error: ${e.toString()}";
     }
 
@@ -690,6 +724,7 @@ class CodeTracker extends ChangeNotifier {
     logAnalytics(context, "output", output);
 
     setOutputString(output, null, context);
+    calledAPI = false;
     return output;
   }
 }
@@ -727,17 +762,20 @@ class TaskTracker extends ChangeNotifier {
 }
 
 class DeleteAll extends ChangeNotifier {
+  bool _isDeleting = false;
+
   void deleteAll(BuildContext context, bool askAreYouSure) {
+    if (_isDeleting) return;
+    _isDeleting = true;
 
     logAnalytics(context, "delete_all_blocks", true);
 
     if (askAreYouSure) {
-      // Check they really want to delete all the blocks
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final text =
             "Are you sure you want to delete all the blocks you have placed?";
         showDialog(
-          barrierDismissible: false, // User must click a button to proceed
+          barrierDismissible: false,
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
@@ -752,12 +790,21 @@ class DeleteAll extends ChangeNotifier {
                       context,
                       listen: false,
                     ).reinitialiseCanvasVariables(context, false);
+                    _isDeleting = false;
                     notifyListeners();
+                    Provider.of<CodeOutputTextPanelNotifier>(
+                          context,
+                          listen: false,
+                        ).codeSelected =
+                        true;
                   },
                 ),
                 TextButton(
                   child: Text('No'),
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _isDeleting = false;
+                  },
                 ),
               ],
             );
@@ -769,6 +816,7 @@ class DeleteAll extends ChangeNotifier {
         context,
         listen: false,
       ).reinitialiseCanvasVariables(context, false);
+      _isDeleting = false;
       notifyListeners();
     }
   }

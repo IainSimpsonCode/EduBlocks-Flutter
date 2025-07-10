@@ -19,60 +19,55 @@ class buttonWithIcon extends StatefulWidget {
 }
 
 class _buttonWithIconState extends State<buttonWithIcon> {
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
+  bool _isHovered = false;
 
   @override
   Widget build(BuildContext context) {
-
-    return GestureDetector(
-      onTap: widget.onTap,
-      child: Container(
-        padding: EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: widget.backgroundColor,
-          borderRadius: BorderRadius.all(Radius.circular(8))
-        ),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-          child: Row(
-            spacing: 16,
-            children: [
-              // SvgPicture.asset(
-              //   'category_icons/play.svg', 
-              //   color: Colors.white,
-              //   fit: BoxFit.contain,
-              //   width: 14,
-              //   errorBuilder: (context, error, stackTrace) {
-              //     return const Icon(Icons.broken_image, size: 20);
-              //   },
-              // ),
-              // Text(
-              //   "Run",
-              //   style: bodyMedium.copyWith(color: Colors.white),
-              // ),
-              widget.svgIconLocation != null ? SvgPicture.asset(
-                widget.svgIconLocation!, 
-                color: widget.iconColor ?? Colors.white,
-                fit: BoxFit.contain,
-                width: 14,
-                errorBuilder: (context, error, stackTrace) {
-                  return const Icon(Icons.broken_image, size: 14);
-                },
-              ) : (widget.icon != null ? Icon(
-                widget.icon,
-                size: 20,
-                color: widget.iconColor ?? Colors.white,
-              ) : const Icon(Icons.broken_image, size: 14)),
-              Text(
-                widget.text,
-                style: bodyMedium.copyWith(color: widget.iconColor ?? Colors.white),
-              ),
-            ],
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: Duration(milliseconds: 200),
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: _isHovered
+                ? widget.backgroundColor.withOpacity(0.85)
+                : widget.backgroundColor,
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+            boxShadow: _isHovered
+                ? [BoxShadow(color: Colors.black26, blurRadius: 6, offset: Offset(0, 3))]
+                : [],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+            child: Row(
+              children: [
+                widget.svgIconLocation != null
+                    ? SvgPicture.asset(
+                        widget.svgIconLocation!,
+                        color: widget.iconColor ?? Colors.white,
+                        fit: BoxFit.contain,
+                        width: 14,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Icon(Icons.broken_image, size: 14);
+                        },
+                      )
+                    : (widget.icon != null
+                        ? Icon(
+                            widget.icon,
+                            size: 20,
+                            color: widget.iconColor ?? Colors.white,
+                          )
+                        : const Icon(Icons.broken_image, size: 14)),
+                SizedBox(width: 8),
+                Text(
+                  widget.text,
+                  style: bodyMedium.copyWith(color: widget.iconColor ?? Colors.white),
+                ),
+              ],
+            ),
           ),
         ),
       ),

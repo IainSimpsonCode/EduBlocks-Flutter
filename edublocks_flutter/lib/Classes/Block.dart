@@ -23,6 +23,8 @@ class Block {
   int snapXOffset;
   int snapYOffset;
 
+  Offset position = const Offset(0, 0);
+
   Block({
     required this.category,
     required this.code,
@@ -37,6 +39,7 @@ class Block {
     this.snapXOffset = 0,
     this.snapYOffset = 0,
     required this.task,
+    this.position = const Offset(0, 0),
   });
 
   factory Block.fromJson(Map<String, dynamic> json) {
