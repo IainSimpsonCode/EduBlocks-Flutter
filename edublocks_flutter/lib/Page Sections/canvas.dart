@@ -65,7 +65,7 @@ class _canvasWidgetState extends State<canvasWidget> {
             MoveableBlock(
               id: getNewID(),
               type: block,
-              position: Offset(400, y - block.height),
+              position: Offset(375, y - block.height),
               height: block.height,
               nestedBlocks: [],
               imageName: block.imageName,
@@ -102,7 +102,7 @@ class _canvasWidgetState extends State<canvasWidget> {
           context,
           listen: false,
         ).getBlockByCode("# Start Here"),
-        position: const Offset(50, 50),
+        position: const Offset(20, 25),
         height: 90,
         nestedBlocks: [],
         imageName: "app_assets/block_images/startHere.png",
@@ -604,6 +604,8 @@ class _canvasWidgetState extends State<canvasWidget> {
             ).blocks.firstWhere((b) => b.id == 0),
           ).contains(dragged)) {
         callInsertBlock(dragged);
+        Provider.of<CodeOutputTextPanelNotifier>(context, listen: false)
+          .codeSelected = true;
         break;
       }
     }
