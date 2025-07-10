@@ -66,7 +66,7 @@ class _canvasWidgetState extends State<canvasWidget> {
             MoveableBlock(
               id: getNewID(),
               type: block,
-              position: Offset(x + 50,y + 100),
+              position: Offset(x + 50, y + 100),
               height: block.height,
               nestedBlocks: [],
               imageName: block.imageName,
@@ -178,7 +178,16 @@ class _canvasWidgetState extends State<canvasWidget> {
     return chain;
   }
 
-  MoveableBlock getLastBlock() => _codeTracker.blocks.last;
+  MoveableBlock getLastBlock() {
+    final start = Provider.of<CodeTracker>(
+      context,
+      listen: false,
+    ).blocks.firstWhereOrNull((b) => b.id == 0);
+    final blocks = getConnectedChain(start!);
+    final last = blocks.reversed.toList();
+
+    return last.first;
+  }
 
   /// Return the line number of a block in a chain the starts at startBlock.
   /// The line number is relative to startBlock, who's line number will always be 1.
@@ -292,6 +301,8 @@ class _canvasWidgetState extends State<canvasWidget> {
           context,
           listen: false,
         ).removeBlock(context, blockLineNumber);
+        Provider.of<CodeOutputTextPanelNotifier>(context, listen: false)
+            .codeSelected = true;
       }
     }
 
@@ -1598,17 +1609,26 @@ class _canvasWidgetState extends State<canvasWidget> {
     );
   }
 
+  bool playingSound = false;
   Future<void> playSound(int option) async {
-    if (option == 0) {
-      await player.setAsset('app_assets/sounds/disconnect.wav');
-      await player.play();
-    } else if (option == 1) {
-      await player.setAsset('app_assets/sounds/click.mp3');
-      await player.play();
-    } else {
-      await player.setAsset('app_assets/sounds/disconnect.wav');
-      await player.play();
+    if (playingSound) return;
+    playingSound = true;
+    try {
+      if (option == 0) {
+        await player.setAsset('app_assets/sounds/disconnect.wav');
+        await player.play();
+      } else if (option == 1) {
+        await player.setAsset('app_assets/sounds/click.mp3');
+        await player.play();
+      } else {
+        await player.setAsset('app_assets/sounds/disconnect.wav');
+        await player.play();
+      }
+    } catch (e) {
+      print(e);
     }
+
+    playingSound = false;
   }
 }
 
