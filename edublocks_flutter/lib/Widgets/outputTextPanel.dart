@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class outputTextPanel extends StatefulWidget {
-  const outputTextPanel({super.key});
+  outputTextPanel({super.key});
 
   @override
   State<outputTextPanel> createState() => _outputTextPanelState();
@@ -15,15 +15,20 @@ class _outputTextPanelState extends State<outputTextPanel> {
 
   late CodeTracker _codeTracker;
 
+  List<Widget> outputString = [];
+
   void _handleCodeTrackerUpdates() {
+
+    print("Output String: ${_codeTracker.outputString}");
     setState(() {
       
     });
+
+    
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     _codeTracker = Provider.of<CodeTracker>(context, listen: false);
@@ -39,6 +44,8 @@ class _outputTextPanelState extends State<outputTextPanel> {
 
   @override
   Widget build(BuildContext context) {
+
+    print("Rebuild");
     return Expanded(
       flex: 1,
       child: Container(
@@ -47,9 +54,19 @@ class _outputTextPanelState extends State<outputTextPanel> {
           borderRadius: BorderRadius.all(Radius.circular(4))
         ),
         padding: EdgeInsets.all(8),
-        child: ListView(
-          children: Provider.of<CodeTracker>(context, listen: false).outputString,
+        // child: ListView(
+        //   children: outputString,
+        // )
+        child: Consumer<CodeTracker>(
+          builder: (context, codeTracker, child) {
+            return ListView(
+              children: codeTracker.outputString,
+            );
+          },
         ),
+        // child: ListView(
+        //   children: Provider.of<CodeTracker>(context, listen: false).outputString,
+        // ),
       ),
     );
   }

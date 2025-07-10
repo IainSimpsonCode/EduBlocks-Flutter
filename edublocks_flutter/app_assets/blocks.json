@@ -467,7 +467,7 @@
       "imageName": "block_images/variables/age10.png",
       "condition": false,
       "hasChildren": false,
-      "task": 2
+      "task": 0
     },
     {
       "category": "Variables",
@@ -683,7 +683,7 @@
       "imageName": "block_images/variables/counter-plus1.png",
       "condition": false,
       "hasChildren": false,
-      "task": 10
+      "task": 0
     },
     {
       "category": "Variables",
@@ -723,7 +723,7 @@
       "imageName": "block_images/variables/variable-counter.png",
       "condition": false,
       "hasChildren": false,
-      "task": 10
+      "task": 0
     },
     {
       "category": "Variables",

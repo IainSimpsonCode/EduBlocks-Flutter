@@ -1,4 +1,5 @@
 import 'package:edublocks_flutter/Services/providers.dart';
+import 'package:edublocks_flutter/Services/toastNotifications.dart';
 import 'package:edublocks_flutter/Widgets/buttonWithIcon.dart';
 import 'package:edublocks_flutter/features.dart';
 import 'package:edublocks_flutter/style.dart';
@@ -69,6 +70,7 @@ class _topBarWidgetState extends State<topBarWidget> {
             backgroundColor: runButtonColour,
             text: "Run",
             onTap: () {
+              showToastWithIcon(context, "Working on it ...", Icons.front_hand, Colors.blue[400]!, 4, true);
               Provider.of<CodeTracker>(context, listen: false).run(context);
             },
           ),

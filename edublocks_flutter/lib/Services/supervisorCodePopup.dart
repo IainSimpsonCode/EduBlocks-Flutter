@@ -9,7 +9,7 @@ Future<bool> showCodePopup(BuildContext context, String correctCode) async {
     barrierDismissible: false, // prevent dismissing by tapping outside
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text('Enter 4-digit Code'),
+        title: Text('Please ask a researcher to enter their 4-digit code. This can allow you to skip this activity and move on to the next one.'),
         content: TextField(
           controller: _codeController,
           keyboardType: TextInputType.number,

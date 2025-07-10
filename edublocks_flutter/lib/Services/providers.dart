@@ -235,9 +235,10 @@ class CodeTracker extends ChangeNotifier {
       """{"blocks": [{"line": 1, "code": "# Start Here", "hasChildren": false}]}""";
   List<Widget> _outputString = [];
 
+  bool outputChangedFlag = false;
   List<Widget> get outputString => _outputString;
   void setOutputString(String value, String? imagePath, BuildContext context) {
-    _outputString.clear();
+    _outputString = [];
     _outputString.add(Text(value, style: codeTextStyle));
 
     if (imagePath != null) {
@@ -253,13 +254,12 @@ class CodeTracker extends ChangeNotifier {
       );
     }
 
-    Provider.of<CodeOutputTextPanelNotifier>(context, listen: false)
-        .codeSelected = false;
+    outputChangedFlag = true;
+
+    //Provider.of<CodeOutputTextPanelNotifier>(context, listen: false).codeSelected = false;
 
     notifyListeners();
   }
-
-  bool outputChanged = false;
 
   /// Check and update all line numbers in the JSON string.
   /// ### How it works
@@ -582,6 +582,7 @@ class CodeTracker extends ChangeNotifier {
         Icons.front_hand,
         Colors.blue[400]!,
         10,
+        false
       );
       return "";
     }
@@ -669,7 +670,7 @@ class CodeTracker extends ChangeNotifier {
                   ? 10
                   : 5; // If correct, give more time to read the longer notification
 
-          showToastWithIcon(context, text, icon, color, time);
+          showToastWithIcon(context, text, icon, color, time, true);
         });
       }
 
@@ -738,7 +739,14 @@ class CodeOutputTextPanelNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  Widget textPanel() => _codeSelected ? codeTextPanel() : outputTextPanel();
+  Widget textPanel(BuildContext context) {
+    if (Provider.of<CodeTracker>(context, listen: false).outputChangedFlag) { // If the value of outputString has changed
+      Provider.of<CodeTracker>(context, listen: false).outputChangedFlag = false; // Reset the flag
+      _codeSelected = false; // return the output text panel
+    }
+
+    return _codeSelected ? codeTextPanel() : outputTextPanel();
+  } 
 }
 
 class TaskTracker extends ChangeNotifier {
