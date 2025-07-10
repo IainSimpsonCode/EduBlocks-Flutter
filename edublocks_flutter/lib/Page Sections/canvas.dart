@@ -34,7 +34,11 @@ class _canvasWidgetState extends State<canvasWidget> {
 
   final double snapThreshold = 20;
   final double snapThresholdNested = 15;
-
+  final ScrollController _horizontalController = ScrollController();
+  final double canvasWidth = 1000.0; // Max horizontal scroll
+  double get canvasHeight =>
+      MediaQuery.sizeOf(context).height +
+      (_codeTracker.getHeightOfBlockChain() * 2);
   final player = AudioPlayer();
   FocusNode _focusNode = FocusNode();
 
@@ -93,7 +97,12 @@ class _canvasWidgetState extends State<canvasWidget> {
     super.initState();
 
     _focusNode.requestFocus();
-
+    _horizontalController.addListener(() {
+      final maxScroll = _horizontalController.position.maxScrollExtent;
+      if (_horizontalController.offset > maxScroll) {
+        _horizontalController.jumpTo(maxScroll);
+      }
+    });
     _codeTracker = Provider.of<CodeTracker>(context, listen: false);
 
     // Listen to updates from the queue of blocks to load
@@ -128,6 +137,7 @@ class _canvasWidgetState extends State<canvasWidget> {
     // Safely remove provider listener
     _blocksToLoad.removeListener(_handleLoadingBlock);
     super.dispose();
+    _horizontalController.dispose();
   }
 
   int getNewID() {
@@ -1525,89 +1535,67 @@ class _canvasWidgetState extends State<canvasWidget> {
     }
   }
 
-  @override
+   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: SingleChildScrollView(
-        child: SizedBox(
-          height:
-              MediaQuery.sizeOf(context).height +
-              (_codeTracker.getHeightOfBlockChain() * 2),
-          child: KeyboardListener(
-            focusNode: _focusNode,
-            autofocus: true,
-            onKeyEvent: _handleKeyEvent,
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return Stack(
-                  children: [
-                    GestureDetector(
-                      behavior: HitTestBehavior.opaque, // Add this line
-                      onTapDown: (details) {
-                        setState(() {
-                          _codeTracker.selectedBlock = null;
-                          Provider.of<BlockLibrary>(
-                            context,
-                            listen: false,
-                          ).setCategorySelected(null);
-                        });
-                      },
-                      child:
-                          isProduction
-                              ? CustomPaint(
-                                size: Size(
-                                  constraints.maxWidth,
-                                  constraints.maxHeight,
-                                ),
+        scrollDirection: Axis.horizontal,
+        controller: _horizontalController,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: SizedBox(
+            width: canvasWidth,
+            height: canvasHeight,
+            child: KeyboardListener(
+              focusNode: _focusNode,
+              autofocus: true,
+              onKeyEvent: _handleKeyEvent,
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return Stack(
+                    children: [
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTapDown: (details) {
+                          setState(() {
+                            _codeTracker.selectedBlock = null;
+                            Provider.of<BlockLibrary>(
+                              context,
+                              listen: false,
+                            ).setCategorySelected(null);
+                          });
+                        },
+                        child: isProduction
+                            ? CustomPaint(
+                                size: Size(canvasWidth, canvasHeight),
                               )
-                              : CustomPaint(
-                                size: Size(
-                                  constraints.maxWidth,
-                                  constraints.maxHeight,
-                                ),
+                            : CustomPaint(
+                                size: Size(canvasWidth, canvasHeight),
                                 painter: GridPainter(gridSpacing: 100),
                               ),
-                    ),
-                    // Paint background
-                    isProduction
-                        ? CustomPaint(
-                          size: Size(
-                            constraints.maxWidth,
-                            constraints.maxHeight,
-                          ),
-                        )
-                        : CustomPaint(
-                          size: Size(
-                            constraints.maxWidth,
-                            constraints.maxHeight,
-                          ),
-                          painter: GridPainter(gridSpacing: 100),
-                        ),
-                    // Render any blocks that have priorityBuild first
-                    ..._codeTracker.blocks
-                        .where((b) => b.type.priorityBuild == true)
-                        .map(buildBlock),
-                    // Render the remaining blocks
-                    ..._codeTracker.blocks
-                        .where(
-                          (b) =>
+                      ),
+                      ..._codeTracker.blocks
+                          .where((b) => b.type.priorityBuild == true)
+                          .map(buildBlock),
+                      ..._codeTracker.blocks
+                          .where((b) =>
                               b.type.priorityBuild != true &&
-                              b.priority == false,
-                        )
-                        .map(buildBlock),
-                    // Render the remaining blocks
-                    ..._codeTracker.blocks
-                        .where((b) => b.priority == true)
-                        .map(buildBlock),
-                  ],
-                );
-              },
+                              b.priority == false)
+                          .map(buildBlock),
+                      ..._codeTracker.blocks
+                          .where((b) => b.priority == true)
+                          .map(buildBlock),
+                    ],
+                  );
+                },
+              ),
             ),
           ),
         ),
       ),
     );
   }
+
 
   bool playingSound = false;
   Future<void> playSound(int option) async {
