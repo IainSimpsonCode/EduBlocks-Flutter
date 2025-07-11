@@ -1491,7 +1491,7 @@ class _canvasWidgetState extends State<canvasWidget> {
   void _handleKeyEvent(KeyEvent event) {
     // If the delete key is pressed
     if (event is KeyDownEvent &&
-        event.logicalKey == LogicalKeyboardKey.delete) {
+        ((event.logicalKey == LogicalKeyboardKey.delete) || (event.logicalKey == LogicalKeyboardKey.backspace))) {
       // Check if a block was selected
       if (_codeTracker.selectedBlock != null) {
         // Delete the block

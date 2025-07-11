@@ -90,8 +90,7 @@ class TextFormatter {
       "grade1",
       "grade2",
       "grade3",
-      "grade4",
-      
+      "grade4"
     ];
 
     final String keywordPattern = keywords.map(RegExp.escape).join('|');

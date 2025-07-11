@@ -23,8 +23,8 @@
     "4": "\n# Start Here\nnumber1 = int(5)\nnumber2 = '2'\nprint(number1 + number2)",
     "4fixed": "\n# Start Here\nnumber1 = int(5)\nnumber2 = 2\nprint(number1 + number2)",
     "4extention": "\n# Start Here\nnumber1 = int(5)\nnumber2 = 2\nprint(number1 + number2)\nprint('You are old')",
-    "4ErrorCode": "print(number1 + number2)",
-    "4ErrorLine": 4,
+    "4ErrorCode": "number2 = '2'",
+    "4ErrorLine": 3,
     "4detailedErrorMessage": "TypeError: Unsupported operand type(s) for +: 'int' and 'str'\n\n\nIt is saying you're trying to add a number and a word together using +, but I don't know how to do that!\n\nIt's like trying to add 5 + 'Apples' - it gets confused. Numbers and words need to be added in different ways.\n\nYou might have connected a Math block (number) to a Text block (string) with a + - that doesn't work unless you help Python understand.\n\nOption 1: Make everything text using str()\nOption 2: Keep it as numbers (no speech marks)",
     "4detailedErrorMessageImage": "app_assets/block_images/variables/number2_variable.png",
     "5": "\n# Start Here\nfruits = ['Orange', 'Apple', 'Mango', 'Banana']\nprint(fruits)\nprint('My favourite fruit is ...')\nprint(fruits[3])\nfruits.remove(fruits[3])\nprint(fruits[3])",
@@ -44,8 +44,8 @@
     "7": "\n# Start Here\nnumber1 = 10\nnumber2 = 0\nwhile True:\n print(str(number1) +\" divided by \" + str(number2) + \" is...\")\n print(number1 / number2)\n print('***')\n number2 += 1\n pass",
     "7fixed": "\n# Start Here\nnumber1 = 10\nnumber2 = 1\nwhile True:\n print(str(number1) +\" divided by \" + str(number2) + \" is...\")\n print(number1 / number2)\n print('***')\n number2 += 1\n pass",
     "7extention": "\n# Start Here\nnumber1 = 10\nnumber2 = 0\nwhile True:\n number2 += 1\n print(number1 / number2)\n pass",
-    "7ErrorCode": "print(number1 / number2)",
-    "7ErrorLine": 6,
+    "7ErrorCode": "number2 = 0",
+    "7ErrorLine": 3,
     "7detailedErrorMessage": "Error \n\n\nYou are trying to divide by 0.\nImagine you have 10 chocolates and you want to share them with 0 people - it just doesn't make sense!\nTry using a number bigger than 0.",
     "7detailedErrorMessageImage": "app_assets/block_images/variables/variable-0.png"
 }
